@@ -6,11 +6,11 @@ This is a small design system for McDonald's ordering. Two platforms share one s
 
 | Page | Task |
 |---|---|
-| [01 Shared System](docs/01-shared-system.md) | Type, color, spacing, radius, reusable components, and the rule sheet (must keep / may adapt / must never) |
+| [01 Design Spec](docs/01-design-spec.md) | Type, color, spacing, radius, reusable components, and the rule sheet (must keep / may adapt / must never) |
 | [02 Mobile — Task A](docs/02-mobile.md) | Find the bag, past orders, and exact prices in the app |
 | [03 Website — Task B](docs/03-website.md) | Order online, keep one bag synced with the phone, and find past orders with prices |
 
-![01 Shared System](assets/01-shared-system.png)
+![01 Design Spec](assets/01-design-spec.png)
 ![02 Mobile](assets/02-mobile.png)
 ![03 Website](assets/03-website.png)
 
@@ -30,7 +30,7 @@ Both experiences are checked against one rule sheet:
 
 - `docs/` — the spec for each page, as text
 - `assets/` — PNG exports of the three Figma frames
-- Figma source: frames `01 Shared System`, `02 Mobile — Task A`, `03 Website — Task B`
+- Figma source: frames `01 Design Spec`, `02 Mobile — Task A`, `03 Website — Task B`
 
 ## Sources
 

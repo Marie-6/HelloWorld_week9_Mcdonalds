@@ -1,6 +1,6 @@
 # 03 Website — Task B
 
-This page covers ordering online with one bag on every device, and past orders with prices. It uses the Shared System from page 1. Prices are illustrative.
+This page covers ordering online with one bag on every device, and past orders with prices. It uses the Design Spec from page 1. Prices are illustrative.
 
 ![03 Website](../assets/03-website.png)
 

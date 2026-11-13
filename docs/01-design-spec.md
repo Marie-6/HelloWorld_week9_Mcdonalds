@@ -1,8 +1,8 @@
-# 01 Shared System
+# 01 Design Spec
 
 This page holds the rules both experiences share. Mobile (page 2) is about finding the bag, past orders, and exact prices. The website (page 3) is about ordering online with a bag that syncs with the phone, and finding past orders and prices.
 
-![01 Shared System](../assets/01-shared-system.png)
+![01 Design Spec](../assets/01-design-spec.png)
 
 ## 01 Color
 

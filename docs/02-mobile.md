@@ -1,6 +1,6 @@
 # 02 Mobile — Task A
 
-**Find my bag, past orders, and exact prices.** This page uses the Shared System from page 1.
+**Find my bag, past orders, and exact prices.** This page uses the Design Spec from page 1.
 
 ![02 Mobile](../assets/02-mobile.png)
 
