@@ -47,8 +47,9 @@ The Figma frame above is the first version. The working prototype is the current
 
 1. **Menu:** the Category Rail on the left and Menu Cards on the right, starting with Breakfast Meal Deals. Every item shows its price at the chosen restaurant and has an "Add to bag" button. A toast confirms the click ("Synced with your phone") and the bag count updates.
 2. **Product details:** opens over the menu. Details and "What's in it" first, "Your usual" if you've ordered it before, then a folded Customize section. "Add to bag · $X" works straight away.
-3. **Location menu:** Pickup or Delivery. Delivery asks for an address and adds the delivery fee to the bag total at once.
-4. **Bag drawer:** the same bag as in the app. The item added on the phone is labelled. The drawer shows pickup (restaurant, time) or delivery (address, restaurant, time), each item's options with an Edit link, and the full total including any fee. The button reads "Checkout · $9.34".
-5. **Sign in at checkout:** sign-in is only asked for here, never before browsing. The guest bag stays as it is. Signing in syncs the bag with the app and unlocks past orders.
-6. **Checkout:** pickup at / deliver to (with drop-off notes), time, payment on pickup or on arrival, and the order summary with "Place order · $X".
-7. **Orders:** the same history as in the app, each marked Pickup or Delivery. The list is on the left; the selected order is on the right, with every item price and option, the tax, any fee, and the total. It also has "Add all to bag" and "Download receipt" buttons.
+3. **One bag with the app:** in the prototypes, the website and the app keep one bag in the browser, so an item added on either shows up on the other right away (see them side by side on the [demo page](https://marie-6.github.io/Mcdonalds/demo/)). Items are labelled "Added on your phone" / "Added on the website" until the bag is opened.
+4. **Location menu:** Pickup or Delivery. Delivery asks for an address and adds the delivery fee to the bag total at once.
+5. **Bag drawer:** the same bag as in the app. The item added on the phone is labelled. The drawer shows pickup (restaurant, time) or delivery (address, restaurant, time), each item's options with an Edit link, and the full total including any fee. The button reads "Checkout · $9.34".
+6. **Sign in at checkout:** sign-in is only asked for here, never before browsing. The guest bag stays as it is. Signing in syncs the bag with the app and unlocks past orders.
+7. **Checkout:** pickup at / deliver to (with drop-off notes), time, payment on pickup or on arrival, and the order summary with "Place order · $X".
+8. **Orders:** the same history as in the app, each marked Pickup or Delivery. The list is on the left; the selected order is on the right, with every item price and option, the tax, any fee, and the total. It also has "Add all to bag" and "Download receipt" buttons.

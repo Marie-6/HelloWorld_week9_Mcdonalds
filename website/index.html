@@ -667,7 +667,6 @@ const ACCOUNT_ORDERS = [
 ].map(o => finalizeOrder({ ...o, items: o.items.map(([id, qty, cents, cfg]) => ({ id, name: ITEMS[id].name, qty, cents, cfg: normCfg(id, cfg), opts: optsText(id, cfg) })) }));
 
 // The bag on the phone, merged in when the person signs in.
-const PHONE_BAG = [{ id: "hash-browns", qty: 1 }];
 
 /* ---------- state ---------- */
 const STORE_KEY = "mcd-proto-v1";
@@ -688,6 +687,7 @@ function load() {
 }
 function save() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {}
+  if (typeof sharedWrite === "function") sharedWrite();
 }
 
 /* ---------- money ---------- */
@@ -701,9 +701,12 @@ function finalizeOrder(o) {
   const fee = o.fee || 0;
   return { ...o, subtotal, tax, fee, total: subtotal + tax + fee };
 }
+// A line added in the app keeps the app's price and option text; lines added here are priced here.
+const lineUnit = b => b.unit != null ? b.unit : unitPrice(b.id, b.cfg);
+const lineOpts = b => b.opts != null ? b.opts : optsText(b.id, b.cfg);
 function bagTotals() {
   const live = state.bag.filter(b => soldAt(b.id));
-  const subtotal = live.reduce((s, b) => s + unitPrice(b.id, b.cfg) * b.qty, 0);
+  const subtotal = live.reduce((s, b) => s + lineUnit(b) * b.qty, 0);
   const tax = taxOf(subtotal);
   const count = live.reduce((s, b) => s + b.qty, 0);
   // The delivery fee is part of the total from the first item, never added at payment.
@@ -738,7 +741,7 @@ const plain = s => s.replace(/[®™]/g, "").toLowerCase();
 /* ---------- sync badge ---------- */
 function syncLabel() {
   if (!navigator.onLine) return ["offline", "Offline — saved on this device"];
-  if (!state.signedIn) return ["local", "Saved on this device · sign in to sync"];
+  if (!state.signedIn) return ["synced", "Same bag as the app"];
   if (syncing) return ["syncing", "Syncing…"];
   return ["synced", "Synced with your phone"];
 }
@@ -1007,7 +1010,7 @@ function renderCheckout() {
       </div>
       <div class="panel">
         <h2 class="t-heading" style="margin-bottom:12px">Order summary</h2>
-        ${state.bag.filter(b => soldAt(b.id)).map(b => lineHTML(b.id, ITEMS[b.id].name, b.qty, unitPrice(b.id, b.cfg), optsText(b.id, b.cfg))).join("")}
+        ${state.bag.filter(b => soldAt(b.id)).map(b => lineHTML(b.id, ITEMS[b.id].name, b.qty, lineUnit(b), lineOpts(b))).join("")}
         ${t.skipped ? `<p class="t-caption muted">${t.skipped} item not sold at ${r.short} stays in your bag and isn't included.</p>` : ""}
         <hr class="divider">
         ${summaryHTML(t)}
@@ -1152,13 +1155,13 @@ function bagItemHTML(b, i) {
       ${photo(b.id, false)}
       <div>
         <div class="t-heading">${it.name}</div>
-        ${optsText(b.id, b.cfg) ? `<div class="opts">${optsText(b.id, b.cfg)}</div>` : ""}
-        <div class="t-caption muted">${ok ? fmt(unitPrice(b.id, b.cfg)) + " each" : "Not sold at " + RESTAURANTS[state.rid].short}</div>
+        ${lineOpts(b) ? `<div class="opts">${lineOpts(b)}</div>` : ""}
+        <div class="t-caption muted">${ok ? fmt(lineUnit(b)) + " each" : "Not sold at " + RESTAURANTS[state.rid].short}</div>
         ${b.fromPhone ? `<span class="tag">Added on your phone</span>` : ""}
-        ${ok && optionGroups(b.id).length ? `<div><a class="link-btn" style="padding:0;display:inline-flex;align-items:center" href="#item/${b.id}/${i}" data-action="edit-line">Edit</a></div>` : ""}
+        ${ok && b.unit == null && optionGroups(b.id).length ? `<div><a class="link-btn" style="padding:0;display:inline-flex;align-items:center" href="#item/${b.id}/${i}" data-action="edit-line">Edit</a></div>` : ""}
       </div>
       <div style="text-align:right">
-        <div class="price" style="margin-bottom:6px">${ok ? fmt(unitPrice(b.id, b.cfg) * b.qty) : "—"}</div>
+        <div class="price" style="margin-bottom:6px">${ok ? fmt(lineUnit(b) * b.qty) : "—"}</div>
         <div class="stepper" role="group" aria-label="Quantity of ${it.name}">
           <button data-action="qty" data-i="${i}" data-d="-1" aria-label="One less">−</button>
           <span>${b.qty}</span>
@@ -1291,8 +1294,9 @@ function itemAdd() {
 function addToBag(id, qty = 1, fromPhone = false, cfg = defaultCfg(id), at = state.bag.length) {
   cfg = normCfg(id, cfg);
   const key = cfgKey(id, cfg);
-  const line = state.bag.find(b => cfgKey(b.id, b.cfg) === key);
-  if (line) line.qty += qty; else state.bag.splice(at, 0, { id, qty, fromPhone, cfg });
+  const line = state.bag.find(b => b.unit == null && cfgKey(b.id, b.cfg) === key);
+  if (line) line.qty += qty;
+  else state.bag.splice(at, 0, { id, qty, fromPhone, cfg, from: fromPhone ? "app" : "web", key: "web|" + key });
 }
 function changed() {
   save(); renderHeader(); touchSync();
@@ -1308,7 +1312,7 @@ function setRestaurant(rid) {
   if (rid === state.rid) return;
   // Price change only for items sold at both restaurants; unsold items are reported separately.
   const old = state.rid;
-  const diff = state.bag.filter(b => soldAt(b.id, old) && soldAt(b.id, rid))
+  const diff = state.bag.filter(b => b.unit == null && soldAt(b.id, old) && soldAt(b.id, rid))
     .reduce((s, b) => s + (unitPrice(b.id, b.cfg, rid) - unitPrice(b.id, b.cfg, old)) * b.qty, 0);
   state.rid = rid;
   if (state.bag.length) {
@@ -1329,12 +1333,7 @@ function setRestaurant(rid) {
 
 function signIn(then) {
   state.signedIn = true;
-  let merged = 0;
-  if (!state.phoneMerged) {
-    // Merge, never replace: the guest bag stays and the phone's items are added.
-    PHONE_BAG.forEach(p => { addToBag(p.id, p.qty, true); merged += p.qty; });
-    state.phoneMerged = true;
-  }
+  const merged = 0; // the bag is already the app's bag (see "One bag with the app" below)
   state.orders.forEach(o => { delete o.guest; });
   closeModal();
   toast(merged ? `Signed in · ${merged} item from your phone added to your bag` : "Signed in · bag synced with your phone", merged ? ["View bag", openBag] : null);
@@ -1344,6 +1343,7 @@ function signIn(then) {
 }
 function resetDemo(msg) {
   state = freshState(state.rid);
+  state.bag = fromShared(SEED_BAG);
   save(); closeBag(); closeModal(); toast(msg); location.hash = "#menu"; route();
 }
 
@@ -1358,7 +1358,7 @@ function placeOrder() {
     id, at: local.toISOString().slice(0, 16), rid: state.rid, source: "web", pickupAt: when,
     mode: state.mode, address: state.mode === "delivery" ? state.address : undefined, notes: notes || undefined, fee: t.fee,
     guest: !state.signedIn || undefined,
-    items: state.bag.filter(b => soldAt(b.id)).map(b => ({ id: b.id, name: ITEMS[b.id].name, qty: b.qty, cents: unitPrice(b.id, b.cfg), cfg: normCfg(b.id, b.cfg), opts: optsText(b.id, b.cfg) }))
+    items: state.bag.filter(b => soldAt(b.id)).map(b => ({ id: b.id, name: ITEMS[b.id].name, qty: b.qty, cents: lineUnit(b), cfg: normCfg(b.id, b.cfg), opts: lineOpts(b) }))
   });
   state.orders.push(order);
   state.bag = state.bag.filter(b => !soldAt(b.id));
@@ -1592,6 +1592,63 @@ addEventListener("hashchange", () => {
 const headerEl = document.querySelector("header.site");
 const setHeaderH = () => document.documentElement.style.setProperty("--hh", headerEl.querySelector(".bar").offsetHeight + "px");
 new ResizeObserver(setHeaderH).observe(headerEl.querySelector(".bar"));
+
+/* ---------- One bag with the app ----------
+   The website and the app (../mobile/) keep ONE bag in this browser's storage, so an item added on either
+   shows up on the other, live. Lines are matched by product photo, which both prototypes use. */
+const SHARED_BAG = "mcd-shared-bag-v1";
+const SEED_BAG = [
+  { key: "eggmuffin|none", id: "egg-mcmuffin", name: "Egg McMuffin®", opt: "310 Cal", qty: 1, unit: 4.79, from: "web", seenOnApp: false, seenOnWeb: true },
+  { key: "hashbrown|none", id: "hash-browns", name: "Hash Browns", opt: "140 Cal", qty: 1, unit: 2.19, from: "app", seenOnApp: true, seenOnWeb: false }
+];
+let foreignLines = [];   // lines from the app with no item on this menu: kept as they are
+let lastShared = "";
+function toShared() {
+  return state.bag.map(b => ({
+    key: b.key || "web|" + cfgKey(b.id, b.cfg), id: b.id, name: ITEMS[b.id].name, opt: lineOpts(b),
+    qty: b.qty, unit: lineUnit(b) / 100, from: b.from || "web", cfg: b.cfg,
+    seenOnApp: b.seenOnApp ?? (b.from === "app"), seenOnWeb: !b.fromPhone, deal: !!b.deal, reward: !!b.reward
+  })).concat(foreignLines);
+}
+function fromShared(lines) {
+  foreignLines = [];
+  const bag = [];
+  for (const x of lines) {
+    if (!ITEMS[x.id]) { foreignLines.push(x); continue; }
+    const app = x.from === "app";
+    bag.push({ id: x.id, qty: x.qty, cfg: normCfg(x.id, app ? {} : x.cfg), from: app ? "app" : "web", key: x.key,
+      unit: app ? Math.round(x.unit * 100) : undefined, opts: app ? (/^\d+ Cal$/.test(x.opt || "") ? "" : (x.opt || "")) : undefined, // the app puts calories here; not an option
+      fromPhone: app && !x.seenOnWeb, seenOnApp: x.seenOnApp, deal: x.deal, reward: x.reward });
+  }
+  return bag;
+}
+function sharedWrite() {
+  const v = JSON.stringify(toShared());
+  if (v === lastShared) return;
+  lastShared = v;
+  try { localStorage.setItem(SHARED_BAG, v); } catch {}
+}
+function sharedLoad() {
+  let lines = null;
+  try { lines = JSON.parse(localStorage.getItem(SHARED_BAG)); } catch {}
+  if (!Array.isArray(lines)) {
+    // First visit: start from the same bag the app starts with (Egg McMuffin added here, Hash Browns on the phone).
+    if (!state.bag.length) lines = SEED_BAG; else { sharedWrite(); return; }
+  }
+  state.bag = fromShared(lines);
+  lastShared = JSON.stringify(toShared());
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {}
+}
+// The app changed the bag: take it, then refresh whatever shows the bag.
+addEventListener("storage", e => {
+  if (e.key !== SHARED_BAG) return;
+  sharedLoad();
+  renderHeader();
+  if (!drawer.hidden) renderBag();
+  if (currentView === "checkout") route();
+  touchSync();
+});
+sharedLoad();
 
 megaGrid.innerHTML = megaHTML();
 mobMega.innerHTML = megaHTML();

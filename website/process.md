@@ -166,6 +166,14 @@ The different Bag and Checkout borders were correct (Primary = Gold + Gold Strok
 
 ![Demo page](process-img/40-demo.jpg)
 
+## 12. One bag on the laptop and the phone
+
+**Asked:** *"i have stuffA in web cart, and it should also show up in phone"*
+**Changed:** the website and the app now share one bag in the browser. Add, change or remove an item on either and the other updates right away. Items are matched by product photo, since both use the same photo files. Each side labels items from the other: "Added on your phone" / "Added on the website". This is the spec's "One bag per account, identical on web and app", now working between the two prototypes.
+**Still open:** the two use different restaurants and sales tax (New York vs New Jersey), so subtotals match but totals don't.
+
+![Same bag on both](process-img/41-shared-bag.jpg)
+
 ---
 
 ## Where it is now
@@ -182,6 +190,7 @@ The different Bag and Checkout borders were correct (Primary = Gold + Gold Strok
 
 - Ordering on the website, with one bag shared with the phone and sign-in asked only at checkout.
 - The real site's menu layout, real photos and the Golden Arches.
+- One bag shared live between the website and the app.
 - Customizing in a pop-up with details first, Customize folded, and "Your usual" from your own history.
 - Pickup **and** Delivery, with the fee always visible before payment.
 - Orders with every price, option, tax and fee, plus "Add all to bag" and receipts.

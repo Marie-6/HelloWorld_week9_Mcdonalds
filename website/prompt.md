@@ -139,3 +139,7 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **41.** "can you just put images here? dont need to jump to github again" (+ the Design Spec button)
 - The demo's buttons no longer leave the page. "Design Spec", "App design" and "Website design" open the Figma frames full size in a viewer on the demo page, and a new "The design" section at the bottom shows all three. Web-size copies are in `demo/img/`. ✅
+
+**42.** "and can you align the stuff in shopping cart in both web and phone? eg, i have stuffA in web cart, and it should also show up in phone"
+- The website and the app now keep **one bag** in the browser's storage. Add, change or remove an item on either and the other updates right away, also side by side on the demo page. Items are matched by product photo (both prototypes use the same photo files). Labels show where each item came from. Both start from the same bag (an Egg McMuffin added on the website, Hash Browns on the phone). This needed a small addition to Xinyu's `mobile/index.html` (the sync code only; her screens weren't changed). ✅
+- Still different: the two prototypes use different restaurants and sales tax (New York 8.875% vs New Jersey 6.625%), so the subtotals match but the totals don't.

@@ -350,7 +350,7 @@ return [
 }
 function seedBag() {
 return [
-{ key: "eggmuffin|none", ref: "eggmuffin", name: "Egg McMuffin®", opt: "310 Cal", unit: 4.79, qty: 1, web: true, img: "egg-mcmuffin.png" },
+{ key: "eggmuffin|none", ref: "eggmuffin", name: "Egg McMuffin®", opt: "310 Cal", unit: 4.79, qty: 1, web: true, from: "web", img: "egg-mcmuffin.png" },
 { key: "hashbrown|none", ref: "hashbrown", name: "Hash Browns", opt: "140 Cal", unit: 2.19, qty: 1, img: "hash-browns.png" },
 ];
 }
@@ -598,6 +598,7 @@ if (scrollTop) $("screen").scrollTop = 0;
 document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-current", S.tab === b.dataset.tab ? "page" : "false"));
 const n = count(); $("badge").textContent = n; $("badge").classList.toggle("on", n > 0);
 $("cta").innerHTML = (S.tab === "bag" && !v && !S.done && S.bag.length) ? `<div class="cta"><button class="btn primary" data-checkout>Checkout · ${money(bagTotals().total)}</button></div>` : "";
+sharedWrite();
 }
 /* -------- Events -------- */
 document.addEventListener("click", e => {
@@ -664,6 +665,36 @@ if (a === "receiptpts") return info("Add missing points", "Scan the code on a pa
 $("scrim").onclick = closeSheet;
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
 $("reset").onclick = () => { S = fresh(); closeSheet(); render(true); };
+/* -------- One bag with the website --------
+   The app and the website (../website/) keep ONE bag in this browser's storage, so an item added on either
+   shows up on the other, live. Lines are matched by product photo, which both prototypes use. */
+const SHARED_BAG = "mcd-shared-bag-v1";
+let lastShared = "";
+const byImg = f => ALL.find(i => i.img === f || i.mealImg === f);
+function toShared() {
+  return S.bag.map(l => ({ key: l.key, id: (l.img || "").replace(/\.png$/, ""), name: l.name, opt: l.opt, qty: l.qty, unit: l.unit,
+    from: l.from || "app", cfg: l.cfg, seenOnApp: !l.web, seenOnWeb: l.seenOnWeb ?? false, deal: !!l.deal, reward: !!l.reward }));
+}
+function fromShared(lines) {
+  return lines.map(x => { const it = byImg(x.id + ".png");
+    return { key: x.key, ref: it ? it.id : x.id, name: x.name, opt: x.opt, unit: x.unit, qty: x.qty, img: x.id ? x.id + ".png" : undefined, art: it && it.art,
+      from: x.from, cfg: x.cfg, web: x.from === "web" && !x.seenOnApp, seenOnWeb: x.seenOnWeb, deal: x.deal, reward: x.reward }; });
+}
+function sharedWrite() {
+  const v = JSON.stringify(toShared());
+  if (v === lastShared) return;
+  lastShared = v;
+  try { localStorage.setItem(SHARED_BAG, v); } catch (e) {}
+}
+function sharedLoad() {
+  let lines = null;
+  try { lines = JSON.parse(localStorage.getItem(SHARED_BAG)); } catch (e) {}
+  if (!Array.isArray(lines)) return sharedWrite();
+  S.bag = fromShared(lines);
+  lastShared = JSON.stringify(toShared());
+}
+addEventListener("storage", e => { if (e.key === SHARED_BAG) { sharedLoad(); render(); } });
+sharedLoad();
 render(true);
 </script>
 </body>
