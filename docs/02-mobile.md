@@ -30,9 +30,22 @@ A grad student who orders breakfast in the McDonald's app before class. They wan
 
 **Component:** Tab Bar (mobile), with Active = Home, Bag, or Orders. The Red badge shows the bag count and is the only Red on the screen.
 
-## 03 Screens
+## 03 Real app today (before)
 
-1. **Home:** Bag and Orders are tabs, never buried. "Order again" shows the last order and the price paid ($9.34).
-2. **Bag:** shows the restaurant, pickup time, and full total before checkout. The item added on the website is labelled. The button reads "Checkout · $7.60".
-3. **Orders:** lists every past order with its date, restaurant, and the total paid, tax included.
-4. **Order detail:** shows each item price, the tax, and the total. "Add all to bag" says whether today's price is different.
+I checked our design against the real McDonald's app on my own phone (Nov 13, 2026). Section 03 of the image shows my screenshots as evidence.
+
+1. With an empty bag, there is no bag icon anywhere on the home screen.
+2. After adding one item, a yellow "Checkout Now" bar appears above the tabs.
+3. The same bag has three names: "Add to Bag", "Checkout Now" and "Your order".
+4. The bag page shows only the subtotal. There is no tax and no total.
+5. Past orders are under More → Recents & Faves. They show dates and items, but no prices.
+6. The Order tab has a second list ("Quickly reorder"), also with no prices.
+
+## 04 Our redesign (after)
+
+The "Menu" tab is now called "Order", like the real app. Screens use my real restaurant and past orders. Prices we add are illustrative, because the real app does not show what I paid.
+
+1. **Home:** Bag and Orders are tabs, never buried. "Order again" shows the last order (Spicy McCrispy™) and the price paid ($6.28).
+2. **Bag:** called "Your bag" everywhere. It shows the restaurant, pickup time, tax and full total before checkout. The item added on the website is labelled. The button reads "Checkout · $11.60".
+3. **Orders:** every past order shows its date, restaurant and the total paid, tax included.
+4. **Order detail:** shows each item price, the tax and the total ($10.23). "Add all to bag" keeps the real app's "Add all" idea.
