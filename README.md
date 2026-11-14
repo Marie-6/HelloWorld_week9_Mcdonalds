@@ -1,10 +1,10 @@
 # McDonald's — One System, Two Experiences
 
 <p align="center">
-  <a href="https://marie-6.github.io/Mcdonalds/demo/"><img src="assets/demo-preview.jpg" alt="The website on a laptop and the app on a phone, sharing one bag" width="100%"></a>
+  <a href="https://marie-6.github.io/HelloWorld_week9_Mcdonalds/demo/"><img src="assets/demo-preview.jpg" alt="The website on a laptop and the app on a phone, sharing one bag" width="100%"></a>
 </p>
 
-<h2 align="center"><a href="https://marie-6.github.io/Mcdonalds/demo/">▶ Try the live demo</a></h2>
+<h2 align="center"><a href="https://marie-6.github.io/HelloWorld_week9_Mcdonalds/demo/">▶ Try the live demo</a></h2>
 
 <p align="center">The website on a laptop and the app on a phone, side by side.<br>Add something on one, and it's in the bag on the other.</p>
 
@@ -25,7 +25,7 @@ This is a small design system for McDonald's ordering. Two platforms share one s
 
 ## Website prototype
 
-**[Try it → marie-6.github.io/Mcdonalds/website/](https://marie-6.github.io/Mcdonalds/website/)**
+**[Try it → marie-6.github.io/HelloWorld_week9_Mcdonalds/website/](https://marie-6.github.io/HelloWorld_week9_Mcdonalds/website/)**
 
 A working redesign of the mcdonalds.com breakfast menu, built from the Design Spec and the Website rules (page 3). It keeps the real site's menu layout (category rail with photos, centered product grid) and header (Our Menu, Meal Deals, Search, location, Order Now), and adds ordering on the site, for pickup or delivery (address, a delivery fee shown in the bag before checkout, drop-off notes). Every item opens a product pop-up over the menu: details and "What's in it" first, ready to add as it comes, with a folded "Customize" section to change it (size, meal drink, "Remove" and "Extra" options from the real ingredient lists, and "Your usual" from your own order history); the options follow the item into the bag, checkout, orders and receipt. You can order for pickup, keep one bag (sign in at checkout to merge the bag from your phone), switch restaurants and see prices update, and find past orders with item prices, tax, total, "Add all to bag" and a downloadable receipt. Nothing is really ordered or paid. **Type:** the page uses McDonald's Speedee typeface *if it's installed on your computer*, and Inter otherwise. Speedee isn't publicly licensed, so the font file is never committed here (see `.gitignore`); install it locally to see it. Source: [`website/index.html`](website/index.html). How it was made: [prompts](website/prompt.md) (every prompt, word for word, and Marie's decisions) and [process](website/process.md) (what changed and why, with before/after pictures).
 
@@ -33,7 +33,7 @@ Product photos and the Golden Arches logo come from the mcdonalds.com breakfast 
 
 ## Mobile prototype
 
-**[Try it → marie-6.github.io/Mcdonalds/mobile/](https://marie-6.github.io/Mcdonalds/mobile/)**
+**[Try it → marie-6.github.io/HelloWorld_week9_Mcdonalds/mobile/](https://marie-6.github.io/HelloWorld_week9_Mcdonalds/mobile/)**
 
 A clickable version of the mobile redesign (page 2), shown in an iPhone frame and built on the real app's layout and colors. Bag and Orders are always in the tab bar, with More beside them. Every past order shows the total paid, tax included, and opens to item prices, tax and total, with "Add all to bag" and a receipt. The points button opens My Rewards, Deals and Earn Points (your code). Order has Pickup and McDelivery, and switching restaurants updates prices. The menu shows breakfast and McCafé items, using the photos in `website/img/`, the same files the website prototype uses. Past orders come from my real order history; there are no photos for those items, so their cards show text only. Headlines use Speedee if it's installed on your computer, and Inter otherwise. Nothing is really ordered or paid. Source: [`mobile/index.html`](mobile/index.html).
 

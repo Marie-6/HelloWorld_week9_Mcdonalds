@@ -2,7 +2,7 @@
 
 The [McDonald's website](https://www.mcdonalds.com/us/en-us/full-menu/breakfast.html) only lets you browse the menu, and the app hides your bag, past orders and what you actually paid. So we redesigned both, starting with the cart and the receipt. On the website, you can now **order on your laptop** for pickup or delivery, the **bag stays in sync** between the website and the app, and you can **find past orders** with every item's price, the tax and the total in one step.
 
-**Try it:** [marie-6.github.io/Mcdonalds/website](https://marie-6.github.io/Mcdonalds/website/) · with the app side by side: [demo](https://marie-6.github.io/Mcdonalds/demo/)
+**Try it:** [marie-6.github.io/HelloWorld_week9_Mcdonalds/website](https://marie-6.github.io/HelloWorld_week9_Mcdonalds/website/) · with the app side by side: [demo](https://marie-6.github.io/HelloWorld_week9_Mcdonalds/demo/)
 
 ## What you can do
 

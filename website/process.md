@@ -2,7 +2,7 @@
 
 How the website prototype went from a first build to what's live now: what Marie asked, what changed, what stayed, and why. Every prompt, word for word, is in [prompt.md](prompt.md).
 
-**Live:** [marie-6.github.io/Mcdonalds/website](https://marie-6.github.io/Mcdonalds/website/) · **Spec:** [01 Design Spec](../docs/01-design-spec.md), [03 Website](../docs/03-website.md)
+**Live:** [marie-6.github.io/HelloWorld_week9_Mcdonalds/website](https://marie-6.github.io/HelloWorld_week9_Mcdonalds/website/) · **Spec:** [01 Design Spec](../docs/01-design-spec.md), [03 Website](../docs/03-website.md)
 
 **Goal (Task B):** on mcdonalds.com you could only browse, and "Order Now" sent you to the app. The redesign lets you order on the website for pickup or delivery, with the same bag as the phone, and find past orders and receipts.
 
@@ -156,7 +156,7 @@ The different Bag and Checkout borders were correct (Primary = Gold + Gold Strok
 ## 11. One demo page
 
 **Asked:** combine the mobile app and the website on one page for demonstration.
-**Changed:** [demo/](https://marie-6.github.io/Mcdonalds/demo/) shows the live website in a laptop frame and Xinyu's live app in a phone frame, side by side. Both are clickable, with "Try it" steps for each. The page uses the same Design Spec.
+**Changed:** [demo/](https://marie-6.github.io/HelloWorld_week9_Mcdonalds/demo/) shows the live website in a laptop frame and Xinyu's live app in a phone frame, side by side. Both are clickable, with "Try it" steps for each. The page uses the same Design Spec.
 
 **Then:** the app has to look like its own page, so it now shows in Xinyu's own iPhone frame instead of a plain one I drew.
 
@@ -213,7 +213,7 @@ The different Bag and Checkout borders were correct (Primary = Gold + Gold Strok
 
 ## Decisions Marie made
 
-1. A separate repo, shared only with Xinyu.
+1. A separate repo, shared only with Xinyu, later renamed `HelloWorld_week9_Mcdonalds` (prompt 46).
 2. Product details pop up instead of opening a full page; people scan before customizing.
 3. Speedee: use it only where installed, and don't upload it (prompt 19).
 4. Grey outlines: Muted (#7C7C7C) on controls, Divider (#D6D6D6) for lines.

@@ -152,3 +152,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **45.** "maybe make it more obvious? and fancy and core if you can" (+ the demo link in the README)
 - The README now opens with a big clickable picture of the demo (laptop and phone sharing one bag), a centered "▶ Try the live demo" heading, and two short lines on what it shows. ✅
+
+**46.** "rename the github \"Mcdonalds\" to \"HelloWorld_week9_Mcdonalds\""
+- Renamed the repo to **Marie-6/HelloWorld_week9_Mcdonalds**. GitHub forwards the old repo link, but not the old Pages link, so every live link now uses `marie-6.github.io/HelloWorld_week9_Mcdonalds/`. Older prompts above are kept word for word. ✅
