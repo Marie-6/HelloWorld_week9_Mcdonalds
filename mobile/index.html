@@ -107,9 +107,10 @@ h2.title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .deal .nm{font-weight:700;font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .deal .exp{font-size:13px;color:var(--muted)}
 .deal.added .ph{outline:2px solid var(--ink);outline-offset:-2px}
-.ph img{width:100%;height:100%;object-fit:contain;object-position:center;padding:10%;box-sizing:border-box}
-.hero .art img,.trend .art img{width:100%;display:block}
-.hero-ph img{max-height:180px;max-width:100%;object-fit:contain}
+.ph img,.ring img,.art img,.hero-ph img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+.ph,.ring>span,.hero-ph{overflow:hidden}
+.hero .art,.trend .art{aspect-ratio:1}
+.hero-ph img{width:180px;height:180px}
 .ph svg{width:78%;height:78%}
 .trend{display:block;width:100%;border:0;border-radius:var(--r-card);overflow:hidden;position:relative;padding:22px 18px;text-align:left;font:inherit;color:#fff;cursor:pointer;min-height:170px;margin-bottom:16px}
 .trend .h{font-size:28px;font-weight:800;line-height:1.05;max-width:60%;letter-spacing:-.01em}
@@ -282,8 +283,13 @@ const IMG = "../website/img/";
 const ART = {
 pin: `<svg class="pin" viewBox="0 0 26 30"><path d="M13 1C6.4 1 1 6.2 1 12.6 1 21 13 29 13 29s12-8 12-16.4C25 6.2 19.6 1 13 1z" fill="#DB0007"/><circle cx="13" cy="12.5" r="4.5" fill="#fff"/></svg>`,
 };
+/* Each photo's food sits low in its square. These values move it to the
+center and scale it to the same size, so every photo lines up. */
+const BOX = {"bec-bagel.png":[0.8,-14.5,0.85],"bec-biscuit.png":[2.1,-20.8,1.05],"bec-mcgriddles.png":[0.3,-20.5,1.033],"big-breakfast-hotcakes.png":[0.0,-16.9,0.82],"big-breakfast.png":[-0.2,-20.2,0.825],"cat-mccafe.png":[-0.5,0.8,1.338],"coffee.png":[5.8,-25.8,1.35],"egg-cheese-biscuit.png":[-0.3,-16.3,0.909],"egg-mcmuffin.png":[-3.3,-16.0,0.989],"hash-browns.png":[-3.9,1.3,0.886],"hot-chocolate.png":[5.5,-14.9,1.204],"hotcakes-sausage.png":[0.0,-21.9,0.82],"hotcakes.png":[-0.1,-21.4,0.822],"iced-coffee.png":[1.0,-9.4,1.038],"meal-bec-bagel.png":[-0.3,-2.7,0.85],"meal-bec-biscuit.png":[-1.8,-4.8,0.933],"meal-bec-mcgriddles.png":[-1.3,-2.7,0.905],"meal-egg-mcmuffin.png":[-2.0,-4.6,0.921],"meal-sausage-biscuit-egg.png":[-2.5,-4.4,0.909],"meal-sausage-burrito.png":[-0.3,-5.2,0.843],"meal-sausage-mcmuffin-egg.png":[-0.9,-4.4,0.948],"meal-sec-mcgriddles.png":[-1.4,-2.0,0.901],"meal-steak-bagel.png":[-1.9,-3.0,0.924],"oatmeal.png":[4.2,-21.3,0.956],"oj.png":[-2.2,-3.8,1.116],"sausage-biscuit-egg.png":[-0.3,-16.7,1.055],"sausage-biscuit.png":[-1.2,-23.3,1.122],"sausage-burrito.png":[-1.5,-28.5,1.061],"sausage-mcgriddles.png":[0.8,-25.5,1.175],"sausage-mcmuffin-egg.png":[-2.7,-18.5,1.076],"sausage-mcmuffin.png":[2.9,-21.5,1.058],"sec-bagel.png":[1.8,-13.5,0.905],"sec-mcgriddles.png":[1.3,-15.1,0.989],"steak-bagel.png":[2.3,-10.4,0.87]};
 function pic(file, kind) {
-return file ? `<img alt="" src="${IMG + file}" onerror="this.remove()">` : "";
+if (!file) return "";
+const b = BOX[file], st = b ? ` style="transform:translate(${b[0]}%,${b[1]}%) scale(${b[2]})"` : "";
+return `<img alt="" src="${IMG + file}"${st} onerror="this.remove()">`;
 }
 /* -------- Data -------- */
 const TAX = 0.06625;
@@ -363,6 +369,7 @@ const sum = ls => r2(ls.reduce((a, l) => a + l.unit * l.qty, 0));
 const bagTotals = () => { const sub = sum(S.bag); const fee = S.mode === "delivery" && S.bag.length ? (S.deals.includes("d4") && sub >= 20 ? 0 : 3.99) : 0; const tax = r2(sub * TAX); return { sub, fee, tax, total: r2(sub + tax + fee) }; };
 const oTot = o => { const sub = r2(o.lines.reduce((a, l) => a + l.price, 0)); const tax = r2(sub * TAX); return { sub, tax, total: r2(sub + tax) }; };
 const oTitle = o => o.lines.map(l => l.name).join(", ");
+const shortTitle = o => o.lines.length > 2 ? o.lines.slice(0, 2).map(l => l.name).join(", ") + ` + ${o.lines.length - 2} more` : oTitle(o);
 const count = () => S.bag.reduce((a, l) => a + l.qty, 0);
 const $ = id => document.getElementById(id);
 function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 1900); }
@@ -395,12 +402,11 @@ return `<span class="brand">My<b>McD</b></span>${titles[S.tab] ? `<span class="t
 }
 /* -------- Screens -------- */
 function orderCard(o) {
-const t = oTot(o), ph = pic(o.img);
+const t = oTot(o);
 return `<button class="order-card" data-open="${o.id}">
-${ph ? `<span class="ph">${ph}</span>` : ""}
 <span class="oc-main">
 <span class="when">${esc(o.when)}</span>
-<span class="what">${esc(oTitle(o))}</span>
+<span class="what">${esc(shortTitle(o))}</span>
 <span class="where">${esc(STORES.find(s => s.id === o.store).name)}</span>
 <span class="go">View details</span>
 </span>
