@@ -49,3 +49,30 @@ The "Menu" tab is now called "Order", like the real app. Screens use my real res
 2. **Bag:** called "Your bag" everywhere. It shows the restaurant, pickup time, tax and full total before checkout. The item added on the website is labelled. The button reads "Checkout · $11.60".
 3. **Orders:** every past order shows its date, restaurant and the total paid, tax included.
 4. **Order detail:** shows each item price, the tax and the total ($10.23). "Add all to bag" keeps the real app's "Add all" idea.
+
+## 05 Rule check
+
+**Rule tested:** every past order card shows the total paid, including tax, without opening the order.
+
+**What I changed:** only the wording of this one rule. Version A says it exactly. Version B says "Make prices easy to find." Everything else stayed the same: the same prompt, the same screenshot (my real app, More → Recents & Faves), and a fresh Claude conversation for each version. Full prompts and first results: [rule-check-results.md](rule-check-results.md).
+
+**My prediction (written before running):** "I predict version B will show prices but not say whether tax is included."
+
+| Check | A (specific rule) | B (vague rule) |
+|---|---|---|
+| Every card shows a total price | Yes | Yes |
+| Tax is included or shown | Yes, on every card ("Includes $X tax") | Partly: cards 2 and 3 show tax, cards 1 and 4 do not |
+| Total visible without opening the order | Yes | Yes |
+
+**What happened:** A followed the rule on every card. B put a total on every card, but tax was missing on half of them. On card 3 the total did not add up ($13.87 at the top, $12.07 in a note). My prediction was mostly right: B showed prices, but its tax was inconsistent rather than missing everywhere.
+
+**Decision:** I observed that the vague rule kept the totals but lost the tax on half the cards, so I kept the specific wording ("total paid, including tax, on every card") because the vague version did not protect the part of the rule that matters most.
+
+**Other things I noticed**
+
+- Both versions made up restaurant addresses, because my screenshot has none. A said they were placeholders. B did not.
+- A turned the yellow "Checkout Now" bar white; B kept it yellow. Our rule "yellow only for main buttons" can be read both ways.
+
+**What else could explain it:** this is one run of each version, so some of the difference could be chance. B was also asked for "the total paid" in its second rule, which may be why it still showed totals.
+
+**Still uncertain:** would B forget the tax every time, or only sometimes? And should the "Checkout Now" bar count as a main button?
