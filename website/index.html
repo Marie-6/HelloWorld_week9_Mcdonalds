@@ -200,6 +200,35 @@ main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 }
 @media (max-width: 520px) { .grid { gap: var(--s3) var(--s2); } .tile .btn { min-width: 0; width: 100%; } }
 
+/* Product page */
+.crumbs { display: flex; flex-wrap: wrap; gap: var(--s1); align-items: center; margin-bottom: var(--s3); font-size: 14px; }
+.crumbs a { color: var(--ink); }
+.item-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+.item-photo { position: sticky; top: calc(var(--hh, 80px) + 18px); background: var(--light-gray); border-radius: var(--r-card); display: flex; justify-content: center; padding: var(--s4); }
+.item-photo img { width: 100%; max-width: 420px; height: auto; aspect-ratio: 1; object-fit: contain; }
+.item-facts { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); margin: var(--s2) 0; font-size: 14px; }
+.opt-group { margin-top: var(--s4); }
+.opt-group > header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s1); padding-bottom: var(--s1); border-bottom: 1px solid var(--line); }
+.opt-group .rule { font-size: 14px; color: var(--muted); }
+.opt-group .rule strong { color: var(--ink); font-weight: 400; }
+.choice { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: var(--s2); min-height: 56px; padding: var(--s1) 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+.choice input { width: 20px; height: 20px; margin: 0; accent-color: var(--ink); }
+.choice.disabled { opacity: .45; cursor: not-allowed; }
+.choice .plus { font-size: 14px; }
+.usual { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s2); margin-top: var(--s2); }
+.usual button { text-align: left; background: var(--canvas); border: 1px solid var(--line); border-radius: var(--r-card); padding: var(--s2); cursor: pointer; min-height: 88px; display: flex; flex-direction: column; gap: 2px; }
+.usual button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.buybar { position: sticky; bottom: 0; z-index: 6; background: var(--canvas); border-top: 1px solid var(--line); margin-top: var(--s4); padding: var(--s2) 0; display: flex; align-items: center; justify-content: flex-end; gap: var(--s3); }
+.buybar .btn { min-width: 260px; }
+.opts { font-size: 10px; line-height: 14.5px; color: var(--muted); }
+@media (max-width: 900px) {
+  .item-layout { grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
+  .item-photo { position: static; padding: var(--s3); }
+  .item-photo img { max-width: 240px; }
+  .buybar { margin: var(--s4) calc(-1 * var(--margin)) 0; padding: var(--s2) var(--margin); }
+  .buybar .btn { min-width: 0; flex: 1; }
+}
+
 /* Panels */
 .panel { background: var(--light-gray); border-radius: var(--r-card); padding: var(--s3); }
 .divider { border: 0; border-top: 1px solid var(--line); margin: var(--s3) 0; }
@@ -453,18 +482,117 @@ const MENU = [
   ]}
 ];
 const ITEMS = Object.fromEntries(MENU.flatMap(c => c.items).map(i => [i.id, i]));
+const CAT_OF = Object.fromEntries(MENU.flatMap(c => c.items.map(i => [i.id, c])));
+
+/* ---------- customization ---------- */
+// Ingredients and calories from each item's mcdonalds.com product page.
+// Marked "inferred" where the page didn't list them; built from the sibling items.
+const INGREDIENTS = {
+  "egg-mcmuffin": [310, ["English Muffin", "Egg", "Canadian Bacon", "American Cheese", "Butter"]],
+  "sausage-mcmuffin-egg": [480, ["English Muffin", "Egg", "Sausage Patty", "American Cheese", "Butter"]],
+  "sausage-mcmuffin": [400, ["English Muffin", "Sausage Patty", "American Cheese", "Butter"]],
+  "bec-biscuit": [460, ["Biscuit", "Folded Egg", "American Cheese", "Bacon", "Butter"]],
+  "sausage-biscuit-egg": [530, ["Biscuit", "Folded Egg", "Sausage Patty", "Butter"]],
+  "egg-cheese-biscuit": [390, ["Biscuit", "Folded Egg", "American Cheese", "Butter"]],          // inferred
+  "sausage-biscuit": [460, ["Biscuit", "Sausage Patty", "Butter"]],
+  "sausage-mcgriddles": [430, ["Griddle Cakes", "Sausage Patty"]],
+  "bec-mcgriddles": [430, ["Griddle Cakes", "Folded Egg", "American Cheese", "Bacon", "Butter"]],
+  "sec-mcgriddles": [550, ["Griddle Cakes", "Folded Egg", "Sausage Patty", "American Cheese", "Butter"]],
+  "bec-bagel": [590, ["Bagel", "Folded Egg", "American Cheese", "Bacon", "Breakfast Sauce", "Butter"]],
+  "sec-bagel": [710, ["Bagel", "Folded Egg", "Sausage Patty", "American Cheese", "Breakfast Sauce", "Butter"]],         // inferred
+  "steak-bagel": [680, ["Bagel", "Folded Egg", "Steak Patty", "Grilled Onions", "American Cheese", "Breakfast Sauce", "Butter"]], // inferred
+  "hotcakes": [580, ["Hotcakes", "Hotcake Syrup", "Whipped Butter"]],
+  "hotcakes-sausage": [770, ["Hotcakes", "Hotcake Syrup", "Sausage Patty", "Whipped Butter"]],
+  "big-breakfast": [1060, ["Scrambled Eggs", "Biscuit", "Hash Browns", "Sausage Patty", "Butter"]],
+  "big-breakfast-hotcakes": [1340, ["Hotcakes", "Scrambled Eggs", "Biscuit", "Hotcake Syrup", "Hash Browns", "Sausage Patty", "Whipped Butter", "Butter"]],
+  "hash-browns": [140, ["Hash Browns"]],
+  "sausage-burrito": [310, ["Egg & Sausage Filling", "Flour Tortilla", "American Cheese"]],
+  "oatmeal": [320, ["Oatmeal", "Diced Apples", "Cranberry Raisin Blend", "Light Cream"]],
+  "coffee": [5, ["Brewed Coffee"]],
+  "iced-coffee": [150, ["Brewed Coffee", "Ice", "Light Cream", "Liquid Sugar"]],
+  "hot-chocolate": [360, ["Chocolate Syrup", "Steamed Milk", "Whipped Topping", "Chocolate Drizzle"]],
+  "oj": [190, ["Orange Juice"]]
+};
+// The base of an item can't be removed; everything else can. Extras cost what's listed.
+const BASES = ["English Muffin", "Biscuit", "Griddle Cakes", "Bagel", "Hotcakes", "Flour Tortilla", "Egg & Sausage Filling", "Oatmeal", "Brewed Coffee", "Hash Browns", "Orange Juice", "Chocolate Syrup", "Steamed Milk"];
+const EXTRA_CENTS = { "Egg": 100, "Folded Egg": 100, "Scrambled Eggs": 100, "Canadian Bacon": 100, "Sausage Patty": 100, "Bacon": 100, "Steak Patty": 150,
+  "American Cheese": 50, "Butter": 0, "Whipped Butter": 0, "Breakfast Sauce": 0, "Grilled Onions": 0, "Hotcake Syrup": 30, "Light Cream": 0, "Liquid Sugar": 0,
+  "Diced Apples": 0, "Cranberry Raisin Blend": 0, "Whipped Topping": 0, "Chocolate Drizzle": 0 };
+const SIZES = [{ v: "Small", cents: 0 }, { v: "Medium", cents: 40 }, { v: "Large", cents: 70 }];
+const MEAL_DRINKS = [
+  { v: "coffee", label: "McCafé® Premium Roast Coffee (Small)", cents: 0 },
+  { v: "iced-coffee", label: "McCafé® Iced Coffee (Small)", cents: 80 },
+  { v: "hot-chocolate", label: "McCafé® Hot Chocolate (Small)", cents: 90 },
+  { v: "oj", label: "Minute Maid® Premium Orange Juice (Small)", cents: 110 }
+];
+const MEAL_BASE = id => id.startsWith("meal-") ? id.slice(5) : null;
+
+function optionGroups(id) {
+  const base = MEAL_BASE(id);
+  const src = base || id;
+  const name = ITEMS[src].name;
+  const ings = (INGREDIENTS[src] || [0, []])[1];
+  const groups = [];
+  if (base) groups.push({ key: "drink", type: "radio", title: "Choose your drink", options: MEAL_DRINKS });
+  if (["coffee", "iced-coffee", "hot-chocolate", "oj"].includes(id)) groups.push({ key: "size", type: "radio", title: "Size", options: SIZES.map(s => ({ ...s, label: s.v })) });
+  if (id === "iced-coffee") groups.push({ key: "flavor", type: "radio", title: "Flavor", options: ["Regular", "Caramel", "French Vanilla", "Black"].map(v => ({ v, label: v, cents: 0 })) });
+  if (id === "coffee") groups.push({ key: "addins", type: "check", title: "Add to your coffee", options: ["Light Cream", "Sugar", "Sweetener"].map(v => ({ v, label: "Add " + v, cents: 0 })).concat([{ v: "French Vanilla Syrup", label: "Add French Vanilla Syrup", cents: 50 }]) });
+  const removable = ings.filter(i => !BASES.includes(i));
+  if (removable.length) groups.push({ key: "remove", type: "check", title: `Remove from ${name}`, options: removable.map(v => ({ v, label: "No " + v, cents: 0 })) });
+  const extras = ings.filter(i => i in EXTRA_CENTS);
+  if (extras.length) groups.push({ key: "extra", type: "check", title: `Extra for ${name}`, options: extras.map(v => ({ v, label: "Extra " + v, cents: EXTRA_CENTS[v] })) });
+  if (src === "sausage-burrito") groups.push({ key: "sauce", type: "check", title: "Sauce", options: [{ v: "Picante Sauce", label: "Add Picante Sauce", cents: 0 }] });
+  return groups;
+}
+function defaultCfg(id) {
+  const cfg = {};
+  optionGroups(id).forEach(g => { cfg[g.key] = g.type === "radio" ? g.options[0].v : []; });
+  return cfg;
+}
+function normCfg(id, cfg) {
+  const d = defaultCfg(id), out = {};
+  for (const k in d) {
+    const v = cfg && cfg[k] !== undefined ? cfg[k] : d[k];
+    out[k] = Array.isArray(d[k]) ? [...v].sort() : v;
+  }
+  return out;
+}
+const cfgKey = (id, cfg) => id + "|" + JSON.stringify(normCfg(id, cfg));
+function optionCents(id, cfg) {
+  let c = 0;
+  optionGroups(id).forEach(g => {
+    const sel = cfg[g.key];
+    g.options.forEach(o => { if (g.type === "radio" ? sel === o.v : (sel || []).includes(o.v)) c += o.cents; });
+  });
+  return c;
+}
+const unitPrice = (id, cfg, rid = state.rid) => priceAt(id, rid) + optionCents(id, normCfg(id, cfg));
+function optsText(id, cfg) {
+  cfg = normCfg(id, cfg);
+  const parts = [];
+  optionGroups(id).forEach(g => {
+    const sel = cfg[g.key];
+    if (g.type === "radio") {
+      const o = g.options.find(o => o.v === sel);
+      if (g.key === "size" || g.key === "drink" || sel !== g.options[0].v) parts.push(o ? o.label : sel);
+    } else {
+      g.options.filter(o => sel.includes(o.v)).forEach(o => parts.push(o.label));
+    }
+  });
+  return parts.join(" · ");
+}
 
 // Orders already on the account (placed in the app). Prices are what was paid.
 const ACCOUNT_ORDERS = [
   { id: "M8K2", at: "2026-11-12T08:14", rid: "b23", source: "app",
-    items: [["egg-mcmuffin", 1, 479], ["hash-browns", 1, 219], ["coffee", 1, 160]] },
+    items: [["egg-mcmuffin", 1, 479, { remove: ["Butter"] }], ["hash-browns", 1, 219], ["coffee", 1, 160, { size: "Small", addins: ["Light Cream"] }]] },
   { id: "M7F9", at: "2026-11-10T08:41", rid: "usq", source: "app",
-    items: [["sausage-mcmuffin-egg", 1, 519], ["coffee", 1, 180]] },
+    items: [["sausage-mcmuffin-egg", 1, 519], ["coffee", 1, 180, { size: "Small", addins: ["Light Cream", "Sugar"] }]] },
   { id: "M6C3", at: "2026-11-06T09:02", rid: "b23", source: "app",
-    items: [["hotcakes-sausage", 1, 529], ["oj", 1, 279]] },
+    items: [["hotcakes-sausage", 1, 529, { extra: ["Whipped Butter"] }], ["oj", 1, 279]] },
   { id: "M5A1", at: "2026-11-03T08:20", rid: "b23", source: "app",
     items: [["sausage-mcgriddles", 2, 299]] }
-].map(o => finalizeOrder({ ...o, items: o.items.map(([id, qty, cents]) => ({ id, name: ITEMS[id].name, qty, cents })) }));
+].map(o => finalizeOrder({ ...o, items: o.items.map(([id, qty, cents, cfg]) => ({ id, name: ITEMS[id].name, qty, cents, cfg: normCfg(id, cfg), opts: optsText(id, cfg) })) }));
 
 // The bag on the phone, merged in when the person signs in.
 const PHONE_BAG = [{ id: "hash-browns", qty: 1 }];
@@ -473,7 +601,7 @@ const PHONE_BAG = [{ id: "hash-browns", qty: 1 }];
 const STORE_KEY = "mcd-proto-v1";
 const freshState = rid => ({ signedIn: false, rid: rid || "b23", bag: [], orders: [], phoneMerged: false });
 let state = load() || freshState();
-state.bag = state.bag.filter(b => ITEMS[b.id]);
+state.bag = state.bag.filter(b => ITEMS[b.id]).map(b => ({ ...b, cfg: normCfg(b.id, b.cfg) }));
 let priceNote = null;  // shown once after a restaurant change
 let syncing = false;
 let lastRemoved = null;
@@ -499,7 +627,7 @@ function finalizeOrder(o) {
 }
 function bagTotals() {
   const live = state.bag.filter(b => soldAt(b.id));
-  const subtotal = live.reduce((s, b) => s + priceAt(b.id) * b.qty, 0);
+  const subtotal = live.reduce((s, b) => s + unitPrice(b.id, b.cfg) * b.qty, 0);
   const tax = taxOf(subtotal);
   return { subtotal, tax, total: subtotal + tax, count: live.reduce((s, b) => s + b.qty, 0), skipped: state.bag.length - live.length };
 }
@@ -560,7 +688,7 @@ function renderHeader() {
   const t = bagTotals();
   if (currentView === "menu") {
     ctaSlot.innerHTML = t.count ? `<button class="btn btn-primary" data-action="open-bag">Checkout · ${fmt(t.total)}</button>` : "";
-  } else if (currentView === "checkout") {
+  } else if (currentView === "checkout" || currentView === "item") {
     ctaSlot.innerHTML = "";
   } else {
     ctaSlot.innerHTML = `<a class="btn btn-secondary" href="#menu">Order Now</a>`;
@@ -606,9 +734,10 @@ function renderResults() {
 
 /* ---------- views ---------- */
 function route() {
-  const [name, arg] = location.hash.replace(/^#/, "").split("/");
-  currentView = ["orders", "checkout", "placed"].includes(name) ? name : "menu";
-  if (currentView === "orders") renderOrders(arg);
+  const [name, arg, arg2] = location.hash.replace(/^#/, "").split("/");
+  currentView = ["orders", "checkout", "placed"].includes(name) || (name === "item" && ITEMS[arg]) ? name : "menu";
+  if (currentView === "item") renderItem(arg, arg2);
+  else if (currentView === "orders") renderOrders(arg);
   else if (currentView === "checkout") renderCheckout();
   else if (currentView === "placed") renderPlaced(arg);
   else renderMenu(arg);
@@ -721,8 +850,7 @@ function renderCheckout() {
       </div>
       <div class="panel">
         <h2 class="t-heading" style="margin-bottom:12px">Order summary</h2>
-        ${state.bag.filter(b => soldAt(b.id)).map(b => `
-          <div class="receipt-line"><img src="img/${b.id}.png" alt=""><span>${b.qty} × ${ITEMS[b.id].name}</span><span>${fmt(priceAt(b.id) * b.qty)}</span></div>`).join("")}
+        ${state.bag.filter(b => soldAt(b.id)).map(b => lineHTML(b.id, ITEMS[b.id].name, b.qty, unitPrice(b.id, b.cfg), optsText(b.id, b.cfg))).join("")}
         ${t.skipped ? `<p class="t-caption muted">${t.skipped} item not sold at ${r.short} stays in your bag and isn't included.</p>` : ""}
         <hr class="divider">
         ${summaryHTML(t)}
@@ -731,9 +859,12 @@ function renderCheckout() {
     </div>`;
 }
 
+function lineHTML(id, name, qty, cents, opts) {
+  return `<div class="receipt-line"><img src="img/${id}.png" alt=""><span>${qty} × ${name}${opts ? `<br><span class="opts">${opts}</span>` : ""}</span><span>${fmt(cents * qty)}</span></div>`;
+}
 function receiptHTML(o) {
   return `
-    ${o.items.map(i => `<div class="receipt-line"><img src="img/${i.id}.png" alt=""><span>${i.qty} × ${i.name}</span><span>${fmt(i.cents * i.qty)}</span></div>`).join("")}
+    ${o.items.map(i => lineHTML(i.id, i.name, i.qty, i.cents, i.opts)).join("")}
     <hr class="divider">
     ${summaryHTML(o)}`;
 }
@@ -796,7 +927,7 @@ function renderOrders(selId) {
 
 function orderDetailHTML(o) {
   const avail = o.items.filter(i => soldAt(i.id));
-  const nowSub = avail.reduce((s, i) => s + priceAt(i.id) * i.qty, 0);
+  const nowSub = avail.reduce((s, i) => s + unitPrice(i.id, i.cfg) * i.qty, 0);
   const nowTotal = nowSub + taxOf(nowSub);
   const r = RESTAURANTS[state.rid];
   const notes = [];
@@ -858,11 +989,13 @@ function bagItemHTML(b, i) {
       ${photo(b.id, false)}
       <div>
         <div class="t-heading">${it.name}</div>
-        <div class="t-caption muted">${ok ? fmt(priceAt(b.id)) + " each" : "Not sold at " + RESTAURANTS[state.rid].short}</div>
+        ${optsText(b.id, b.cfg) ? `<div class="opts">${optsText(b.id, b.cfg)}</div>` : ""}
+        <div class="t-caption muted">${ok ? fmt(unitPrice(b.id, b.cfg)) + " each" : "Not sold at " + RESTAURANTS[state.rid].short}</div>
         ${b.fromPhone ? `<span class="tag">Added on your phone</span>` : ""}
+        ${ok && optionGroups(b.id).length ? `<div><a class="link-btn" style="padding:0;display:inline-flex;align-items:center" href="#item/${b.id}/${i}" data-action="edit-line">Edit</a></div>` : ""}
       </div>
       <div style="text-align:right">
-        <div class="price" style="margin-bottom:6px">${ok ? fmt(priceAt(b.id) * b.qty) : "—"}</div>
+        <div class="price" style="margin-bottom:6px">${ok ? fmt(unitPrice(b.id, b.cfg) * b.qty) : "—"}</div>
         <div class="stepper" role="group" aria-label="Quantity of ${it.name}">
           <button data-action="qty" data-i="${i}" data-d="-1" aria-label="One less">−</button>
           <span>${b.qty}</span>
@@ -873,46 +1006,108 @@ function bagItemHTML(b, i) {
     </div>`;
 }
 
-/* ---------- product detail ---------- */
-let detailQty = 1, detailId = null;
-function openDetail(id) {
-  closePops();
-  detailId = id; detailQty = 1;
-  renderDetail();
-  scrim.hidden = false; modal.hidden = false;
-  modal.querySelector("[data-action=detail-add], [data-action=close-modal]").focus();
+/* ---------- product page ---------- */
+// item = { id, cfg, qty, edit (bag line index or null) } while the product page is open.
+let item = null;
+function renderItem(id, editArg) {
+  const edit = editArg !== undefined && state.bag[+editArg] && state.bag[+editArg].id === id ? +editArg : null;
+  item = { id, edit, cfg: edit !== null ? normCfg(id, state.bag[edit].cfg) : defaultCfg(id), qty: edit !== null ? state.bag[edit].qty : 1 };
+  const it = ITEMS[id], cat = CAT_OF[id];
+  const facts = INGREDIENTS[id] ? `${INGREDIENTS[id][0]} Cal.` : (MEAL_BASE(id) && INGREDIENTS[MEAL_BASE(id)] ? `${INGREDIENTS[MEAL_BASE(id)][0]} Cal. sandwich` : "");
+  view.innerHTML = `
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="#menu">Breakfast</a><span class="muted">/</span><a href="#menu/${cat.key}">${cat.cat}</a><span class="muted">/</span><span>${it.name}</span>
+    </nav>
+    <div class="item-layout">
+      <div class="item-photo">${photo(id, false)}</div>
+      <div>
+        <h1 class="t-display">${it.name}</h1>
+        <div class="item-facts"><span class="price" id="itemEach"></span>${facts ? `<span class="muted">${facts}</span>` : ""}<span class="muted">${RESTAURANTS[state.rid].name}</span></div>
+        <p class="t-body-s" style="margin:0">${it.desc}.</p>
+        <div id="itemBody"></div>
+      </div>
+    </div>
+    <div class="buybar" id="buybar"></div>`;
+  renderItemBody();
 }
-function renderDetail() {
-  const it = ITEMS[detailId];
-  const ok = soldAt(detailId);
+function renderItemBody() {
+  const { id, cfg } = item;
+  const ok = soldAt(id);
+  const it = ITEMS[id];
+  const groups = optionGroups(id);
+  const usual = usualFor(id);
   const swap = !ok && it.swap ? ITEMS[it.swap] : null;
-  modalCard.innerHTML = `
-    <button class="icon-btn modal-close" data-action="close-modal" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button>
-    <div class="detail">
-      ${photo(detailId, false)}
-      <h2 class="t-heading" id="modalTitle" style="margin-top:12px">${it.name}</h2>
-      <p class="t-body-s muted" style="margin:6px 0 0">${it.desc}</p>
-      <p class="t-caption muted" style="margin:6px 0 0">${RESTAURANTS[state.rid].name}</p>
-      ${ok ? `
-        <div class="qty-row">
-          <span class="price">${fmt(priceAt(detailId))} each</span>
-          <div class="stepper" role="group" aria-label="Quantity">
-            <button data-action="detail-qty" data-d="-1" aria-label="One less" ${detailQty <= 1 ? "disabled" : ""}>−</button>
-            <span>${detailQty}</span>
-            <button data-action="detail-qty" data-d="1" aria-label="One more">+</button>
-          </div>
-        </div>
-        <button class="btn btn-primary btn-block" data-action="detail-add">Add ${detailQty} to bag · ${fmt(priceAt(detailId) * detailQty)}</button>`
-      : `
-        <p class="note" style="text-align:left">Not sold at ${RESTAURANTS[state.rid].short}.${swap ? ` Try ${swap.name} instead.` : ""}</p>
-        ${swap ? `<button class="btn btn-secondary btn-block" data-action="detail" data-id="${swap.id}">See ${swap.name}</button>` : ""}`}
-    </div>`;
+  itemEach.textContent = ok ? fmt(unitPrice(id, cfg)) : "Not at " + RESTAURANTS[state.rid].short;
+  itemBody.innerHTML = `
+    ${ok ? "" : `<p class="note">Not sold at ${RESTAURANTS[state.rid].short}.${swap ? ` <a href="#item/${swap.id}">See ${swap.name}</a> instead,` : ""} or <button class="link-btn" data-action="open-where" style="padding:0">change restaurant</button>.</p>`}
+    ${usual.length ? `
+      <section class="opt-group">
+        <header><h2 class="t-heading">Your usual</h2><span class="rule">From your past orders</span></header>
+        <div class="usual">${usual.map(u => `
+          <button data-action="use-usual" data-key='${u.key.replace(/'/g, "&#39;")}' aria-pressed="${u.key === cfgKey(id, cfg)}">
+            <strong class="t-body-s">Ordered ${new Date(u.at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</strong>
+            <span class="opts" style="font-size:14px;line-height:20px">${u.opts || "As it comes"}</span>
+            <span class="price t-body-s">${fmt(unitPrice(id, u.cfg))}</span>
+          </button>`).join("")}</div>
+      </section>` : (!state.signedIn && groups.length ? `<p class="t-caption muted" style="margin-top:18px"><button class="link-btn" data-action="sign-in" style="padding:0">Sign in</button> to see how you usually order this.</p>` : "")}
+    ${groups.map(g => groupHTML(g, cfg, ok)).join("")}
+    ${groups.length ? "" : `<p class="t-body-s muted" style="margin-top:30px">This item comes as it is. No changes needed.</p>`}`;
+  buybar.innerHTML = `
+    <div class="stepper" role="group" aria-label="Quantity">
+      <button data-action="item-qty" data-d="-1" aria-label="One less" ${item.qty <= 1 ? "disabled" : ""}>−</button>
+      <span>${item.qty}</span>
+      <button data-action="item-qty" data-d="1" aria-label="One more">+</button>
+    </div>
+    <button class="btn btn-primary" data-action="item-add" ${ok ? "" : "disabled"}>${item.edit !== null ? "Update bag" : "Add to bag"} · ${fmt(unitPrice(id, cfg) * item.qty)}</button>`;
+}
+function groupHTML(g, cfg, ok) {
+  const sel = cfg[g.key];
+  const max = g.options.length;
+  const rule = g.type === "radio" ? `<strong>Required</strong> · Choose 1` : `Optional · Select up to ${max}`;
+  return `
+    <fieldset class="opt-group">
+      <header><legend class="t-heading" style="margin:0">${g.title}</legend><span class="rule">${rule}</span></header>
+      ${g.options.map(o => {
+        const on = g.type === "radio" ? sel === o.v : sel.includes(o.v);
+        return `<label class="choice ${ok ? "" : "disabled"}">
+          <input type="${g.type === "radio" ? "radio" : "checkbox"}" name="opt-${g.key}" value="${o.v}" data-group="${g.key}" ${on ? "checked" : ""} ${ok ? "" : "disabled"}>
+          <span>${o.label}</span>
+          <span class="plus ${o.cents ? "" : "muted"}">${o.cents ? "+" + fmt(o.cents) : g.type === "radio" ? "" : ""}</span>
+        </label>`;
+      }).join("")}
+    </fieldset>`;
+}
+// Distinct ways this item was ordered before, newest first.
+function usualFor(id) {
+  const seen = new Map();
+  allOrders().forEach(o => o.items.filter(i => i.id === id).forEach(i => {
+    const key = cfgKey(id, i.cfg);
+    if (!seen.has(key)) seen.set(key, { key, cfg: normCfg(id, i.cfg), opts: optsText(id, i.cfg), at: o.at });
+  }));
+  return [...seen.values()].slice(0, 3);
+}
+function itemAdd() {
+  const { id, cfg, qty, edit } = item;
+  if (edit !== null && state.bag[edit]) {
+    state.bag.splice(edit, 1);
+    addToBag(id, qty, false, cfg, edit);
+    changed();
+    toast(`${ITEMS[id].name} updated`, ["View bag", openBag]);
+    location.hash = "#menu/" + CAT_OF[id].key;
+  } else {
+    addToBag(id, qty, false, cfg);
+    added(id, qty);
+    renderItem(id);
+  }
 }
 
 /* ---------- actions ---------- */
-function addToBag(id, qty = 1, fromPhone = false) {
-  const line = state.bag.find(b => b.id === id);
-  if (line) line.qty += qty; else state.bag.push({ id, qty, fromPhone });
+// Same item with the same options stacks on one line; different options get their own line.
+function addToBag(id, qty = 1, fromPhone = false, cfg = defaultCfg(id), at = state.bag.length) {
+  cfg = normCfg(id, cfg);
+  const key = cfgKey(id, cfg);
+  const line = state.bag.find(b => cfgKey(b.id, b.cfg) === key);
+  if (line) line.qty += qty; else state.bag.splice(at, 0, { id, qty, fromPhone, cfg });
 }
 function changed() {
   save(); renderHeader(); touchSync();
@@ -929,7 +1124,7 @@ function setRestaurant(rid) {
   // Price change only for items sold at both restaurants; unsold items are reported separately.
   const old = state.rid;
   const diff = state.bag.filter(b => soldAt(b.id, old) && soldAt(b.id, rid))
-    .reduce((s, b) => s + (priceAt(b.id, rid) - priceAt(b.id, old)) * b.qty, 0);
+    .reduce((s, b) => s + (unitPrice(b.id, b.cfg, rid) - unitPrice(b.id, b.cfg, old)) * b.qty, 0);
   state.rid = rid;
   if (state.bag.length) {
     const unsold = state.bag.filter(b => !soldAt(b.id)).length;
@@ -940,7 +1135,9 @@ function setRestaurant(rid) {
     toast(`Showing prices at ${RESTAURANTS[rid].name}`);
   }
   save();
-  const y = scrollY; route(); scrollTo(0, y);
+  const y = scrollY;
+  if (currentView === "item") { renderItemBody(); renderHeader(); } else route();
+  scrollTo(0, y);
   touchSync();
   if (!drawer.hidden) renderBag();
 }
@@ -974,7 +1171,7 @@ function placeOrder() {
   const order = finalizeOrder({
     id, at: local.toISOString().slice(0, 16), rid: state.rid, source: "web", pickupAt: when,
     guest: !state.signedIn || undefined,
-    items: state.bag.filter(b => soldAt(b.id)).map(b => ({ id: b.id, name: ITEMS[b.id].name, qty: b.qty, cents: priceAt(b.id) }))
+    items: state.bag.filter(b => soldAt(b.id)).map(b => ({ id: b.id, name: ITEMS[b.id].name, qty: b.qty, cents: unitPrice(b.id, b.cfg), cfg: normCfg(b.id, b.cfg), opts: optsText(b.id, b.cfg) }))
   });
   state.orders.push(order);
   state.bag = state.bag.filter(b => !soldAt(b.id));
@@ -985,7 +1182,7 @@ function placeOrder() {
 function reorder(id) {
   const o = findOrder(id);
   let n = 0;
-  o.items.filter(i => soldAt(i.id)).forEach(i => { addToBag(i.id, i.qty); n += i.qty; });
+  o.items.filter(i => soldAt(i.id)).forEach(i => { addToBag(i.id, i.qty, false, i.cfg); n += i.qty; });
   changed();
   toast(`Added ${n} item${n === 1 ? "" : "s"} to your bag`, ["View bag", openBag]);
 }
@@ -1002,7 +1199,8 @@ function downloadReceipt(id) {
     `${fmtDate(o.at)} · Pickup`,
     RESTAURANTS[o.rid].name,
     "-".repeat(w),
-    ...o.items.map(i => row(`${i.qty} x ${i.name.replace(/[®™]/g, "")}`, fmt(i.cents * i.qty))),
+    ...o.items.flatMap(i => [row(`${i.qty} x ${i.name.replace(/[®™]/g, "")}`, fmt(i.cents * i.qty))]
+      .concat(i.opts ? ["    " + i.opts.replace(/[®™]/g, "")] : [])),
     "-".repeat(w),
     row("Subtotal", fmt(o.subtotal)),
     row("Tax (8.875%)", fmt(o.tax)),
@@ -1087,9 +1285,15 @@ document.addEventListener("click", e => {
       if (!searchSheet.hidden) renderResults();
       break;
     }
-    case "detail": openDetail(el.dataset.id); break;
-    case "detail-qty": detailQty = Math.max(1, detailQty + +el.dataset.d); renderDetail(); modal.querySelector(`[data-action=detail-qty][data-d="${el.dataset.d}"]`).focus(); break;
-    case "detail-add": addToBag(detailId, detailQty); closeModal(); added(detailId, detailQty); break;
+    case "detail": location.hash = "#item/" + el.dataset.id; break;
+    case "edit-line": closeBag(); break;
+    case "item-qty": item.qty = Math.max(1, item.qty + +el.dataset.d); renderItemBody(); buybar.querySelector(`[data-d="${el.dataset.d}"]`).focus(); break;
+    case "item-add": itemAdd(); break;
+    case "use-usual": {
+      const u = usualFor(item.id).find(u => u.key === el.dataset.key);
+      if (u) { item.cfg = normCfg(item.id, u.cfg); renderItemBody(); }
+      break;
+    }
     case "qty": {
       const i = +el.dataset.i, line = state.bag[i];
       line.qty += +el.dataset.d;
@@ -1146,6 +1350,21 @@ function undoRemove() {
   lastRemoved = null;
   changed();
 }
+
+// Option checkboxes and radios on the product page.
+view.addEventListener("change", e => {
+  const inp = e.target.closest("input[data-group]");
+  if (!inp || !item) return;
+  const g = inp.dataset.group;
+  if (inp.type === "radio") item.cfg[g] = inp.value;
+  else item.cfg[g] = [...view.querySelectorAll(`input[data-group="${g}"]:checked`)].map(i => i.value);
+  // "No X" and "Extra X" can't both be on.
+  const other = g === "remove" ? "extra" : g === "extra" ? "remove" : null;
+  if (other && inp.checked && item.cfg[other]) item.cfg[other] = item.cfg[other].filter(v => v !== inp.value);
+  const y = scrollY; renderItemBody(); scrollTo(0, y);
+  const again = view.querySelector(`input[data-group="${g}"][value="${CSS.escape(inp.value)}"]`);
+  again && again.focus({ preventScroll: true });
+});
 
 q.addEventListener("input", renderResults);
 q.addEventListener("keydown", e => {
