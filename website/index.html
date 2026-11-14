@@ -110,7 +110,7 @@ header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); 
 /* Popovers & panels under the header */
 .pop {
   position: absolute; z-index: 30; top: calc(100% + 6px);
-  background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card); padding: var(--s1); min-width: 260px;
+  background: var(--canvas); border: 1px solid var(--line); border-radius: var(--r-card); padding: var(--s1); min-width: 260px;
 }
 .has-pop { position: relative; }
 .opt {
@@ -119,7 +119,7 @@ header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); 
   cursor: pointer; text-align: left; color: var(--ink); text-decoration: none; font-size: 14px;
 }
 .opt:hover, .opt[aria-checked="true"] { background: var(--light-gray); }
-.sheet { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; background: var(--canvas); border-bottom: 1px solid var(--ink); }
+.sheet { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; background: var(--canvas); border-bottom: 1px solid var(--line); }
 .sheet-inner { max-width: 1440px; margin: 0 auto; padding: var(--s3) var(--margin) var(--s4); }
 .mega { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s2); }
 .mega a {
@@ -213,16 +213,16 @@ main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 .sub-h { margin-top: var(--s4); }
 .cust-toggle {
   display: flex; align-items: center; justify-content: space-between; gap: var(--s2); width: 100%; margin-top: var(--s4);
-  min-height: 64px; padding: var(--s2) var(--s3); background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card); cursor: pointer; text-align: left;
+  min-height: 64px; padding: var(--s2) var(--s3); background: var(--light-gray); border: 0; border-radius: var(--r-card); cursor: pointer; text-align: left;
 }
-.cust-toggle:active { background: var(--light-gray); }
+.cust-toggle:hover { background: var(--line); }
 .cust-toggle .chev { width: 20px; height: 20px; transition: none; }
 .cust-toggle[aria-expanded="true"] .chev { transform: rotate(180deg); }
 .ic-foot { border-top: 1px solid var(--line); padding: var(--s2) var(--s4); display: flex; align-items: center; justify-content: flex-end; gap: var(--s3); background: var(--canvas); }
 .ic-foot .btn { flex: 1; max-width: 340px; }
 @media (max-width: 600px) {
   .modal.item-modal { align-items: flex-end; padding: 0; }
-  .modal-card.item-card { width: 100%; max-height: 92vh; border-radius: var(--r-card) var(--r-card) 0 0; border-width: 1px 0 0; }
+  .modal-card.item-card { width: 100%; max-height: 92vh; border-radius: var(--r-card) var(--r-card) 0 0; }
   .ic-body { padding: var(--s3) var(--s3) var(--s2); }
   .ic-foot { padding: var(--s2) var(--s3); }
   .ic-foot .btn { max-width: none; }
@@ -248,7 +248,7 @@ main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 40; }
 .drawer {
   position: fixed; z-index: 41; top: 0; right: 0; bottom: 0; width: min(440px, 100%);
-  background: var(--canvas); border-left: 1px solid var(--ink); display: flex; flex-direction: column;
+  background: var(--canvas); display: flex; flex-direction: column;
 }
 .drawer-head { display: flex; align-items: center; justify-content: space-between; padding: var(--s3); border-bottom: 1px solid var(--line); }
 .drawer-body { flex: 1; overflow-y: auto; padding: var(--s3); }
@@ -276,7 +276,7 @@ main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 /* Modal */
 .modal { position: fixed; z-index: 51; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--s3); }
 #modal { z-index: 52; } /* sign-in can open on top of the product pop-up */
-.modal-card { position: relative; background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card); padding: var(--s4); width: min(440px, 100%); max-height: calc(100vh - 36px); overflow-y: auto; }
+.modal-card { position: relative; background: var(--canvas); border: 0; border-radius: var(--r-card); padding: var(--s4); width: min(440px, 100%); max-height: calc(100vh - 36px); overflow-y: auto; }
 .modal-card p { margin: var(--s2) 0 var(--s3); }
 .modal-close { position: absolute; top: var(--s2); right: var(--s2); }
 .detail { text-align: center; }
@@ -1071,7 +1071,9 @@ function renderItemBody() {
   const groups = optionGroups(id);
   const usual = usualFor(id);
   const swap = !ok && it.swap ? ITEMS[it.swap] : null;
-  const cal = INGREDIENTS[id] ? `${INGREDIENTS[id][0]} Cal.` : (MEAL_BASE(id) && INGREDIENTS[MEAL_BASE(id)] ? `${INGREDIENTS[MEAL_BASE(id)][0]} Cal. sandwich` : "");
+  const base = MEAL_BASE(id);
+  const cal = INGREDIENTS[id] ? `${INGREDIENTS[id][0]} Cal.`
+    : base && INGREDIENTS[base] ? `${ITEMS[base].name.replace(/[®™]/g, "")}: ${INGREDIENTS[base][0]} Cal.${base === "sausage-burrito" ? " each" : ""}` : "";
   const summary = optsText(id, cfg) || "As it comes";
   itemBody.innerHTML = `
     <button class="icon-btn modal-close" data-action="close-item" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button>
