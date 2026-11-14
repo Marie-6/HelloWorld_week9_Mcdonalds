@@ -143,3 +143,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 **42.** "and can you align the stuff in shopping cart in both web and phone? eg, i have stuffA in web cart, and it should also show up in phone"
 - The website and the app now keep **one bag** in the browser's storage. Add, change or remove an item on either and the other updates right away, also side by side on the demo page. Items are matched by product photo (both prototypes use the same photo files). Labels show where each item came from. Both start from the same bag (an Egg McMuffin added on the website, Hash Browns on the phone). This needed a small addition to Xinyu's `mobile/index.html` (the sync code only; her screens weren't changed). ✅
 - Still different: the two prototypes use different restaurants and sales tax (New York 8.875% vs New Jersey 6.625%), so the subtotals match but the totals don't.
+
+**43.** "maybe here go back to the last version" (+ the three buttons)
+- Back to the two buttons from before: "Design Spec" and "Project README". Design Spec still opens the spec image on the page (prompt 41), and "The design" section with all three frames stays at the bottom. ✅
