@@ -85,7 +85,8 @@ header.site {
   display: flex; align-items: center; gap: var(--s3);
   padding: var(--s2) var(--margin); max-width: 1280px; margin: 0 auto;
 }
-.wordmark { font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none; margin-right: var(--s2); }
+.wordmark { display: inline-flex; align-items: center; min-height: 44px; margin-right: var(--s2); }
+.wordmark img { width: 44px; height: 44px; display: block; } /* square source, never stretched */
 nav.main { display: flex; gap: var(--s1); }
 nav.main a {
   display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s2);
@@ -156,9 +157,9 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 .card { display: flex; flex-direction: column; gap: var(--s2); }
 .thumb {
   aspect-ratio: 4 / 3; border-radius: var(--r-card); background: var(--light-gray);
-  display: flex; align-items: center; justify-content: center; color: var(--muted);
-  font-size: 14px;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
+.thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .card .row { display: flex; justify-content: space-between; gap: var(--s2); align-items: baseline; }
 .card.off { opacity: .45; }
 .menu-layout > *, .page-head > *, .orders-layout > *, .checkout-layout > * { min-width: 0; }
@@ -191,7 +192,7 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 .icon-btn:active { background: var(--light-gray); }
 
 .bag-item { display: grid; grid-template-columns: 56px 1fr auto; gap: var(--s2); padding: var(--s2) 0; border-bottom: 1px solid #e6e6e6; }
-.bag-item .thumb { aspect-ratio: 1; font-size: 10px; }
+.bag-item .thumb { aspect-ratio: 1; }
 .bag-item.off > :not(.swap-row) { opacity: .45; }
 .tag {
   display: inline-flex; align-items: center; padding: 0 var(--s1);
@@ -262,11 +263,11 @@ footer.site { border-top: 1px solid #e6e6e6; padding: var(--s3) var(--margin); m
 </head>
 <body>
 
-<div class="proto t-caption">Student design prototype (SVA MFA IxD), not affiliated with McDonald's. No real orders are placed and no payment is taken. Prices are illustrative.</div>
+<div class="proto t-caption">Student design prototype (SVA MFA IxD), not affiliated with McDonald's. No real orders are placed and no payment is taken. Prices are illustrative. Logo and product photos © McDonald's.</div>
 
 <header class="site">
   <div class="bar">
-    <a class="wordmark" href="#menu">McDonald's</a>
+    <a class="wordmark" href="#menu"><img src="img/logo.jpg" width="44" height="44" alt="McDonald's home"></a>
     <nav class="main" aria-label="Main">
       <a href="#menu" data-nav="menu">Menu</a>
       <a href="#orders" data-nav="orders">Orders</a>
@@ -320,33 +321,45 @@ const RESTAURANTS = {
 };
 
 // Prices are in cents at Broadway & 23rd; Union Sq adds RESTAURANTS.usq.delta.
+// Photos live in img/<id>.png (from the mcdonalds.com breakfast and McCafé menus).
 const MENU = [
-  { cat: "Breakfast Sandwiches", items: [
-    { id: "egg-mcmuffin", name: "Egg McMuffin®", desc: "Egg, Canadian bacon, American cheese on an English muffin", cal: 310, cents: 479 },
-    { id: "sausage-mcmuffin-egg", name: "Sausage McMuffin® with Egg", desc: "Sausage, egg and cheese on an English muffin", cal: 480, cents: 499 },
-    { id: "sausage-mcmuffin", name: "Sausage McMuffin®", desc: "Sausage and cheese on an English muffin", cal: 400, cents: 249 },
-    { id: "bec-biscuit", name: "Bacon, Egg & Cheese Biscuit", desc: "Bacon, egg and cheese on a warm biscuit", cal: 460, cents: 489 },
-    { id: "sausage-biscuit", name: "Sausage Biscuit", desc: "Sausage on a warm biscuit", cal: 460, cents: 239 }
+  { cat: "McMuffins®", items: [
+    { id: "egg-mcmuffin", name: "Egg McMuffin®", desc: "Egg, Canadian bacon and American cheese on an English muffin", cents: 479 },
+    { id: "sausage-mcmuffin-egg", name: "Sausage McMuffin® with Egg", desc: "Sausage, egg and cheese on an English muffin", cents: 499 },
+    { id: "sausage-mcmuffin", name: "Sausage McMuffin®", desc: "Sausage and cheese on an English muffin", cents: 249 }
+  ]},
+  { cat: "Biscuits", items: [
+    { id: "bec-biscuit", name: "Bacon, Egg & Cheese Biscuit", desc: "Bacon, egg and cheese on a warm biscuit", cents: 489 },
+    { id: "sausage-biscuit-egg", name: "Sausage Biscuit with Egg", desc: "Sausage and egg on a warm biscuit", cents: 399 },
+    { id: "egg-cheese-biscuit", name: "Egg & Cheese Biscuit", desc: "Egg and cheese on a warm biscuit", cents: 379 },
+    { id: "sausage-biscuit", name: "Sausage Biscuit", desc: "Sausage on a warm biscuit", cents: 239 }
   ]},
   { cat: "McGriddles®", items: [
-    { id: "sausage-mcgriddles", name: "Sausage McGriddles®", desc: "Sausage between maple griddle cakes", cal: 430, cents: 319, notAt: ["usq"], swap: "sausage-mcmuffin" },
-    { id: "bec-mcgriddles", name: "Bacon, Egg & Cheese McGriddles®", desc: "Bacon, egg and cheese between griddle cakes", cal: 420, cents: 499, notAt: ["usq"], swap: "bec-biscuit" },
-    { id: "sec-mcgriddles", name: "Sausage, Egg & Cheese McGriddles®", desc: "Sausage, egg and cheese between griddle cakes", cal: 550, cents: 499, notAt: ["usq"], swap: "sausage-mcmuffin-egg" }
+    { id: "sausage-mcgriddles", name: "Sausage McGriddles®", desc: "Sausage between maple griddle cakes", cents: 319, notAt: ["usq"], swap: "sausage-mcmuffin" },
+    { id: "bec-mcgriddles", name: "Bacon, Egg & Cheese McGriddles®", desc: "Bacon, egg and cheese between griddle cakes", cents: 499, notAt: ["usq"], swap: "bec-biscuit" },
+    { id: "sec-mcgriddles", name: "Sausage, Egg & Cheese McGriddles®", desc: "Sausage, egg and cheese between griddle cakes", cents: 499, notAt: ["usq"], swap: "sausage-mcmuffin-egg" }
+  ]},
+  { cat: "Bagels", items: [
+    { id: "bec-bagel", name: "Bacon, Egg & Cheese Bagel", desc: "Bacon, egg and cheese on a toasted bagel", cents: 529 },
+    { id: "sec-bagel", name: "Sausage, Egg & Cheese Bagel", desc: "Sausage, egg and cheese on a toasted bagel", cents: 529 },
+    { id: "steak-bagel", name: "Steak, Egg & Cheese Bagel", desc: "Steak, egg and cheese on a toasted bagel", cents: 599 }
   ]},
   { cat: "Hotcakes & Platters", items: [
-    { id: "hotcakes", name: "Hotcakes", desc: "Three hotcakes with butter and syrup", cal: 580, cents: 379 },
-    { id: "hotcakes-sausage", name: "Hotcakes and Sausage", desc: "Three hotcakes with a side of sausage", cal: 770, cents: 529 },
-    { id: "big-breakfast", name: "Big Breakfast®", desc: "Scrambled eggs, sausage, biscuit and hash browns", cal: 760, cents: 549 }
+    { id: "hotcakes", name: "Hotcakes", desc: "Three hotcakes with butter and syrup", cents: 379 },
+    { id: "hotcakes-sausage", name: "Hotcakes and Sausage", desc: "Three hotcakes with a side of sausage", cents: 529 },
+    { id: "big-breakfast", name: "Big Breakfast®", desc: "Scrambled eggs, sausage, biscuit and hash browns", cents: 549 },
+    { id: "big-breakfast-hotcakes", name: "Big Breakfast® with Hotcakes", desc: "The Big Breakfast® plus three hotcakes", cents: 699 }
   ]},
   { cat: "Sides", items: [
-    { id: "hash-browns", name: "Hash Browns", desc: "Shredded potato, golden and crispy", cal: 140, cents: 219 },
-    { id: "sausage-burrito", name: "Sausage Burrito", desc: "Sausage, egg, cheese and peppers in a tortilla", cal: 310, cents: 229 },
-    { id: "oatmeal", name: "Fruit & Maple Oatmeal", desc: "Oatmeal with diced apples and cranberries", cal: 320, cents: 329 }
+    { id: "hash-browns", name: "Hash Browns", desc: "Shredded potato, golden and crispy", cents: 219 },
+    { id: "sausage-burrito", name: "Sausage Burrito", desc: "Sausage, egg, cheese and peppers in a tortilla", cents: 229 },
+    { id: "oatmeal", name: "Fruit & Maple Oatmeal", desc: "Oatmeal with diced apples and cranberries", cents: 329 }
   ]},
-  { cat: "Coffee & Drinks", items: [
-    { id: "coffee", name: "Premium Roast Coffee", desc: "Small, freshly brewed", cal: 0, cents: 160 },
-    { id: "iced-coffee", name: "Iced Coffee", desc: "Small, with cream and sugar", cal: 140, cents: 249 },
-    { id: "oj", name: "Minute Maid® Orange Juice", desc: "Small", cal: 150, cents: 279 }
+  { cat: "McCafé® & Drinks", items: [
+    { id: "coffee", name: "McCafé® Premium Roast Coffee", desc: "Small, freshly brewed", cents: 160 },
+    { id: "iced-coffee", name: "McCafé® Iced Coffee", desc: "Small, with cream and sugar", cents: 249 },
+    { id: "hot-chocolate", name: "McCafé® Hot Chocolate", desc: "Small, with whipped topping", cents: 259 },
+    { id: "oj", name: "Minute Maid® Premium Orange Juice", desc: "Small", cents: 279 }
   ]}
 ];
 const ITEMS = Object.fromEntries(MENU.flatMap(c => c.items).map(i => [i.id, i]));
@@ -413,7 +426,7 @@ const findOrder = id => allOrders().find(o => o.id === id);
 
 const fmtDate = iso => new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 const fmtTime = d => d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-const initials = name => name.replace(/[®™]/g, "").split(/[\s,&]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("");
+const photo = id => `<img src="img/${id}.png" alt="" loading="lazy" width="480" height="480">`;
 
 /* ---------- sync badge ---------- */
 function syncLabel() {
@@ -495,13 +508,13 @@ function cardHTML(it) {
   const ok = soldAt(it.id);
   return `
     <article class="card ${ok ? "" : "off"}">
-      <div class="thumb" aria-hidden="true">${initials(it.name)}</div>
+      <div class="thumb">${photo(it.id)}</div>
       <div>
         <div class="row">
           <h3 class="t-heading">${it.name}</h3>
           <span class="price">${ok ? fmt(priceAt(it.id)) : "—"}</span>
         </div>
-        <div class="t-caption muted">${it.cal} Cal · ${it.desc}</div>
+        <div class="t-caption muted">${it.desc}</div>
       </div>
       ${ok
         ? `<button class="btn btn-secondary btn-block" data-action="add" data-id="${it.id}">Add to bag · ${fmt(priceAt(it.id))}</button>`
@@ -687,7 +700,7 @@ function bagItemHTML(b, i) {
   const swap = !ok && it.swap ? ITEMS[it.swap] : null;
   return `
     <div class="bag-item ${ok ? "" : "off"}">
-      <div class="thumb" aria-hidden="true">${initials(it.name)}</div>
+      <div class="thumb">${photo(b.id)}</div>
       <div>
         <div class="t-heading">${it.name}</div>
         <div class="t-caption muted">${ok ? fmt(priceAt(b.id)) + " each" : "Not sold at " + RESTAURANTS[state.rid].short}</div>
