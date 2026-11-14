@@ -101,7 +101,7 @@ Tracking is −0.15px. Numbers use tabular (fixed-width) figures, so prices don'
 
 | Area | Must keep | May adapt | Must never |
 |---|---|---|---|
-| **Typography** | One family. The 6-step scale. Bold for headings, prices, and buttons. Tabular figures. | Regular or Light for body text. Condensed for legal text. Display size on desktop only. | Gold or Red body text. A second typeface. Text below 10px. |
+| **Typography** | One family. The 6-step scale. Bold for headings, product names, totals, and buttons. A product's own price is Regular. Tabular figures. | Regular or Light for body text. Condensed for legal text. Display size on desktop only. | Gold or Red body text. A second typeface. Text below 10px. |
 | **Color** | Gold means the primary action. Ink text on Gold. Red as a small accent only. | White or Light Gray surfaces. Where the Red count badge sits. | Gold text on white, or white text on Gold. Colors outside the palette. Gold used for anything other than the main action. |
 | **Spacing & shape** | The 6 / 12 / 18px rhythm. Pill buttons and 12px cards. Flat surfaces. | Outer margins (18 on mobile, 30+ on desktop). One column on mobile, two on desktop. | Drop shadows. New radius values. Tap targets under 44px. |
 | **Components** | Every price shown with its restaurant. A visible response to every tap. One Gold primary per screen. | List density and thumbnails. A drawer (web) or full screen (app) for the bag. Copy tone and length. | Removing an item without Undo. A total that hides fees until payment. |

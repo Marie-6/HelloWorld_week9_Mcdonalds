@@ -222,9 +222,11 @@ main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) var(-
 .tile-open img { width: 100%; max-width: 210px; height: auto; aspect-ratio: var(--ar, 1); object-fit: cover; object-position: center bottom; }
 .tile-open:hover .tile-name, .tile-open:active .tile-name { text-decoration: underline; }
 .tile-open:active img { opacity: .8; }
-.tile-name { font-size: 16px; line-height: 23px; }
+/* Menu card: the product name is Bold (Heading), its price Regular (Body). */
+.tile-name { font-size: 16px; line-height: 20px; font-weight: 700; }
+.tile-price { font-size: 16px; line-height: 23px; margin-top: calc(-1 * var(--s1)); } /* 6px under the name, a pair */
 .tile .btn { min-width: 160px; }
-.tile.off img, .tile.off .tile-name, .tile.off .price { opacity: .45; }
+.tile.off img, .tile.off .tile-name, .tile.off .tile-price { opacity: .45; }
 @media (max-width: 1180px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .menu-layout { grid-template-columns: 240px minmax(0, 1fr); gap: var(--s4); } }
 @media (max-width: 900px) {
   .menu-layout { grid-template-columns: minmax(0, 1fr); }
@@ -930,7 +932,7 @@ function tileHTML(it) {
         <img src="img/${it.id}.png" alt="" loading="lazy" width="480" height="480">
         <span class="tile-name">${it.name}</span>
       </button>
-      <span class="price">${ok ? fmt(priceAt(it.id)) : "Not at " + RESTAURANTS[state.rid].short}</span>
+      <span class="tile-price">${ok ? fmt(priceAt(it.id)) : "Not at " + RESTAURANTS[state.rid].short}</span>
       <button class="btn btn-secondary" data-action="add" data-id="${it.id}" ${ok ? "" : "disabled"}>Add to bag</button>
     </article>`;
 }
@@ -1209,7 +1211,7 @@ function renderItemBody() {
     <button class="icon-btn modal-close" data-action="close-item" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button>
     <h2 class="t-display" id="itemTitle">${it.name}</h2>
     <div class="item-facts">
-      <span class="price">${ok ? fmt(unitPrice(id, cfg)) : "Not at " + RESTAURANTS[state.rid].short}</span>
+      <span>${ok ? fmt(unitPrice(id, cfg)) : "Not at " + RESTAURANTS[state.rid].short}</span>
       ${cal ? `<span class="muted">${cal}</span>` : ""}
       <span class="muted">${RESTAURANTS[state.rid].name}</span>
     </div>
