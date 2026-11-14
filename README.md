@@ -28,6 +28,10 @@ Product photos and the Golden Arches logo come from the mcdonalds.com breakfast 
 
 A clickable version of the mobile redesign (page 2), shown in an iPhone frame and built on the real app's layout and colors. Bag and Orders are always in the tab bar, with More beside them. Every past order shows the total paid, tax included, and opens to item prices, tax and total, with "Add all to bag" and a receipt. The points button opens My Rewards, Deals and Earn Points (your code). Order has Pickup and McDelivery, and switching restaurants updates prices. The menu shows breakfast and McCafé items, using the photos in `website/img/`, the same files the website prototype uses. Past orders come from my real order history; there are no photos for those items, so their cards show text only. Headlines use Speedee if it's installed on your computer, and Inter otherwise. Nothing is really ordered or paid. Source: [`mobile/index.html`](mobile/index.html).
 
+Before and after, real app vs. our redesign: [02 Mobile, section 06](docs/02-mobile.md#06-before-and-after).
+
+![Before and after](assets/before-after.png)
+
 ## The core idea
 
 > The design system carries the rules that do not change.
