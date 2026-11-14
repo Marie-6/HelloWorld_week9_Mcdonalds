@@ -50,7 +50,7 @@ The brand typeface is Speedee (custom, Dalton Maag, 2018, © McDonald's). It isn
 
 - **Speedee is used where it's installed.** The prototype asks the viewer's computer for Speedee first (`@font-face` with `local()`), weight by weight, and falls back to **Inter** for any weight that isn't installed. Install it on your own computer to see it, and in Figma.
 - **The font file is never committed or shared.** The repo's `.gitignore` blocks font files.
-- **Right now only Speedee Bold is installed,** so Bold text (headings, prices, buttons) is Speedee and Regular/Light text is still Inter. This breaks "One family" until Speedee Regular and Light are installed; the prototype switches over automatically when they are.
+- **Install Speedee Regular and Speedee Bold.** Those are the two weights the prototype uses (Light isn't used yet), so with both installed every piece of text is Speedee and the page is one family, as on mcdonalds.com: Regular for body text and unselected menu categories, Bold for headings, prices, buttons and the selected category. Without them, everything falls back to Inter.
 
 Tracking is −0.15px. Numbers use tabular (fixed-width) figures, so prices don't change width as they change.
 
