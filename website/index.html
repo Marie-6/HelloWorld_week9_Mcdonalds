@@ -29,13 +29,20 @@
 }
 @media (max-width: 760px) { :root { --margin: 18px; } }
 
+/* Speedee is McDonald's own typeface and isn't publicly licensed, so this site never serves the file.
+   If it's installed on the viewer's computer it's used; otherwise Inter stands in (spec 02 Typography).
+   Weights that aren't installed fall back to Inter on their own. */
+@font-face { font-family: "Speedee Local"; src: local("Speedee Light"), local("Speedee-Light"); font-weight: 300; }
+@font-face { font-family: "Speedee Local"; src: local("Speedee Regular"), local("Speedee-Regular"); font-weight: 400; }
+@font-face { font-family: "Speedee Local"; src: local("Speedee Bold"), local("Speedee-Bold"); font-weight: 700; }
+
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   background: var(--canvas);
   color: var(--ink);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: "Speedee Local", Inter, system-ui, sans-serif;
   font-size: 16px; line-height: 23px; font-weight: 400;
   letter-spacing: -0.15px;
   font-variant-numeric: tabular-nums; /* every digit the same width, so totals don't nudge the layout */
@@ -421,7 +428,7 @@ footer.site { border-top: 1px solid var(--line); padding: var(--s3) var(--margin
 <main id="view"></main>
 
 <footer class="site t-caption muted">
-  Prototype for "One System, Two Experiences" (Assignment 2). Visual rules follow McDonald's Feel-Good Design Cheatsheets v1.2. Inter stands in for Speedee. McDonald's is a trademark of McDonald's; this exercise is not affiliated with it.
+  Prototype for "One System, Two Experiences" (Assignment 2). Visual rules follow McDonald's Feel-Good Design Cheatsheets v1.2. Type is Speedee when it's installed on your computer; otherwise Inter stands in. McDonald's is a trademark of McDonald's; this exercise is not affiliated with it.
 </footer>
 
 <div class="scrim" id="scrim" hidden></div>

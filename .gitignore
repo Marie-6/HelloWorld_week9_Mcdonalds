@@ -1,0 +1,7 @@
+.DS_Store
+# Speedee is McDonald's licensed typeface: install it locally, never commit it
+*.ttf
+*.otf
+*.woff
+*.woff2
+*.eot
