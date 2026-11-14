@@ -208,6 +208,6 @@ The different Bag and Checkout borders were correct (Primary = Gold + Gold Strok
 
 ## Next steps
 
-- Update the **Figma Design Spec frame** to match `docs/01-design-spec.md`: Divider color, Lines table, Muted outlines, Speedee note, 60px section spacing, Bold names / Regular prices.
+- ~~Update the Figma Design Spec frame to match `docs/01-design-spec.md`~~ Done: Marie updated the Figma frame, and the new export replaced `assets/01-design-spec.png`.
 - Decide how people without Speedee see the intended look: screenshots or a video in the README.
 - Run the test from the spec: give a classmate only the link and ask them to "order an Egg McMuffin for pickup, then find what you paid last time".

@@ -118,3 +118,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **34.** "record all the propmpt and what you did and what decision i made. what we keep and what we change. make a file in website called"prompt" and one file for "process" (put all the process here, you can use before after pics)"
 - This file, plus [process.md](process.md) with before/after pictures taken from each earlier version in the git history. ✅
+
+**35.** "new figma desgin spec, update the pic in github" (+ new Design Spec frame)
+- Replaced `assets/01-design-spec.png` with the new Figma export, which now includes the Divider color, the Lines table, Muted outlines, the Speedee note, 60px section spacing and the new components. ✅
