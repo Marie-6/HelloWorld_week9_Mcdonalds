@@ -71,6 +71,20 @@ header p { max-width: 820px; margin: var(--s2) 0 0; }
 .steps { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); padding: var(--s4) 0 60px; border-top: 1px solid var(--line); }
 .steps ol { margin: var(--s2) 0 0; padding-left: var(--s3); }
 .steps li { margin-bottom: var(--s1); }
+/* Design frames: shown on the page, opened full size in a viewer (no trip to GitHub). */
+.design { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) 60px; border-top: 1px solid var(--line); scroll-margin-top: var(--s3); }
+.design > p { margin: var(--s1) 0 var(--s3); }
+.frames { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
+.frame { display: flex; flex-direction: column; gap: var(--s1); padding: 0; border: 0; background: none; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.frame img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: top; border-radius: 12px; background: var(--light-gray); margin-bottom: var(--s1); }
+.frame:hover .t-heading, .frame:active .t-heading { text-decoration: underline; }
+.frame:active img { opacity: .85; }
+.viewer { position: fixed; inset: 0; z-index: 50; background: var(--canvas); display: flex; flex-direction: column; }
+.viewer[hidden] { display: none; }
+.viewer-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); padding: var(--s2) var(--margin); border-bottom: 1px solid var(--line); }
+.viewer-body { flex: 1; overflow: auto; background: var(--light-gray); padding: var(--s3) var(--margin); }
+.viewer-body img { display: block; width: 100%; max-width: 1200px; margin: 0 auto; border-radius: 12px; }
+@media (max-width: 760px) { .frames { grid-template-columns: minmax(0, 1fr); } }
 footer { padding-top: var(--s3); padding-bottom: var(--s4); border-top: 1px solid var(--line); }
 
 @media (max-width: 1000px) {
@@ -87,8 +101,9 @@ footer { padding-top: var(--s3); padding-bottom: var(--s4); border-top: 1px soli
   <h1 class="t-display">McDonald's, on the laptop and the phone</h1>
   <p>The McDonald's website only lets you browse the menu, and the app hides your bag, past orders and what you actually paid. So we redesigned both: the website now lets you order for pickup or delivery, the bag stays in sync between the website and the app, and on both you can find past orders with every item's price, the tax and the total in one step.</p>
   <div class="links">
-    <a class="btn btn-secondary" href="https://github.com/Marie-6/Mcdonalds/blob/main/docs/01-design-spec.md">Design Spec</a>
-    <a class="btn btn-secondary" href="../">Project README</a>
+    <a class="btn btn-secondary" href="#design" data-view="spec">Design Spec</a>
+    <a class="btn btn-secondary" href="#design" data-view="mobile">App design</a>
+    <a class="btn btn-secondary" href="#design" data-view="website">Website design</a>
   </div>
 </header>
 
@@ -139,6 +154,24 @@ footer { padding-top: var(--s3); padding-bottom: var(--s4); border-top: 1px soli
     </div>
   </section>
 </main>
+
+<section class="design" id="design" aria-labelledby="designTitle">
+  <h2 class="t-display" id="designTitle">The design</h2>
+  <p class="t-body-s muted">The Figma frames both prototypes are built from. Click one to see it full size.</p>
+  <div class="frames">
+    <button class="frame" data-view="spec"><img src="img/01-design-spec.jpg" alt="" loading="lazy"><span class="t-heading">01 Design Spec</span><span class="t-body-s muted">Color, type, spacing, components, rules</span></button>
+    <button class="frame" data-view="mobile"><img src="img/02-mobile.jpg" alt="" loading="lazy"><span class="t-heading">02 App · Task A</span><span class="t-body-s muted">Bag, past orders and exact prices</span></button>
+    <button class="frame" data-view="website"><img src="img/03-website.jpg" alt="" loading="lazy"><span class="t-heading">03 Website · Task B</span><span class="t-body-s muted">Ordering online, one synced bag, receipts</span></button>
+  </div>
+</section>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Design frame" hidden>
+  <div class="viewer-bar">
+    <span class="t-heading" id="viewerTitle"></span>
+    <button class="btn btn-secondary" data-close>Close</button>
+  </div>
+  <div class="viewer-body"><img id="viewerImg" alt=""></div>
+</div>
 
 <footer class="t-caption muted">
   Both prototypes follow one Design Spec. Type is Speedee when it's installed on your computer; otherwise Inter stands in. McDonald's is a trademark of McDonald's; this exercise is not affiliated with it.
@@ -192,6 +225,32 @@ onlyIphone(); // in case it already loaded
 
 new ResizeObserver(fit).observe(document.querySelector(".stage"));
 fit();
+// Design frames open in the viewer on this page.
+const VIEWS = {
+  spec: ["01 Design Spec", "img/01-design-spec.jpg"],
+  mobile: ["02 App · Task A", "img/02-mobile.jpg"],
+  website: ["03 Website · Task B", "img/03-website.jpg"]
+};
+const viewer = document.getElementById("viewer");
+let lastFocus = null;
+function openView(key) {
+  const [title, src] = VIEWS[key];
+  lastFocus = document.activeElement;
+  viewerTitle.textContent = title; viewerImg.src = src;
+  viewer.hidden = false; document.body.style.overflow = "hidden";
+  viewer.querySelector(".viewer-body").scrollTop = 0;
+  viewer.querySelector("[data-close]").focus();
+}
+function closeView() {
+  viewer.hidden = true; document.body.style.overflow = "";
+  lastFocus && lastFocus.focus();
+}
+document.addEventListener("click", e => {
+  const v = e.target.closest("[data-view]");
+  if (v) { e.preventDefault(); openView(v.dataset.view); }
+  if (e.target.closest("[data-close]")) closeView();
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !viewer.hidden) closeView(); });
 </script>
 </body>
 </html>

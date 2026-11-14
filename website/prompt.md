@@ -136,3 +136,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **40.** "can you line up the web and the phone ? and make it tidy?"
 - Rebuilt the demo as one grid with three shared rows (titles, devices, buttons). The laptop and the phone are sized together so they're exactly the same height: tops, bottoms and buttons line up at every width. Shortened the captions to one line each, removed the laptop base's overhang, and the website now opens at the top. ✅
+
+**41.** "can you just put images here? dont need to jump to github again" (+ the Design Spec button)
+- The demo's buttons no longer leave the page. "Design Spec", "App design" and "Website design" open the Figma frames full size in a viewer on the demo page, and a new "The design" section at the bottom shows all three. Web-size copies are in `demo/img/`. ✅

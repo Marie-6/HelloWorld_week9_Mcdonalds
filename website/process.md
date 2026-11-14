@@ -162,6 +162,8 @@ The different Bag and Checkout borders were correct (Primary = Gold + Gold Strok
 
 **Then:** lined up and tidied. Titles, devices and buttons share rows, and the laptop and phone are solved to the same height, so their tops and bottoms are flush at every screen width.
 
+**Then:** the Design Spec button went to GitHub. Now the three Figma frames are shown on the demo page and open full size in a viewer there.
+
 ![Demo page](process-img/40-demo.jpg)
 
 ---
