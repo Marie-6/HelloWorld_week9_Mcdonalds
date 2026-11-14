@@ -127,3 +127,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **37.** "A redesign of the mcdonalds.com breakfast menu that lets you order on the website, with the same bag as the app. it should be “The McDonald's website only lets you browse the menu, and the app hides your bag, past orders and what you actually paid. So I redesigned both: …” something like this, redesign the cart nd reciept and make people can order online using laptop"
 - Rewrote the website README intro around the problem and the fix (ordering on a laptop, a synced cart, receipts), using Marie's wording, with "we" because the app side is Xinyu's. ✅
+
+**38.** "okay, combine the mobile and the website together in one page for demonstration"
+- Added `demo/index.html`: the problem and the redesign in one paragraph, the live website in a laptop frame and Xinyu's live app in a phone frame (both clickable, scaled to fit), "Try it" steps for each, and links to open them full screen. Linked from both READMEs. ✅

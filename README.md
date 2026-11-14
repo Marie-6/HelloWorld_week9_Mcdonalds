@@ -1,5 +1,8 @@
 # McDonald's — One System, Two Experiences
 
+**Demo: both prototypes on one page → [marie-6.github.io/Mcdonalds/demo/](https://marie-6.github.io/Mcdonalds/demo/)** (the website on a laptop, the app on a phone, both clickable)
+
+
 **SVA MFA IxD · Assignment 2 · Context and evidence study**
 
 This is a small design system for McDonald's ordering. Two platforms share one set of rules:

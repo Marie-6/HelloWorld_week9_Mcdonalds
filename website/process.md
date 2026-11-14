@@ -153,6 +153,13 @@ The different Bag and Checkout borders were correct (Primary = Gold + Gold Strok
 |---|---|
 | ![](process-img/23-name-before.jpg) | ![](process-img/24-name-after.jpg) |
 
+## 11. One demo page
+
+**Asked:** combine the mobile app and the website on one page for demonstration.
+**Changed:** [demo/](https://marie-6.github.io/Mcdonalds/demo/) shows the live website in a laptop frame and Xinyu's live app in a phone frame, side by side. Both are clickable, with "Try it" steps for each. The page uses the same Design Spec.
+
+![Demo page](process-img/40-demo.jpg)
+
 ---
 
 ## Where it is now
