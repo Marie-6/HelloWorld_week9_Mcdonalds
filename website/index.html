@@ -20,7 +20,7 @@
   --muted: #7C7C7C;
   --canvas: #FFFFFF;
   --info: #006BAE;
-  --line: var(--muted); /* dividers: "a 1px Muted divider or a Light Gray surface" */
+  --line: #D6D6D6; /* Divider, from the spec's mcdonalds.com UI extension */
 
   --r-card: 12px;
   --r-pill: 48px;
@@ -162,11 +162,13 @@ header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); 
 .mob-nav .mega { grid-template-columns: 1fr 1fr; margin-bottom: var(--s3); }
 
 @media (max-width: 1520px) { .tool .label, .tool #acctLabel { display: none; } }
-/* Every header slot has a fixed width so changing its text never pushes the others (the header is right-aligned). */
-.where-text { display: inline-block; width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
-@media (max-width: 1520px) { .where-text { width: 200px; } }
-@media (max-width: 1366px) { .where-text { width: 150px; } }
-@media (max-width: 900px) { .where-text { width: auto; max-width: calc(100vw - 120px); } }
+/* Every header slot has a fixed width so changing its text never pushes the others (the header is right-aligned).
+   The location button is fixed; its label sits left with the arrow right after it. */
+#whereBtn { width: 340px; justify-content: flex-start; }
+.where-text { display: inline-block; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+@media (max-width: 1520px) { #whereBtn { width: 280px; } .where-text { max-width: 200px; } }
+@media (max-width: 1366px) { #whereBtn { width: 230px; } .where-text { max-width: 150px; } }
+@media (max-width: 900px) { #whereBtn { width: auto; } .where-text { max-width: calc(100vw - 120px); } }
 #acctLabel { display: inline-block; width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
 @media (max-width: 1300px) {
   .desk-only { display: none !important; }

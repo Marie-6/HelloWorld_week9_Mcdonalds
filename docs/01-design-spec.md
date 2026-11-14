@@ -21,7 +21,8 @@ This page holds the rules both experiences share. Mobile (page 2) is about findi
 | Name | Hex | Role |
 |---|---|---|
 | Ink | `#292929` | Default text and borders |
-| Muted | `#7C7C7C` | Secondary text and dividers |
+| Muted | `#7C7C7C` | Secondary text |
+| Divider | `#D6D6D6` | 1px lines between header, sections and rows (the mcdonalds.com header line) |
 | Canvas | `#FFFFFF` | Page background and secondary button fill |
 | Gold Stroke | `#C08B00` | 1px border on the primary button |
 | Info Blue | `#006BAE` | Accessibility and info links only |
