@@ -133,3 +133,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **39.** "https://marie-6.github.io/Mcdonalds/mobile/ the mobile one should look like this"
 - In the demo, the app was loaded under 520px wide, so it switched to edge-to-edge mode and lost its iPhone frame. It's now loaded wide enough to keep Xinyu's own iPhone frame (status bar, Dynamic Island, home bar), with her notes column and page background hidden, so only the phone shows. Xinyu's `mobile/index.html` wasn't changed. ✅
+
+**40.** "can you line up the web and the phone ? and make it tidy?"
+- Rebuilt the demo as one grid with three shared rows (titles, devices, buttons). The laptop and the phone are sized together so they're exactly the same height: tops, bottoms and buttons line up at every width. Shortened the captions to one line each, removed the laptop base's overhang, and the website now opens at the top. ✅

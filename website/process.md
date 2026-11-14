@@ -160,6 +160,8 @@ The different Bag and Checkout borders were correct (Primary = Gold + Gold Strok
 
 **Then:** the app has to look like its own page, so it now shows in Xinyu's own iPhone frame instead of a plain one I drew.
 
+**Then:** lined up and tidied. Titles, devices and buttons share rows, and the laptop and phone are solved to the same height, so their tops and bottoms are flush at every screen width.
+
 ![Demo page](process-img/40-demo.jpg)
 
 ---

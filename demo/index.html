@@ -47,18 +47,26 @@ header p { max-width: 820px; margin: var(--s2) 0 0; }
 .btn-secondary:active { background: var(--light-gray); }
 .links { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
 
-/* Devices: flat frames, no shadows. Each screen is a live, clickable prototype scaled to fit. */
-.stage { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s4); align-items: start; padding: var(--s4) 0; }
-.device h2 { margin-bottom: var(--s1); }
-.device .cap { margin: 0 0 var(--s2); }
-.laptop .bezel { background: var(--charcoal); border-radius: 12px 12px 0 0; padding: var(--s2) var(--s2) var(--s2); }
-.laptop .base { height: 18px; background: var(--line); border-radius: 0 0 12px 12px; margin: 0 -2%; }
+/* Devices: one grid, three shared rows (label / device / button), so both line up at the top, the bottom
+   and the buttons. Sizes are set in the script so the laptop and the phone are exactly the same height. */
+.stage { display: grid; grid-template-columns: auto auto; justify-content: space-between; column-gap: var(--s4); row-gap: var(--s3); padding: var(--s4) 0; }
+.label h2 { margin-bottom: var(--s1); }
+.label .cap { margin: 0; }
+.laptop .bezel { background: var(--charcoal); border-radius: 12px 12px 0 0; padding: var(--s2); }
+.laptop .base { height: var(--s3); background: var(--line); border-radius: 0 0 12px 12px; }
 .screen { position: relative; overflow: hidden; background: var(--canvas); }
+.screen iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: var(--canvas); }
 /* The app draws its own iPhone frame (status bar, Dynamic Island, home bar) when it's wider than 520px. */
 .phone .screen { background: none; }
 .phone .screen iframe { background: transparent; color-scheme: light; }
-.screen iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: var(--canvas); }
-.open { margin-top: var(--s2); }
+.stage > .btn { justify-self: start; }
+
+@media (max-width: 1000px) {
+  .stage { grid-template-columns: minmax(0, 1fr); justify-content: stretch; }
+  .laptop-label { order: 1; } .laptop { order: 2; } .stage > .btn:nth-of-type(1) { order: 3; }
+  .phone-label { order: 4; margin-top: var(--s4); } .phone { order: 5; justify-self: center; } .stage > .btn:nth-of-type(2) { order: 6; justify-self: center; }
+  .phone-label { justify-self: center; text-align: center; }
+}
 
 .steps { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); padding: var(--s4) 0 60px; border-top: 1px solid var(--line); }
 .steps ol { margin: var(--s2) 0 0; padding-left: var(--s3); }
@@ -66,8 +74,6 @@ header p { max-width: 820px; margin: var(--s2) 0 0; }
 footer { padding-top: var(--s3); padding-bottom: var(--s4); border-top: 1px solid var(--line); }
 
 @media (max-width: 1000px) {
-  .stage { grid-template-columns: minmax(0, 1fr); }
-  .phone { justify-self: center; }
   .steps { grid-template-columns: 1fr; }
 }
 </style>
@@ -88,24 +94,29 @@ footer { padding-top: var(--s3); padding-bottom: var(--s4); border-top: 1px soli
 
 <main>
   <section class="stage" aria-label="Both prototypes">
-    <div class="device laptop">
+    <div class="label laptop-label">
       <h2 class="t-heading">Website · Task B</h2>
-      <p class="cap t-body-s muted">Order on a laptop for pickup or delivery; find past orders and receipts. By Marie.</p>
-      <div class="bezel"><div class="screen" id="laptopScreen">
-        <iframe src="../website/index.html" title="Website prototype" data-w="1366" data-h="854"></iframe>
-      </div></div>
-      <div class="base" aria-hidden="true"></div>
-      <a class="btn btn-secondary open" href="../website/">Open the website full screen</a>
+      <p class="cap t-body-s muted">Order on a laptop, pickup or delivery. By Marie.</p>
+    </div>
+    <div class="label phone-label">
+      <h2 class="t-heading">App · Task A</h2>
+      <p class="cap t-body-s muted">Bag and Orders in the tab bar. By Xinyu.</p>
     </div>
 
-    <div class="device phone">
-      <h2 class="t-heading">App · Task A</h2>
-      <p class="cap t-body-s muted">Bag and Orders always in the tab bar; every price, tax and total. By Xinyu.</p>
-      <div class="screen" id="phoneScreen">
-        <iframe src="../mobile/index.html" title="Mobile app prototype" data-w="521" data-h="876" data-clip="417"></iframe>
-      </div>
-      <a class="btn btn-secondary open" href="../mobile/">Open the app full screen</a>
+    <div class="laptop" id="laptop">
+      <div class="bezel"><div class="screen" id="laptopScreen">
+        <iframe data-src="../website/index.html" title="Website prototype" data-w="1366" data-h="854"></iframe>
+      </div></div>
+      <div class="base" aria-hidden="true"></div>
     </div>
+    <div class="phone" id="phone">
+      <div class="screen" id="phoneScreen">
+        <iframe data-src="../mobile/index.html" title="Mobile app prototype" data-w="521" data-h="876" data-clip="417"></iframe>
+      </div>
+    </div>
+
+    <a class="btn btn-secondary" href="../website/">Open the website full screen</a>
+    <a class="btn btn-secondary" href="../mobile/">Open the app full screen</a>
   </section>
 
   <section class="steps" aria-label="Try it">
@@ -134,25 +145,39 @@ footer { padding-top: var(--s3); padding-bottom: var(--s4); border-top: 1px soli
 </footer>
 
 <script>
-// Each prototype renders at its real size and is scaled to fit. The laptop shows the website at 1366×854.
-// The app is rendered 521px wide so it keeps its own 417×876 iPhone frame (narrower, it goes edge-to-edge),
-// and only the frame is shown.
-function fit() {
-  const laptop = document.getElementById("laptopScreen");
-  const phone = document.getElementById("phoneScreen");
-  const phoneH = Math.min(760, Math.max(480, innerHeight - 200));
-  const phoneW = Math.round(phoneH * 417 / 876);
-  phone.style.width = phoneW + "px";
-  phone.closest(".device").style.width = phoneW + "px";
-  for (const screen of [laptop, phone]) {
-    const f = screen.querySelector("iframe");
-    const w = +f.dataset.w, h = +f.dataset.h;
-    const s = screen.clientWidth / (+f.dataset.clip || w);
-    f.style.width = w + "px"; f.style.height = h + "px";
-    f.style.transform = `scale(${s})`;
-    screen.style.height = Math.round(h * s) + "px";
-  }
+// Each prototype renders at its real size and is scaled to fit: the website at 1366×854 on the laptop; the app
+// 521px wide so it keeps its own 417×876 iPhone frame (narrower, it goes edge-to-edge), clipped to the frame.
+// Side by side, the laptop (bezel + screen + base) and the phone are solved to be exactly the same height.
+const BEZEL = 12, BASE = 18, GAP = 30;
+const LW = 1366, LH = 854, PW = 417, PH = 876;
+function place(screen, s) {
+  const f = screen.querySelector("iframe");
+  f.style.width = f.dataset.w + "px"; f.style.height = f.dataset.h + "px";
+  f.style.transform = `scale(${s})`;
+  screen.style.width = Math.round((+f.dataset.clip || +f.dataset.w) * s) + "px";
+  screen.style.height = Math.round(+f.dataset.h * s) + "px";
 }
+function fit() {
+  const stage = document.querySelector(".stage");
+  const W = stage.clientWidth;
+  let screenW, phoneH;
+  if (matchMedia("(max-width: 1000px)").matches) {
+    screenW = W - 2 * BEZEL;
+    phoneH = Math.min(760, Math.max(480, innerHeight - 200));
+  } else {
+    // laptopWidth + GAP + phoneWidth = W, where phoneHeight = 2·BEZEL + screenW·LH/LW + BASE.
+    const k = (LH / LW) * (PW / PH);
+    screenW = Math.floor((W - GAP - 2 * BEZEL - (2 * BEZEL + BASE) * PW / PH) / (1 + k));
+    phoneH = 2 * BEZEL + screenW * LH / LW + BASE;
+  }
+  place(document.getElementById("laptopScreen"), screenW / LW);
+  place(document.getElementById("phoneScreen"), phoneH / PH);
+  document.getElementById("laptop").style.width = (screenW + 2 * BEZEL) + "px";
+}
+addEventListener("resize", fit);
+fit();
+// Load the prototypes only once their frames have their final size, so they open at the top.
+document.querySelectorAll(".screen iframe").forEach(f => { f.src = f.dataset.src; });
 // Show only the app's iPhone: hide its notes column, drop its page padding and background.
 const phoneFrame = document.querySelector("#phoneScreen iframe");
 function onlyIphone() {
@@ -164,11 +189,7 @@ function onlyIphone() {
 }
 phoneFrame.addEventListener("load", onlyIphone);
 onlyIphone(); // in case it already loaded
-addEventListener("resize", fit);
-// Start each prototype at its top (resizing the frame while it loads can leave it scrolled).
-document.querySelectorAll(".screen iframe").forEach(f => f.addEventListener("load", () => {
-  try { f.contentWindow.scrollTo(0, 0); setTimeout(() => f.contentWindow.scrollTo(0, 0), 300); } catch (e) {}
-}));
+
 new ResizeObserver(fit).observe(document.querySelector(".stage"));
 fit();
 </script>
