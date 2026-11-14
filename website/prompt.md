@@ -121,3 +121,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **35.** "new figma desgin spec, update the pic in github" (+ new Design Spec frame)
 - Replaced `assets/01-design-spec.png` with the new Figma export, which now includes the Divider color, the Lines table, Muted outlines, the Speedee note, 60px section spacing and the new components. ✅
+
+**36.** "maybe add a readme for website. keep it core and simple"
+- Added `website/README.md`: what it is, the live link, what you can do, the spec it's built on, the font note, and the files. ✅
