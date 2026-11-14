@@ -101,6 +101,8 @@ h2.title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .deal .exp{font-size:13px;color:var(--muted)}
 .deal.added .ph{outline:2px solid var(--ink);outline-offset:-2px}
 .ph img{width:100%;height:100%;object-fit:contain}
+.hero .art img,.trend .art img{width:100%;display:block}
+.hero-ph img{max-height:180px;max-width:100%;object-fit:contain}
 .ph svg{width:78%;height:78%}
 .trend{display:block;width:100%;border:0;border-radius:var(--r-card);overflow:hidden;position:relative;padding:22px 18px;text-align:left;font:inherit;color:#fff;cursor:pointer;min-height:170px;margin-bottom:16px}
 .trend .h{font-size:28px;font-weight:800;line-height:1.05;max-width:60%;letter-spacing:-.01em}
@@ -266,16 +268,9 @@ h2.title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 </div>
 <script>
 /* -------- Photos --------
-When this page sits in the GitHub repo (e.g. /mobile/), these paths load the
-product photos already in /website/img. Anywhere else the drawn
-illustration is shown instead. Add your own: id: "path/to/photo.png". */
-const PHOTOS = {
-eggmuffin: "../website/img/egg-mcmuffin.png",
-hashbrown: "../website/img/hash-browns.png",
-hotcakes: "../website/img/hotcakes.png",
-coffee: "../website/img/coffee.png",
-oj: "../website/img/oj.png",
-};
+Product photos come from the repo's /website/img folder (the same files the
+website prototype uses). If a photo can't load, the drawn illustration shows. */
+const IMG = "../website/img/";
 /* -------- Drawn food illustrations (generic, unbranded) -------- */
 const ART = {
 burger: `<svg viewBox="0 0 100 80"><path d="M12 38c0-18 17-28 38-28s38 10 38 28z" fill="#E9A23B"/><g fill="#FFF3D6"><ellipse cx="34" cy="22" rx="2" ry="1.2"/><ellipse cx="50" cy="17" rx="2" ry="1.2"/><ellipse cx="64" cy="24" rx="2" ry="1.2"/><ellipse cx="44" cy="28" rx="2" ry="1.2"/></g><path d="M10 40h80l-6 8H16z" fill="#F7C531"/><rect x="11" y="46" width="78" height="10" rx="5" fill="#6B3A1E"/><path d="M12 54h76l-4 6H16z" fill="#F7C531"/><rect x="11" y="58" width="78" height="9" rx="4.5" fill="#6B3A1E"/><path d="M14 66h72c0 7-10 10-36 10S14 73 14 66z" fill="#D98A2F"/></svg>`,
@@ -294,10 +289,9 @@ bag: `<svg viewBox="0 0 100 100"><path d="M24 30h52l-4 64H28z" fill="#C79A63"/><
 coins: `<svg viewBox="0 0 120 120"><g fill="#fff" stroke="#F4BC40" stroke-width="5"><ellipse cx="40" cy="30" rx="18" ry="12" transform="rotate(-20 40 30)"/><ellipse cx="88" cy="22" rx="16" ry="11" transform="rotate(25 88 22)"/><ellipse cx="72" cy="64" rx="14" ry="10" transform="rotate(-35 72 64)"/><ellipse cx="104" cy="70" rx="12" ry="9" transform="rotate(15 104 70)"/></g></svg>`,
 pin: `<svg class="pin" viewBox="0 0 26 30"><path d="M13 1C6.4 1 1 6.2 1 12.6 1 21 13 29 13 29s12-8 12-16.4C25 6.2 19.6 1 13 1z" fill="#DB0007"/><circle cx="13" cy="12.5" r="4.5" fill="#fff"/></svg>`,
 };
-function pic(id, kind) {
+function pic(file, kind) {
 const art = ART[kind] || ART.burger;
-const src = PHOTOS[id];
-return src ? `<img alt="" src="${src}" onerror="this.outerHTML=ART['${kind}']">` : art;
+return file ? `<img alt="" src="${IMG + file}" onerror="this.outerHTML=ART['${kind}']">` : art;
 }
 /* -------- Data -------- */
 const TAX = 0.06625;
@@ -309,9 +303,34 @@ const money = n => "$" + n.toFixed(2);
 const r2 = n => Math.round(n * 100) / 100;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const MENU = [
-{ id: "seasonal", cat: "Seasonal McCafé®", art: "redcup", items: [
-{ id: "redbull", name: "Red Bull® Frosted Cranberry Energizer", price: 4.99, art: "redcup", cal: "300 Cal" },
-{ id: "latte", name: "Holiday Latte (M)", price: 4.29, art: "coffee", cal: "330 Cal" } ]},
+{ id: "breakfast", cat: "Breakfast Sandwiches", art: "muffin", img: "egg-mcmuffin.png", items: [
+{ id: "eggmuffin", name: "Egg McMuffin®", price: 4.79, art: "muffin", cal: "310 Cal", meal: true, img: "egg-mcmuffin.png", mealImg: "meal-egg-mcmuffin.png" },
+{ id: "smegg", name: "Sausage McMuffin® with Egg", price: 4.49, art: "muffin", cal: "480 Cal", meal: true, img: "sausage-mcmuffin-egg.png", mealImg: "meal-sausage-mcmuffin-egg.png" },
+{ id: "smuffin", name: "Sausage McMuffin®", price: 2.49, art: "muffin", cal: "400 Cal", img: "sausage-mcmuffin.png" },
+{ id: "becbiscuit", name: "Bacon, Egg & Cheese Biscuit", price: 4.79, art: "muffin", cal: "460 Cal", meal: true, img: "bec-biscuit.png", mealImg: "meal-bec-biscuit.png" },
+{ id: "sbegg", name: "Sausage Biscuit with Egg", price: 3.99, art: "muffin", cal: "530 Cal", meal: true, img: "sausage-biscuit-egg.png", mealImg: "meal-sausage-biscuit-egg.png" },
+{ id: "sbiscuit", name: "Sausage Biscuit", price: 2.49, art: "muffin", cal: "460 Cal", img: "sausage-biscuit.png" },
+{ id: "ecbiscuit", name: "Egg & Cheese Biscuit", price: 3.69, art: "muffin", cal: "400 Cal", img: "egg-cheese-biscuit.png" },
+{ id: "becgriddle", name: "Bacon, Egg & Cheese McGriddles®", price: 5.29, art: "cakes", cal: "430 Cal", meal: true, img: "bec-mcgriddles.png", mealImg: "meal-bec-mcgriddles.png" },
+{ id: "secgriddle", name: "Sausage, Egg & Cheese McGriddles®", price: 5.29, art: "cakes", cal: "550 Cal", meal: true, img: "sec-mcgriddles.png", mealImg: "meal-sec-mcgriddles.png" },
+{ id: "sgriddle", name: "Sausage McGriddles®", price: 3.99, art: "cakes", cal: "430 Cal", img: "sausage-mcgriddles.png" },
+{ id: "becbagel", name: "Bacon, Egg & Cheese Bagel", price: 5.49, art: "muffin", cal: "590 Cal", meal: true, img: "bec-bagel.png", mealImg: "meal-bec-bagel.png" },
+{ id: "secbagel", name: "Sausage, Egg & Cheese Bagel", price: 5.49, art: "muffin", cal: "690 Cal", img: "sec-bagel.png" },
+{ id: "steakbagel", name: "Steak, Egg & Cheese Bagel", price: 6.29, art: "muffin", cal: "680 Cal", meal: true, img: "steak-bagel.png", mealImg: "meal-steak-bagel.png" },
+{ id: "burrito", name: "Sausage Burrito", price: 1.99, art: "muffin", cal: "310 Cal", meal: true, img: "sausage-burrito.png", mealImg: "meal-sausage-burrito.png" } ]},
+{ id: "platters", cat: "Hotcakes & Platters", art: "cakes", img: "big-breakfast-hotcakes.png", items: [
+{ id: "bigbh", name: "Big Breakfast® with Hotcakes", price: 7.49, art: "cakes", cal: "1340 Cal", img: "big-breakfast-hotcakes.png" },
+{ id: "bigb", name: "Big Breakfast®", price: 5.99, art: "cakes", cal: "760 Cal", img: "big-breakfast.png" },
+{ id: "hotcakes", name: "Hotcakes", price: 4.39, art: "cakes", cal: "580 Cal", img: "hotcakes.png" },
+{ id: "hotcakessaus", name: "Hotcakes and Sausage", price: 5.29, art: "cakes", cal: "770 Cal", img: "hotcakes-sausage.png" },
+{ id: "hashbrown", name: "Hash Browns", price: 2.19, art: "hash", cal: "140 Cal", img: "hash-browns.png" },
+{ id: "oatmeal", name: "Fruit & Maple Oatmeal", price: 3.29, art: "cakes", cal: "320 Cal", img: "oatmeal.png" } ]},
+{ id: "mccafe", cat: "McCafé®", art: "coffee", img: "cat-mccafe.png", items: [
+{ id: "coffee", name: "Premium Roast Coffee (M)", price: 1.60, art: "coffee", cal: "0 Cal", img: "coffee.png" },
+{ id: "iced", name: "Iced Coffee (M)", price: 2.89, art: "coffee", cal: "180 Cal", img: "iced-coffee.png" },
+{ id: "hotchoc", name: "Hot Chocolate (M)", price: 2.99, art: "coffee", cal: "370 Cal", img: "hot-chocolate.png" },
+{ id: "oj", name: "Orange Juice (M)", price: 3.29, art: "oj", cal: "190 Cal", img: "oj.png" },
+{ id: "redbull", name: "Red Bull® Frosted Cranberry Energizer", price: 4.99, art: "redcup", cal: "300 Cal" } ]},
 { id: "chicken", cat: "Chicken & Sandwiches", art: "chicken", items: [
 { id: "spicy", name: "Spicy McCrispy™", price: 5.89, art: "chicken", cal: "530 Cal", meal: true },
 { id: "mccrispy", name: "McCrispy™", price: 5.89, art: "chicken", cal: "470 Cal", meal: true },
@@ -320,30 +339,27 @@ const MENU = [
 { id: "burgers", cat: "Burgers", art: "burger", items: [
 { id: "dbl", name: "Double Cheeseburger", price: 3.79, art: "burger", cal: "450 Cal", meal: true },
 { id: "qpc", name: "Quarter Pounder® with Cheese", price: 6.49, art: "burger", cal: "520 Cal", meal: true } ]},
-{ id: "breakfast", cat: "Breakfast", art: "muffin", items: [
-{ id: "eggmuffin", name: "Egg McMuffin®", price: 4.79, art: "muffin", cal: "310 Cal", meal: true },
-{ id: "hashbrown", name: "Hash Browns", price: 2.19, art: "hash", cal: "140 Cal" },
-{ id: "hotcakes", name: "Hotcakes", price: 4.39, art: "cakes", cal: "580 Cal" } ]},
 { id: "drinks", cat: "Drinks & Desserts", art: "cup", items: [
 { id: "lemonade", name: "Medium Lemonade", price: 2.49, art: "cup", cal: "180 Cal" },
-{ id: "coffee", name: "Premium Roast Coffee (M)", price: 1.60, art: "coffee", cal: "0 Cal" },
-{ id: "oj", name: "Orange Juice (M)", price: 3.29, art: "oj", cal: "190 Cal" },
 { id: "mm", name: "M&M® McFlurry®", price: 4.19, art: "flurry", cal: "640 Cal" } ]},
 ];
 const ALL = MENU.flatMap(c => c.items);
 const byId = id => ALL.find(i => i.id === id);
 const MEAL = { none: { label: "Item only", add: 0 }, med: { label: "Medium", add: 3.70 }, lg: { label: "Large", add: 4.30 } };
 const DEALS = [
-{ id: "d1", name: "FREE Small Premium Roast Coffee", exp: "Expires 11/22/2026", art: "coffee", item: "coffee", price: 0 },
-{ id: "d2", name: "40% off a Double Cheeseburger", exp: "Expires 11/29/2026", art: "burger", item: "dbl", price: 2.27 },
-{ id: "d3", name: "50% off an M&M® McFlurry®", exp: "Expires 11/29/2026", art: "flurry", item: "mm", price: 2.10 },
+{ id: "d1", name: "FREE Small Premium Roast Coffee", exp: "Expires 11/22/2026", art: "coffee", item: "coffee", img: "coffee.png", price: 0 },
+{ id: "d2", name: "40% off a Sausage McMuffin® with Egg", exp: "Expires 11/29/2026", art: "muffin", item: "smegg", img: "sausage-mcmuffin-egg.png", price: 2.69 },
+{ id: "d3", name: "$1 Hash Browns with any breakfast", exp: "Expires 11/29/2026", art: "hash", item: "hashbrown", img: "hash-browns.png", price: 1.00 },
+{ id: "d5", name: "50% off Hotcakes", exp: "Expires 11/30/2026", art: "cakes", item: "hotcakes", img: "hotcakes.png", price: 2.20 },
 { id: "d4", name: "$0 Delivery Fee with $20 minimum", exp: "Expires 11/29/2026", art: "bag", delivery: true },
 ];
 const REWARDS = [
-{ id: "r1", name: "Medium French Fries", pts: 3500, art: "fries", price: 3.69 },
-{ id: "r2", name: "McChicken®", pts: 2000, art: "chicken", price: 2.79 },
-{ id: "r3", name: "Large French Fries", pts: 5000, art: "fries", price: 4.19 },
-{ id: "r4", name: "Quarter Pounder® with Cheese", pts: 6000, art: "burger", price: 6.49 },
+{ id: "r0", name: "Hash Browns", pts: 1500, art: "hash", img: "hash-browns.png" },
+{ id: "r2", name: "McChicken®", pts: 2000, art: "chicken" },
+{ id: "r1", name: "Medium French Fries", pts: 3500, art: "fries" },
+{ id: "r5", name: "Egg McMuffin®", pts: 4000, art: "muffin", img: "egg-mcmuffin.png" },
+{ id: "r3", name: "Large French Fries", pts: 5000, art: "fries" },
+{ id: "r6", name: "Big Breakfast® with Hotcakes", pts: 6000, art: "cakes", img: "big-breakfast-hotcakes.png" },
 ];
 function seedOrders() {
 return [
@@ -379,7 +395,8 @@ const name = extra.name || (mk !== "none" ? item.name + " Meal" : item.name);
 const opt = extra.opt || (mk !== "none" ? MEAL[mk].label + " · French Fries, drink" : (item.cal || "Item only"));
 const key = (extra.key || item.id) + "|" + mk;
 const ex = S.bag.find(l => l.key === key);
-if (ex) ex.qty += qty; else S.bag.push({ key, ref: item.id, name, opt, unit, qty, art: item.art });
+const img = mk !== "none" && item.mealImg ? item.mealImg : item.img;
+if (ex) ex.qty += qty; else S.bag.push({ key, ref: item.id, name, opt, unit, qty, art: item.art, img });
 }
 /* -------- Navigation -------- */
 const cur = () => S.stack[S.stack.length - 1];
@@ -413,15 +430,14 @@ return `<button class="order-card" data-open="${o.id}">
 function home() {
 const last = S.orders[0], t = oTot(last);
 return `<div class="pad">
-<button class="hero" data-item="redbull" aria-label="Frosted Cranberry, order now">
-<span class="flake" style="left:58%;top:16px">✻</span><span class="flake" style="left:80%;top:44px;font-size:12px">✻</span><span class="flake" style="left:46%;top:120px;font-size:14px">✻</span>
-<span class="k">All-new holiday drinks</span>
-<span class="h" style="display:block">Frosted Cranberry</span>
-<span class="s" style="display:block">Bright, fizzy and festive. For a limited time.</span>
-<span class="art">${ART.redcup}</span>
-<span class="ctas"><span class="go">Order Now</span><span>Learn More</span></span>
+<button class="hero" data-cat="breakfast" aria-label="Breakfast, see the menu" style="background:linear-gradient(160deg,#FFE7A3 0%,#F9CF5E 60%,#F4BC40 100%)">
+<span class="k">Good morning, Aria</span>
+<span class="h" style="display:block">Breakfast, your way</span>
+<span class="s" style="display:block">McMuffins, biscuits, McGriddles® and hotcakes, until 10:30 AM.</span>
+<span class="art">${pic("big-breakfast-hotcakes.png", "cakes")}</span>
+<span class="ctas"><span class="go" style="background:var(--canvas);border:1px solid var(--ink)">Order breakfast</span><span>See all</span></span>
 </button>
-<p class="fine">At participating restaurants for a limited time.</p>
+<p class="fine">Breakfast hours vary by restaurant.</p>
 <button class="promo" data-push="rewards"><span>${ART.coins}</span><span><b>More points, more free food</b><span>Unlock bonus offers and earn more on your next order</span></span><span>›</span></button>
 <div class="again">
 <span class="kicker">Order again</span>
@@ -431,7 +447,7 @@ return `<div class="pad">
 <button class="btn" data-addall="${last.id}">Add to bag</button>
 </div>
 <div class="sec"><div class="sec-h"><h3>Menu</h3><button class="more-link" data-tab-go="order">Full menu →</button></div>
-<div class="rail">${MENU.map(c => `<button class="tile" data-cat="${c.id}"><div class="ph">${pic(c.items[0].id, c.art)}</div><div class="nm">${esc(c.cat)}</div></button>`).join("")}</div></div>
+<div class="rail">${MENU.map(c => `<button class="tile" data-cat="${c.id}"><div class="ph">${pic(c.img, c.art)}</div><div class="nm">${esc(c.cat)}</div></button>`).join("")}</div></div>
 <div class="sec"><div class="sec-h"><h3>App Exclusive Deals</h3><button class="more-link" data-push-deals>View all →</button></div>
 <div class="rail">${DEALS.map(dealTile).join("")}</div></div>
 <div class="sec"><div class="sec-h"><h3>Recent orders</h3><button class="more-link" data-tab-go="orders">All →</button></div>
@@ -439,14 +455,15 @@ ${S.orders.slice(0, 2).map(orderCard).join("")}</div>
 <div class="sec"><div class="sec-h"><h3>Trending</h3></div>
 <button class="trend" data-push-deals style="background:linear-gradient(150deg,#2e5c9a,#2f8f7a)"><div class="h">Last call for prizes</div><div class="s">Bonus points on every app order this week.</div><span class="cta">See offers</span><span class="art">${ART.bag}</span></button>
 <button class="trend" data-item="qpc" style="background:linear-gradient(150deg,#4a2a1c,#7a3d22)"><div class="h">Cooked when you order</div><div class="s">Quarter Pounder® with Cheese, hot and fresh.</div><span class="cta">Order Now</span><span class="art">${ART.burger}</span></button>
-<button class="trend" data-cat="breakfast" style="background:linear-gradient(150deg,#b8771c,#d99b2b)"><div class="h">Breakfast, your way</div><div class="s">Egg McMuffin®, Hash Browns and more until 10:30 AM.</div><span class="cta">See breakfast</span><span class="art">${ART.muffin}</span></button>
+<button class="trend" data-item="redbull" style="background:linear-gradient(150deg,#5ea9cf,#2f6f9c)"><div class="h">Frosted Cranberry</div><div class="s">All-new holiday drink, for a limited time.</div><span class="cta">Order Now</span><span class="art">${ART.redcup}</span></button>
+<button class="trend" data-item="hotcakessaus" style="background:linear-gradient(150deg,#8a4b1c,#b8771c)"><div class="h">Hotcakes and Sausage</div><div class="s">Warm hotcakes with syrup and butter.</div><span class="cta">Order Now</span><span class="art">${pic("hotcakes-sausage.png", "cakes")}</span></button>
 </div>
 <p class="note">Prices are illustrative.</p>
 </div>`;
 }
 function dealTile(d) {
 const on = S.deals.includes(d.id);
-return `<button class="tile deal${on ? " added" : ""}" data-deal="${d.id}"><div class="ph">${pic(d.item, d.art)}</div><div class="nm">${esc(d.name)}</div><div class="exp">${on ? "Added ✓" : d.exp}</div></button>`;
+return `<button class="tile deal${on ? " added" : ""}" data-deal="${d.id}"><div class="ph">${pic(d.img, d.art)}</div><div class="nm">${esc(d.name)}</div><div class="exp">${on ? "Added ✓" : d.exp}</div></button>`;
 }
 function order() {
 const st = store();
@@ -454,12 +471,12 @@ const head = `<div class="toggle" role="group" aria-label="Order type"><button a
 <div class="where-row">${ART.pin}<span><b>${S.mode === "pickup" ? esc(st.name) : "Deliver to 30 River Ct, Apt 4B"}</b><span class="small muted">${S.mode === "pickup" ? st.hours : "About 25–35 min · $3.99 delivery fee"}</span></span><button class="ulink" data-act="${S.mode === "pickup" ? "store" : "address"}">Change</button></div>
 <div class="subtabs">${["menu", "recent", "faves"].map(k => `<button aria-pressed="${S.orderSub === k}" data-osub="${k}">${{ menu: "Menu", recent: "Recent Orders", faves: "Faves" }[k]}</button>`).join("")}</div>`;
 let body = "";
-if (S.orderSub === "menu") body = `<h3 style="font-size:17px;margin:20px 0 4px">Explore our menu</h3>` + MENU.map(c => `<button class="cat-row" data-cat="${c.id}"><span class="ph">${pic(c.items[0].id, c.art)}</span><b>${esc(c.cat)}</b><span>›</span></button>`).join("");
+if (S.orderSub === "menu") body = `<h3 style="font-size:17px;margin:20px 0 4px">Explore our menu</h3>` + MENU.map(c => `<button class="cat-row" data-cat="${c.id}"><span class="ph">${pic(c.img, c.art)}</span><b>${esc(c.cat)}</b><span>›</span></button>`).join("");
 if (S.orderSub === "recent") body = `<p class="small muted" style="margin:16px 0 10px">Totals are what you paid, tax included.</p>` + S.orders.map(orderCard).join("");
 if (S.orderSub === "faves") body = S.faves.length ? `<div class="menu-grid">${S.faves.map(id => miCard(byId(id))).join("")}</div>` : `<div class="empty"><p><b>No faves yet</b></p><p class="muted small">Tap the star on any item to save it here.</p></div>`;
 return `<div class="pad">${head}${body}</div>`;
 }
-function miCard(i) { return `<button class="mi" data-item="${i.id}"><div class="ph">${pic(i.id, i.art)}</div><div class="nm">${esc(i.name)}</div><div class="pr">${money(unitAt(i.price))} · ${i.cal || ""}</div></button>`; }
+function miCard(i) { return `<button class="mi" data-item="${i.id}"><div class="ph">${pic(i.img, i.art)}</div><div class="nm">${esc(i.name)}</div><div class="pr">${money(unitAt(i.price))} · ${i.cal || ""}</div></button>`; }
 function catView(id) { const c = MENU.find(x => x.id === id); return `<div class="pad"><h2 class="title">${esc(c.cat)}</h2><p class="small muted" style="margin:0">Prices at ${esc(store().name)}</p><div class="menu-grid">${c.items.map(miCard).join("")}</div></div>`; }
 function bag() {
 if (S.done) {
@@ -477,7 +494,7 @@ const head = `<div style="display:flex;justify-content:flex-end;margin-bottom:10
 if (!S.bag.length) return `<div class="pad">${head}<div class="empty"><div class="ph">${ART.bag}</div><p><b>Your bag is empty</b></p><p class="muted small">Add something from the menu or reorder a past order.</p><button class="btn primary" data-tab-go="order">Browse the menu</button><button class="btn" data-tab-go="orders">See past orders</button></div></div>`;
 const t = bagTotals();
 return `<div class="pad">${head}
-${S.bag.map((l, i) => `<div class="item"><span class="ph">${pic(l.ref, l.art)}</span>
+${S.bag.map((l, i) => `<div class="item"><span class="ph">${pic(l.img, l.art)}</span>
 <span><span class="nm">${esc(l.name)}</span><br><span class="opt">${esc(l.opt)}</span>${l.web ? `<br><span class="chip web">Added on the website</span>` : ""}${l.deal ? `<br><span class="chip web">Deal applied</span>` : ""}</span>
 <span class="right"><span class="price">${money(r2(l.unit * l.qty))}</span><br><span class="stepper"><button aria-label="${l.qty === 1 ? "Remove" : "One less"} ${esc(l.name)}" data-dec="${i}">${l.qty === 1 ? `<svg width="14" height="16" viewBox="0 0 14 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 4h12M5 4V2h4v2M3 4l1 11h6l1-11"/></svg>` : "−"}</button><span>${l.qty}</span><button aria-label="One more ${esc(l.name)}" data-inc="${i}">+</button></span></span></div>`).join("")}
 <div class="summary"><div class="ln"><span>Subtotal</span><span>${money(t.sub)}</span></div>${S.mode === "delivery" ? `<div class="ln"><span>Delivery fee</span><span>${t.fee ? money(t.fee) : "Free"}</span></div>` : ""}<div class="ln"><span>Tax</span><span>${money(t.tax)}</span></div><div class="ln total"><span>Total</span><span>${money(t.total)}</span></div></div>
@@ -510,9 +527,9 @@ if (sub === "rewards") body = `
 <div class="rcard"><span class="coins">${ART.coins}</span><div class="k">Hi Aria, you have</div><div class="big">${S.points.toLocaleString()} pts!</div>
 <div class="row"><button class="ulink" data-act="how">How it works</button><button class="rv" data-rsub="code">Use my code</button></div></div>
 <div class="sec"><div class="sec-h"><h3>Aria’s Rewards</h3></div>
-<div class="rail">${REWARDS.map(r => `<button class="reward" data-reward="${r.id}" ${S.points < r.pts ? "disabled" : ""}><div class="ph"><span class="ring"><span>${ART[r.art]}</span></span></div><div class="body"><div class="nm">${esc(r.name)}</div><div class="cost"><span class="coin"></span>${r.pts.toLocaleString()} pts</div></div></button>`).join("")}</div></div>
+<div class="rail">${REWARDS.map(r => `<button class="reward" data-reward="${r.id}" ${S.points < r.pts ? "disabled" : ""}><div class="ph"><span class="ring"><span>${pic(r.img, r.art)}</span></span></div><div class="body"><div class="nm">${esc(r.name)}</div><div class="cost"><span class="coin"></span>${r.pts.toLocaleString()} pts</div></div></button>`).join("")}</div></div>
 <div class="where-row" style="margin-top:22px">${ART.pin}<span class="small">Viewing what’s available for pickup at ${esc(store().name)}.</span><button class="ulink small" data-act="store">Change</button></div>`;
-if (sub === "deals") body = `<div class="menu-grid">${DEALS.map(d => { const on = S.deals.includes(d.id); return `<button class="mi" data-deal="${d.id}"><div class="ph">${pic(d.item, d.art)}</div><div class="nm">${esc(d.name)}</div><div class="pr">${on ? "Added ✓" : d.exp}</div></button>`; }).join("")}</div>`;
+if (sub === "deals") body = `<div class="menu-grid">${DEALS.map(d => { const on = S.deals.includes(d.id); return `<button class="mi" data-deal="${d.id}"><div class="ph">${pic(d.img, d.art)}</div><div class="nm">${esc(d.name)}</div><div class="pr">${on ? "Added ✓" : d.exp}</div></button>`; }).join("")}</div>`;
 if (sub === "code") body = `<div class="codecard"><div class="top"><h4>Use your code to earn and save</h4><p>Share or scan your code before ordering</p><div class="num">39 80</div><div class="qr">${qr()}</div></div>
 <div class="bot"><b style="font-size:18px">Want to pay with your code?</b><p class="small" style="margin:4px 0 12px">Link a card to your account and check out faster.</p><button class="btn sm" data-act="pay">Add Payment Method</button></div></div>
 <button class="btn" style="margin-top:16px" data-act="receiptpts">Add missing points from a receipt</button>`;
@@ -553,7 +570,7 @@ const unit = unitAt(it.price + MEAL[meal].add), fav = S.faves.includes(id);
 openSheet(`<h2 class="title" id="sheetTitle" style="font-size:26px">${esc(it.name)}</h2>
 <div style="font-size:15px">${money(unitAt(it.price))} &nbsp; ${it.cal || ""}</div>
 <button class="ulink" data-fav="${id}" style="margin-top:8px;display:inline-flex;gap:6px;align-items:center">${fav ? "★" : "☆"} ${fav ? "Saved to Faves" : "Favorite"}</button>
-<div class="hero-ph">${pic(id, it.art)}</div>
+<div class="hero-ph">${pic(meal !== "none" && it.mealImg ? it.mealImg : it.img, it.art)}</div>
 <button class="btn" data-act="customize">Customize</button>
 ${it.meal ? `<h3 style="margin:18px 0 0;font-size:18px">Make it a meal?</h3><div class="small">Add a side and a drink</div><div class="meal-opts">${Object.entries(MEAL).map(([k, m]) => `<button aria-pressed="${k === meal}" data-meal="${k}"><b>${m.label === "Item only" ? "Item only" : m.label}</b><br><span class="muted">${m.add ? "+" + money(m.add) : ""}</span></button>`).join("")}</div>` : `<div style="height:16px"></div>`}
 <div style="display:flex;gap:12px;align-items:center">
@@ -633,7 +650,7 @@ if (dl.delivery) { S.mode = "delivery"; render(); return toast("Deal added · sw
 const it = byId(dl.item); addItem(it, null, 1, { unit: dl.price, opt: "Deal · " + dl.name, key: "deal-" + dl.id }); S.bag[S.bag.length - 1].deal = true;
 render(); return toast("Deal added to your bag"); }
 if (d.reward) { const r = REWARDS.find(x => x.id === d.reward); S.points -= r.pts;
-addItem({ id: "rw" + r.id, name: r.name, art: r.art }, null, 1, { unit: 0, opt: `Reward · ${r.pts.toLocaleString()} pts`, key: "rw-" + r.id }); S.bag[S.bag.length - 1].reward = true;
+addItem({ id: "rw" + r.id, name: r.name, art: r.art, img: r.img }, null, 1, { unit: 0, opt: `Reward · ${r.pts.toLocaleString()} pts`, key: "rw-" + r.id }); S.bag[S.bag.length - 1].reward = true;
 render(); return toast(`${r.name} added · ${r.pts.toLocaleString()} pts used`); }
 if (d.more) { const k = d.more;
 if (k === "orders") return go("orders");
