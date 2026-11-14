@@ -14,6 +14,12 @@ This is a small design system for McDonald's ordering. Two platforms share one s
 ![02 Mobile](assets/02-mobile.png)
 ![03 Website](assets/03-website.png)
 
+## Website prototype
+
+**[Try it → marie-6.github.io/Mcdonalds/website/](https://marie-6.github.io/Mcdonalds/website/)**
+
+A working redesign of the mcdonalds.com breakfast menu, built from the Design Spec and the Website rules (page 3). You can order for pickup, keep one bag (sign in at checkout to merge the bag from your phone), switch restaurants and see prices update, and find past orders with item prices, tax, total, "Add all to bag" and a downloadable receipt. Nothing is really ordered or paid. Source: [`website/index.html`](website/index.html).
+
 ## The core idea
 
 > The design system carries the rules that do not change.

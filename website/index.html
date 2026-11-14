@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breakfast Ordering Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+/* Tokens from docs/01-design-spec.md */
+:root {
+  --gold: #FFBC0D;
+  --gold-stroke: #C08B00;
+  --red: #DB0007;
+  --black: #000000;
+  --charcoal: #2D2D2D;
+  --light-gray: #F7F7F7;
+  --ink: #292929;
+  --muted: #7C7C7C;
+  --canvas: #FFFFFF;
+  --info: #006BAE;
+
+  --r-card: 12px;
+  --r-pill: 48px;
+  --s1: 6px; --s2: 12px; --s3: 18px; --s4: 30px;
+  --margin: 30px;
+}
+@media (max-width: 760px) { :root { --margin: 18px; } }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 16px; line-height: 23px; font-weight: 400;
+  letter-spacing: -0.15px;
+}
+button, input { font: inherit; letter-spacing: inherit; color: inherit; }
+a { color: var(--info); }
+
+/* Type scale: Display / Heading / Body / Body S / Button / Caption */
+.t-display { font-size: 36px; line-height: 40px; font-weight: 700; margin: 0; }
+.t-heading { font-size: 16px; line-height: 20px; font-weight: 700; margin: 0; }
+.t-body-s { font-size: 14px; line-height: 24px; }
+.t-caption { font-size: 10px; line-height: 14.5px; }
+.muted { color: var(--muted); }
+.price { font-weight: 700; }
+
+/* Buttons: 48px pills, pressed state is instant */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s1);
+  min-height: 48px; padding: 0 var(--s3);
+  border-radius: var(--r-pill);
+  font-size: 16px; line-height: 20px; font-weight: 700;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: none;
+}
+.btn-primary { background: var(--gold); border: 1px solid var(--gold-stroke); color: var(--ink); }
+.btn-primary:active { background: var(--gold-stroke); }
+.btn-secondary { background: var(--canvas); border: 1px solid var(--ink); color: var(--ink); }
+.btn-secondary:active { background: var(--light-gray); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.btn-block { width: 100%; }
+.link-btn {
+  background: none; border: 0; padding: 0 var(--s1); min-height: 44px;
+  color: var(--info); cursor: pointer; font-size: 14px; text-decoration: underline;
+}
+:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+
+/* Prototype banner */
+.proto {
+  background: var(--light-gray); border-bottom: 1px solid #e6e6e6;
+  padding: var(--s1) var(--margin); text-align: center;
+}
+
+/* Header */
+header.site {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--canvas); border-bottom: 1px solid #e6e6e6;
+}
+.bar {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s2) var(--margin); max-width: 1280px; margin: 0 auto;
+}
+.wordmark { font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none; margin-right: var(--s2); }
+nav.main { display: flex; gap: var(--s1); }
+nav.main a {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s2);
+  color: var(--ink); text-decoration: none; font-size: 14px; border-radius: var(--r-pill);
+}
+nav.main a[aria-current="page"] { font-weight: 700; background: var(--light-gray); }
+.spacer { flex: 1; }
+.chip {
+  display: inline-flex; align-items: center; gap: var(--s1);
+  min-height: 44px; padding: 0 var(--s2);
+  background: none; border: 0; border-radius: var(--r-pill); cursor: pointer; font-size: 14px;
+}
+.chip:active { background: var(--light-gray); }
+.bag-btn { position: relative; }
+.badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; padding: 0 var(--s1);
+  border-radius: var(--r-pill); background: var(--red); color: var(--canvas);
+  font-size: 10px; line-height: 14.5px; font-weight: 700;
+}
+.badge[hidden] { display: none; }
+.sync {
+  display: inline-flex; align-items: center; gap: var(--s1);
+  font-size: 10px; line-height: 14.5px; color: var(--muted);
+}
+.sync::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
+.sync[data-state="syncing"]::before { background: var(--muted); }
+.sync[data-state="offline"]::before { background: var(--muted); }
+.sync[data-state="local"]::before { background: var(--canvas); border: 1px solid var(--muted); }
+
+.popover {
+  position: absolute; z-index: 30; margin-top: var(--s1);
+  background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card);
+  padding: var(--s1); min-width: 280px;
+}
+.popover[hidden] { display: none; }
+.opt {
+  display: flex; flex-direction: column; align-items: flex-start; width: 100%;
+  min-height: 44px; padding: var(--s1) var(--s2); background: none; border: 0;
+  border-radius: var(--r-card); cursor: pointer; text-align: left;
+}
+.opt:hover, .opt[aria-checked="true"] { background: var(--light-gray); }
+
+@media (max-width: 760px) {
+  .bar { flex-wrap: wrap; gap: var(--s1); }
+  .wordmark { margin-right: 0; }
+  nav.main { order: 3; width: 100%; }
+  .where { order: 4; width: 100%; }
+  .header-sync { display: none; }
+}
+
+/* Layout */
+main { max-width: 1280px; margin: 0 auto; padding: var(--s4) var(--margin) 60px; }
+.page-head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s2) var(--s4); margin-bottom: var(--s4); }
+.page-head p { margin: var(--s1) 0 0; }
+
+/* Menu */
+.menu-layout { display: grid; grid-template-columns: 200px 1fr; gap: var(--s4); }
+.cats { position: sticky; top: 100px; align-self: start; display: flex; flex-direction: column; }
+.cats a {
+  display: flex; align-items: center; min-height: 44px; padding: 0 var(--s2);
+  color: var(--ink); text-decoration: none; font-size: 14px; border-radius: var(--r-pill);
+}
+.cats a:hover { background: var(--light-gray); }
+.cat { margin-bottom: var(--s4); scroll-margin-top: 100px; }
+.cat h2 { margin-bottom: var(--s2); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--s3); }
+.card { display: flex; flex-direction: column; gap: var(--s2); }
+.thumb {
+  aspect-ratio: 4 / 3; border-radius: var(--r-card); background: var(--light-gray);
+  display: flex; align-items: center; justify-content: center; color: var(--muted);
+  font-size: 14px;
+}
+.card .row { display: flex; justify-content: space-between; gap: var(--s2); align-items: baseline; }
+.card.off { opacity: .45; }
+.menu-layout > *, .page-head > *, .orders-layout > *, .checkout-layout > * { min-width: 0; }
+@media (max-width: 760px) {
+  .menu-layout { grid-template-columns: minmax(0, 1fr); }
+  .cats { position: static; flex-direction: row; overflow-x: auto; gap: var(--s1); }
+  .cats a { white-space: nowrap; background: var(--light-gray); }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s2); }
+}
+
+/* Panels */
+.panel { background: var(--light-gray); border-radius: var(--r-card); padding: var(--s3); }
+.divider { border: 0; border-top: 1px solid #e6e6e6; margin: var(--s3) 0; }
+
+/* Bag drawer */
+.scrim { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 40; }
+.scrim[hidden], .drawer[hidden], .modal[hidden] { display: none; }
+.drawer {
+  position: fixed; z-index: 41; top: 0; right: 0; bottom: 0; width: min(440px, 100%);
+  background: var(--canvas); border-left: 1px solid var(--ink);
+  display: flex; flex-direction: column;
+}
+.drawer-head { display: flex; align-items: center; justify-content: space-between; padding: var(--s3); border-bottom: 1px solid #e6e6e6; }
+.drawer-body { flex: 1; overflow-y: auto; padding: var(--s3); }
+.drawer-foot { padding: var(--s3); border-top: 1px solid #e6e6e6; }
+.icon-btn {
+  width: 44px; height: 44px; border-radius: 50%; border: 0; background: none; cursor: pointer;
+  font-size: 16px; display: inline-flex; align-items: center; justify-content: center;
+}
+.icon-btn:active { background: var(--light-gray); }
+
+.bag-item { display: grid; grid-template-columns: 56px 1fr auto; gap: var(--s2); padding: var(--s2) 0; border-bottom: 1px solid #e6e6e6; }
+.bag-item .thumb { aspect-ratio: 1; font-size: 10px; }
+.bag-item.off > :not(.swap-row) { opacity: .45; }
+.tag {
+  display: inline-flex; align-items: center; padding: 0 var(--s1);
+  border-radius: var(--r-pill); border: 1px solid var(--muted);
+  font-size: 10px; line-height: 14.5px; margin-top: var(--s1);
+}
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--ink); border-radius: var(--r-pill); height: 44px; }
+.stepper button { width: 44px; height: 42px; border: 0; background: none; cursor: pointer; font-size: 16px; border-radius: var(--r-pill); }
+.stepper button:active { background: var(--light-gray); }
+.stepper span { min-width: 18px; text-align: center; font-weight: 700; font-size: 14px; }
+.swap-row { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1); }
+
+.summary .line { display: flex; justify-content: space-between; font-size: 14px; line-height: 24px; }
+.summary .total { font-size: 16px; font-weight: 700; padding-top: var(--s1); margin-top: var(--s1); border-top: 1px solid #e6e6e6; }
+.note { font-size: 14px; line-height: 24px; color: var(--ink); border-left: 2px solid var(--gold-stroke); padding-left: var(--s2); margin: var(--s2) 0; }
+
+/* Modal */
+.modal { position: fixed; z-index: 51; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--s3); }
+.modal-card { background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card); padding: var(--s4); width: min(420px, 100%); }
+.modal-card p { margin: var(--s2) 0 var(--s3); }
+.stack { display: flex; flex-direction: column; gap: var(--s2); }
+
+/* Toast */
+.toast {
+  position: fixed; z-index: 60; left: 50%; bottom: var(--s4); transform: translateX(-50%);
+  background: var(--charcoal); color: var(--canvas); border-radius: var(--r-card);
+  padding: var(--s1) var(--s1) var(--s1) var(--s3); display: flex; align-items: center; gap: var(--s2);
+  font-size: 14px; line-height: 24px; max-width: calc(100% - 36px);
+}
+.toast[hidden] { display: none; }
+body.bag-open .toast { bottom: 100px; }
+.toast button {
+  background: none; border: 0; color: var(--canvas); font-weight: 700; text-decoration: underline;
+  min-height: 44px; padding: 0 var(--s2); cursor: pointer; white-space: nowrap;
+}
+
+/* Orders */
+.orders-layout { display: grid; grid-template-columns: minmax(280px, 400px) 1fr; gap: var(--s4); align-items: start; }
+.order-row {
+  display: grid; grid-template-columns: 1fr auto; gap: var(--s1) var(--s2); width: 100%;
+  padding: var(--s2); background: none; border: 0; border-bottom: 1px solid #e6e6e6;
+  text-align: left; cursor: pointer; border-radius: var(--r-card);
+}
+.order-row[aria-current="true"] { background: var(--light-gray); }
+.order-row:active { background: var(--light-gray); }
+.order-row .items { font-weight: 700; font-size: 14px; line-height: 20px; }
+.receipt-line { display: flex; justify-content: space-between; gap: var(--s2); font-size: 14px; line-height: 24px; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
+@media (max-width: 860px) { .orders-layout { grid-template-columns: 1fr; } }
+
+/* Checkout */
+.checkout-layout { display: grid; grid-template-columns: 1fr 380px; gap: var(--s4); align-items: start; }
+@media (max-width: 860px) { .checkout-layout { grid-template-columns: 1fr; } }
+fieldset { border: 0; padding: 0; margin: 0 0 var(--s4); }
+legend { padding: 0; margin-bottom: var(--s2); }
+.radio {
+  display: flex; align-items: center; gap: var(--s2); min-height: 48px; padding: var(--s1) var(--s3);
+  border: 1px solid #e6e6e6; border-radius: var(--r-card); margin-bottom: var(--s1); cursor: pointer;
+}
+.radio:has(input:checked) { border-color: var(--ink); }
+.radio input { accent-color: var(--ink); width: 18px; height: 18px; }
+
+.empty { text-align: center; padding: 60px var(--s3); }
+.confirm-head { display: flex; flex-direction: column; gap: var(--s1); margin-bottom: var(--s4); }
+
+footer.site { border-top: 1px solid #e6e6e6; padding: var(--s3) var(--margin); max-width: 1280px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<div class="proto t-caption">Student design prototype (SVA MFA IxD), not affiliated with McDonald's. No real orders are placed and no payment is taken. Prices are illustrative.</div>
+
+<header class="site">
+  <div class="bar">
+    <a class="wordmark" href="#menu">McDonald's</a>
+    <nav class="main" aria-label="Main">
+      <a href="#menu" data-nav="menu">Menu</a>
+      <a href="#orders" data-nav="orders">Orders</a>
+    </nav>
+    <div class="spacer"></div>
+    <div class="where" style="position:relative">
+      <button class="chip" id="whereBtn" aria-haspopup="true" aria-expanded="false">
+        <span class="muted">Pickup ·</span> <strong id="whereName"></strong> <span aria-hidden="true">▾</span>
+      </button>
+      <div class="popover" id="wherePop" role="menu" hidden></div>
+    </div>
+    <span class="sync header-sync" id="syncHeader"></span>
+    <button class="chip" id="acctBtn"></button>
+    <button class="btn btn-secondary bag-btn" id="bagBtn" aria-label="Open bag">
+      Bag <span class="badge" id="bagCount" hidden>0</span>
+    </button>
+  </div>
+</header>
+
+<main id="view"></main>
+
+<footer class="site t-caption muted">
+  Prototype for "One System, Two Experiences" (Assignment 2). Visual rules follow McDonald's Feel-Good Design Cheatsheets v1.2. Inter stands in for Speedee. McDonald's is a trademark of McDonald's; this exercise is not affiliated with it.
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" hidden>
+  <div class="drawer-head">
+    <div>
+      <h2 class="t-heading" id="drawerTitle">Your bag</h2>
+      <span class="sync" id="syncDrawer"></span>
+    </div>
+    <button class="icon-btn" data-action="close-bag" aria-label="Close bag">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot"></div>
+</aside>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="modal-card" id="modalCard"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+const TAX_RATE = 0.08875;
+
+const RESTAURANTS = {
+  b23: { name: "Broadway & 23rd St", short: "Broadway & 23rd", wait: 8, delta: 0 },
+  usq: { name: "Union Sq · 14th St", short: "Union Sq", wait: 12, delta: 20 }
+};
+
+// Prices are in cents at Broadway & 23rd; Union Sq adds RESTAURANTS.usq.delta.
+const MENU = [
+  { cat: "Breakfast Sandwiches", items: [
+    { id: "egg-mcmuffin", name: "Egg McMuffin®", desc: "Egg, Canadian bacon, American cheese on an English muffin", cal: 310, cents: 479 },
+    { id: "sausage-mcmuffin-egg", name: "Sausage McMuffin® with Egg", desc: "Sausage, egg and cheese on an English muffin", cal: 480, cents: 499 },
+    { id: "sausage-mcmuffin", name: "Sausage McMuffin®", desc: "Sausage and cheese on an English muffin", cal: 400, cents: 249 },
+    { id: "bec-biscuit", name: "Bacon, Egg & Cheese Biscuit", desc: "Bacon, egg and cheese on a warm biscuit", cal: 460, cents: 489 },
+    { id: "sausage-biscuit", name: "Sausage Biscuit", desc: "Sausage on a warm biscuit", cal: 460, cents: 239 }
+  ]},
+  { cat: "McGriddles®", items: [
+    { id: "sausage-mcgriddles", name: "Sausage McGriddles®", desc: "Sausage between maple griddle cakes", cal: 430, cents: 319, notAt: ["usq"], swap: "sausage-mcmuffin" },
+    { id: "bec-mcgriddles", name: "Bacon, Egg & Cheese McGriddles®", desc: "Bacon, egg and cheese between griddle cakes", cal: 420, cents: 499, notAt: ["usq"], swap: "bec-biscuit" },
+    { id: "sec-mcgriddles", name: "Sausage, Egg & Cheese McGriddles®", desc: "Sausage, egg and cheese between griddle cakes", cal: 550, cents: 499, notAt: ["usq"], swap: "sausage-mcmuffin-egg" }
+  ]},
+  { cat: "Hotcakes & Platters", items: [
+    { id: "hotcakes", name: "Hotcakes", desc: "Three hotcakes with butter and syrup", cal: 580, cents: 379 },
+    { id: "hotcakes-sausage", name: "Hotcakes and Sausage", desc: "Three hotcakes with a side of sausage", cal: 770, cents: 529 },
+    { id: "big-breakfast", name: "Big Breakfast®", desc: "Scrambled eggs, sausage, biscuit and hash browns", cal: 760, cents: 549 }
+  ]},
+  { cat: "Sides", items: [
+    { id: "hash-browns", name: "Hash Browns", desc: "Shredded potato, golden and crispy", cal: 140, cents: 219 },
+    { id: "sausage-burrito", name: "Sausage Burrito", desc: "Sausage, egg, cheese and peppers in a tortilla", cal: 310, cents: 229 },
+    { id: "oatmeal", name: "Fruit & Maple Oatmeal", desc: "Oatmeal with diced apples and cranberries", cal: 320, cents: 329 }
+  ]},
+  { cat: "Coffee & Drinks", items: [
+    { id: "coffee", name: "Premium Roast Coffee", desc: "Small, freshly brewed", cal: 0, cents: 160 },
+    { id: "iced-coffee", name: "Iced Coffee", desc: "Small, with cream and sugar", cal: 140, cents: 249 },
+    { id: "oj", name: "Minute Maid® Orange Juice", desc: "Small", cal: 150, cents: 279 }
+  ]}
+];
+const ITEMS = Object.fromEntries(MENU.flatMap(c => c.items).map(i => [i.id, i]));
+
+// Orders already on the account (placed in the app). Prices are what was paid.
+const ACCOUNT_ORDERS = [
+  { id: "M8K2", at: "2026-11-12T08:14", rid: "b23", source: "app",
+    items: [["egg-mcmuffin", 1, 479], ["hash-browns", 1, 219], ["coffee", 1, 160]] },
+  { id: "M7F9", at: "2026-11-10T08:41", rid: "usq", source: "app",
+    items: [["sausage-mcmuffin-egg", 1, 519], ["coffee", 1, 180]] },
+  { id: "M6C3", at: "2026-11-06T09:02", rid: "b23", source: "app",
+    items: [["hotcakes-sausage", 1, 529], ["oj", 1, 279]] },
+  { id: "M5A1", at: "2026-11-03T08:20", rid: "b23", source: "app",
+    items: [["sausage-mcgriddles", 2, 299]] }
+].map(o => finalizeOrder({ ...o, items: o.items.map(([id, qty, cents]) => ({ id, name: ITEMS[id].name, qty, cents })) }));
+
+// The bag on the phone, merged in when the person signs in.
+const PHONE_BAG = [{ id: "hash-browns", qty: 1 }];
+
+/* ---------- state ---------- */
+const STORE_KEY = "mcd-proto-v1";
+let state = load() || {
+  signedIn: false,
+  rid: "b23",
+  bag: [],             // { id, qty, fromPhone }
+  orders: [],          // orders placed on this site
+  phoneMerged: false
+};
+let priceNote = null;  // shown once after a restaurant change
+let syncing = false;
+let lastRemoved = null;
+let pendingAfterSignIn = null;
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)); } catch { return null; }
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {}
+}
+
+/* ---------- money ---------- */
+const fmt = c => "$" + (c / 100).toFixed(2);
+const priceAt = (id, rid = state.rid) => ITEMS[id].cents + RESTAURANTS[rid].delta;
+const soldAt = (id, rid = state.rid) => !(ITEMS[id].notAt || []).includes(rid);
+function taxOf(sub) { return Math.round(sub * TAX_RATE); }
+function finalizeOrder(o) {
+  const subtotal = o.items.reduce((s, i) => s + i.cents * i.qty, 0);
+  const tax = taxOf(subtotal);
+  return { ...o, subtotal, tax, total: subtotal + tax };
+}
+function bagTotals() {
+  const live = state.bag.filter(b => soldAt(b.id));
+  const subtotal = live.reduce((s, b) => s + priceAt(b.id) * b.qty, 0);
+  const tax = taxOf(subtotal);
+  return { subtotal, tax, total: subtotal + tax, count: live.reduce((s, b) => s + b.qty, 0), skipped: state.bag.length - live.length };
+}
+const bagCount = () => state.bag.reduce((s, b) => s + b.qty, 0);
+
+function allOrders() {
+  const own = state.orders.filter(o => state.signedIn || o.guest);
+  return [...own, ...(state.signedIn ? ACCOUNT_ORDERS : [])].sort((a, b) => b.at.localeCompare(a.at));
+}
+const findOrder = id => allOrders().find(o => o.id === id);
+
+const fmtDate = iso => new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+const fmtTime = d => d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+const initials = name => name.replace(/[®™]/g, "").split(/[\s,&]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("");
+
+/* ---------- sync badge ---------- */
+function syncLabel() {
+  if (!navigator.onLine) return ["offline", "Offline — saved on this device"];
+  if (!state.signedIn) return ["local", "Saved on this device · sign in to sync"];
+  if (syncing) return ["syncing", "Syncing…"];
+  return ["synced", "Synced with your phone"];
+}
+function renderSync() {
+  const [s, label] = syncLabel();
+  for (const el of [syncHeader, syncDrawer]) { el.dataset.state = s; el.textContent = label; }
+}
+function touchSync() {
+  if (!state.signedIn || !navigator.onLine) return renderSync();
+  syncing = true; renderSync();
+  clearTimeout(touchSync.t);
+  touchSync.t = setTimeout(() => { syncing = false; renderSync(); }, 700);
+}
+addEventListener("online", renderSync);
+addEventListener("offline", renderSync);
+
+/* ---------- header ---------- */
+function renderHeader() {
+  whereName.textContent = RESTAURANTS[state.rid].short;
+  wherePop.innerHTML = Object.entries(RESTAURANTS).map(([rid, r]) => `
+    <button class="opt" role="menuitemradio" aria-checked="${rid === state.rid}" data-action="set-rid" data-rid="${rid}">
+      <strong class="t-body-s">${r.name}</strong>
+      <span class="t-caption muted">Ready in about ${r.wait} min${rid === "usq" ? " · no McGriddles®" : ""}</span>
+    </button>`).join("");
+  acctBtn.textContent = state.signedIn ? "Marie ▾" : "Sign in";
+  acctBtn.dataset.action = state.signedIn ? "sign-out" : "sign-in";
+  acctBtn.title = state.signedIn ? "Sign out (demo)" : "";
+  const n = bagCount();
+  bagCount_el.textContent = n;
+  bagCount_el.hidden = n === 0;
+  bagBtn.setAttribute("aria-label", `Open bag, ${n} item${n === 1 ? "" : "s"}`);
+  renderSync();
+}
+const bagCount_el = document.getElementById("bagCount");
+
+/* ---------- views ---------- */
+function route() {
+  const [name, arg] = location.hash.replace(/^#/, "").split("/");
+  document.querySelectorAll("[data-nav]").forEach(a => {
+    if (a.dataset.nav === (name || "menu")) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  if (name === "orders") renderOrders(arg);
+  else if (name === "checkout") renderCheckout();
+  else if (name === "placed") renderPlaced(arg);
+  else renderMenu();
+  renderHeader();
+}
+
+function renderMenu() {
+  const r = RESTAURANTS[state.rid];
+  view.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="t-display">Breakfast</h1>
+        <p class="t-body-s muted">Prices at ${r.name} · Order here for pickup, no app needed.</p>
+      </div>
+    </div>
+    <div class="menu-layout">
+      <nav class="cats" aria-label="Breakfast categories">
+        ${MENU.map((c, i) => `<a href="#menu" data-action="jump" data-cat="cat-${i}">${c.cat}</a>`).join("")}
+      </nav>
+      <div>
+        ${MENU.map((c, i) => `
+          <section class="cat" id="cat-${i}">
+            <h2 class="t-heading">${c.cat}</h2>
+            <div class="grid">
+              ${c.items.map(cardHTML).join("")}
+            </div>
+          </section>`).join("")}
+      </div>
+    </div>`;
+}
+function cardHTML(it) {
+  const ok = soldAt(it.id);
+  return `
+    <article class="card ${ok ? "" : "off"}">
+      <div class="thumb" aria-hidden="true">${initials(it.name)}</div>
+      <div>
+        <div class="row">
+          <h3 class="t-heading">${it.name}</h3>
+          <span class="price">${ok ? fmt(priceAt(it.id)) : "—"}</span>
+        </div>
+        <div class="t-caption muted">${it.cal} Cal · ${it.desc}</div>
+      </div>
+      ${ok
+        ? `<button class="btn btn-secondary btn-block" data-action="add" data-id="${it.id}">Add to bag · ${fmt(priceAt(it.id))}</button>`
+        : `<button class="btn btn-secondary btn-block" disabled>Not at ${RESTAURANTS[state.rid].short}</button>`}
+    </article>`;
+}
+
+function summaryHTML(t, extra = "") {
+  return `
+    <div class="summary">
+      <div class="line"><span>Subtotal</span><span>${fmt(t.subtotal)}</span></div>
+      <div class="line"><span>Tax (8.875%)</span><span>${fmt(t.tax)}</span></div>
+      <div class="line"><span>Fees</span><span>$0.00</span></div>
+      <div class="line total"><span>Total</span><span>${fmt(t.total)}</span></div>
+      ${extra}
+    </div>`;
+}
+
+function renderCheckout() {
+  const t = bagTotals();
+  const r = RESTAURANTS[state.rid];
+  if (t.count === 0) {
+    view.innerHTML = `<div class="empty"><h1 class="t-heading">Your bag is empty</h1><p class="t-body-s muted">Add something from the menu first.</p><a class="btn btn-secondary" href="#menu">Back to menu</a></div>`;
+    return;
+  }
+  const now = new Date();
+  const asap = new Date(now.getTime() + r.wait * 60000);
+  const later = new Date(now.getTime() + 30 * 60000);
+  view.innerHTML = `
+    <div class="page-head"><h1 class="t-display">Checkout</h1></div>
+    <div class="checkout-layout">
+      <div>
+        <fieldset>
+          <legend class="t-heading">Pickup at</legend>
+          <div class="panel" style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+            <div><strong>${r.name}</strong><div class="t-caption muted">Counter or drive-thru pickup</div></div>
+            <button class="link-btn" data-action="open-where">Change</button>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="t-heading">Pickup time</legend>
+          <label class="radio"><input type="radio" name="when" value="${asap.toISOString()}" checked> As soon as possible · about ${fmtTime(asap)}</label>
+          <label class="radio"><input type="radio" name="when" value="${later.toISOString()}"> In 30 minutes · ${fmtTime(later)}</label>
+        </fieldset>
+        <fieldset>
+          <legend class="t-heading">Payment</legend>
+          <label class="radio"><input type="radio" name="pay" checked> Pay at the restaurant</label>
+          <p class="t-caption muted">Prototype: no card details are asked for and no payment is taken.</p>
+        </fieldset>
+        ${state.signedIn ? "" : `<p class="note">You're checking out as a guest. This order is saved on this device. <button class="link-btn" data-action="sign-in" data-then="checkout">Sign in</button> to sync it with your phone.</p>`}
+      </div>
+      <div class="panel">
+        <h2 class="t-heading" style="margin-bottom:12px">Order summary</h2>
+        ${state.bag.filter(b => soldAt(b.id)).map(b => `
+          <div class="receipt-line"><span>${b.qty} × ${ITEMS[b.id].name}</span><span>${fmt(priceAt(b.id) * b.qty)}</span></div>`).join("")}
+        ${t.skipped ? `<p class="t-caption muted">${t.skipped} item not sold at ${r.short} stays in your bag and isn't included.</p>` : ""}
+        <hr class="divider">
+        ${summaryHTML(t)}
+        <button class="btn btn-primary btn-block" style="margin-top:18px" data-action="place">Place order · ${fmt(t.total)}</button>
+      </div>
+    </div>`;
+}
+
+function receiptHTML(o) {
+  return `
+    ${o.items.map(i => `<div class="receipt-line"><span>${i.qty} × ${i.name}</span><span>${fmt(i.cents * i.qty)}</span></div>`).join("")}
+    <hr class="divider">
+    ${summaryHTML(o)}`;
+}
+
+function renderPlaced(id) {
+  const o = findOrder(id);
+  if (!o) { location.hash = "#orders"; return; }
+  view.innerHTML = `
+    <div class="confirm-head">
+      <span class="t-caption muted">Order #${o.id}</span>
+      <h1 class="t-display">Order placed</h1>
+      <p class="t-body-s" style="margin:0">Pick it up at <strong>${RESTAURANTS[o.rid].name}</strong> around <strong>${fmtTime(new Date(o.pickupAt))}</strong>. Pay at the counter.</p>
+      <span class="t-caption muted">${o.guest ? "Saved on this device. Sign in to see it on your phone too." : "Also in Orders on your phone."}</span>
+    </div>
+    <div class="panel" style="max-width:520px">
+      <h2 class="t-heading" style="margin-bottom:12px">Receipt</h2>
+      ${receiptHTML(o)}
+      <div class="actions">
+        <button class="btn btn-secondary" data-action="receipt" data-id="${o.id}">Download receipt</button>
+        <a class="btn btn-secondary" href="#orders/${o.id}">See all orders</a>
+      </div>
+    </div>`;
+}
+
+function renderOrders(selId) {
+  const list = allOrders();
+  if (!list.length) {
+    view.innerHTML = `
+      <div class="empty">
+        <h1 class="t-heading">${state.signedIn ? "No orders yet" : "Sign in to see your past orders"}</h1>
+        <p class="t-body-s muted">${state.signedIn ? "Orders you place here or in the app show up here." : "Orders from the app show up here too, with every item price, the tax and the total."}</p>
+        ${state.signedIn ? `<a class="btn btn-secondary" href="#menu">Browse breakfast</a>` : `<button class="btn btn-primary" data-action="sign-in" data-then="orders">Sign in</button>`}
+      </div>`;
+    return;
+  }
+  const sel = list.find(o => o.id === selId) || list[0];
+  view.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="t-display">Your orders</h1>
+        <p class="t-body-s muted">${state.signedIn ? "The same history as the app." : `Orders on this device. <button class="link-btn" data-action="sign-in" data-then="orders">Sign in</button> to see orders from your phone.`}</p>
+      </div>
+    </div>
+    <div class="orders-layout">
+      <div role="list">
+        ${list.map(o => `
+          <button class="order-row" role="listitem" aria-current="${o.id === sel.id}" data-action="pick-order" data-id="${o.id}">
+            <span class="t-caption muted">${fmtDate(o.at)} · Pickup${o.source === "app" ? " · in the app" : " · on the web"}</span>
+            <span></span>
+            <span class="items">${o.items.map(i => (i.qty > 1 ? i.qty + " × " : "") + i.name).join(", ")}</span>
+            <span class="price">${fmt(o.total)}</span>
+            <span class="t-caption muted">${RESTAURANTS[o.rid].name}</span>
+            <span class="t-body-s">Details →</span>
+          </button>`).join("")}
+      </div>
+      <div class="panel" id="orderDetail">${orderDetailHTML(sel)}</div>
+    </div>`;
+}
+
+function orderDetailHTML(o) {
+  const avail = o.items.filter(i => soldAt(i.id));
+  const nowSub = avail.reduce((s, i) => s + priceAt(i.id) * i.qty, 0);
+  const nowTotal = nowSub + taxOf(nowSub);
+  const r = RESTAURANTS[state.rid];
+  const notes = [];
+  if (avail.length < o.items.length) notes.push(`${o.items.length - avail.length} item isn't sold at ${r.short} and won't be added.`);
+  if (avail.length && nowTotal !== o.total) notes.push(`Today's price at ${r.short} is ${fmt(nowTotal)} (you paid ${fmt(o.total)}).`);
+  return `
+    <span class="t-caption muted">Order #${o.id} · ${fmtDate(o.at)} · Pickup</span>
+    <h2 class="t-heading" style="margin:6px 0 12px">${RESTAURANTS[o.rid].name}</h2>
+    ${receiptHTML(o)}
+    ${notes.map(n => `<p class="note">${n}</p>`).join("")}
+    <div class="actions">
+      ${avail.length ? `<button class="btn btn-primary" data-action="reorder" data-id="${o.id}">Add all to bag · ${fmt(nowTotal)}</button>` : ""}
+      <button class="btn btn-secondary" data-action="receipt" data-id="${o.id}">Download receipt</button>
+    </div>`;
+}
+
+/* ---------- bag drawer ---------- */
+function openBag() {
+  renderBag();
+  scrim.hidden = false; drawer.hidden = false;
+  document.body.classList.add("bag-open");
+  drawer.querySelector("[data-action=close-bag]").focus();
+}
+function closeBag() {
+  scrim.hidden = true; drawer.hidden = true;
+  document.body.classList.remove("bag-open");
+  // "Added on your phone" labels clear once the bag has been seen.
+  if (state.bag.some(b => b.fromPhone)) { state.bag.forEach(b => b.fromPhone = false); save(); }
+  priceNote = null;
+}
+function renderBag() {
+  const r = RESTAURANTS[state.rid];
+  const t = bagTotals();
+  if (!state.bag.length) {
+    drawerBody.innerHTML = `<div class="empty" style="padding:40px 0"><p class="t-heading">Your bag is empty</p><p class="t-body-s muted">Items you add here or in the app show up in this bag.</p></div>`;
+    drawerFoot.innerHTML = `<button class="btn btn-secondary btn-block" data-action="close-bag">Browse breakfast</button>`;
+    renderSync();
+    return;
+  }
+  drawerBody.innerHTML = `
+    <div class="panel" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><span class="t-caption muted">Pickup at</span><div><strong>${r.name}</strong></div><span class="t-caption muted">Ready in about ${r.wait} min</span></div>
+        <button class="link-btn" data-action="open-where">Change</button>
+      </div>
+    </div>
+    ${state.bag.map((b, i) => bagItemHTML(b, i)).join("")}
+    <div style="margin-top:18px">${summaryHTML(t, priceNote ? `<p class="note">${priceNote}</p>` : "")}</div>`;
+  drawerFoot.innerHTML = `<button class="btn btn-primary btn-block" data-action="checkout" ${t.count ? "" : "disabled"}>Checkout · ${fmt(t.total)}</button>`;
+  renderSync();
+}
+function bagItemHTML(b, i) {
+  const it = ITEMS[b.id];
+  const ok = soldAt(b.id);
+  const swap = !ok && it.swap ? ITEMS[it.swap] : null;
+  return `
+    <div class="bag-item ${ok ? "" : "off"}">
+      <div class="thumb" aria-hidden="true">${initials(it.name)}</div>
+      <div>
+        <div class="t-heading">${it.name}</div>
+        <div class="t-caption muted">${ok ? fmt(priceAt(b.id)) + " each" : "Not sold at " + RESTAURANTS[state.rid].short}</div>
+        ${b.fromPhone ? `<span class="tag">Added on your phone</span>` : ""}
+      </div>
+      <div style="text-align:right">
+        <div class="price" style="margin-bottom:6px">${ok ? fmt(priceAt(b.id) * b.qty) : "—"}</div>
+        <div class="stepper" role="group" aria-label="Quantity of ${it.name}">
+          <button data-action="qty" data-i="${i}" data-d="-1" aria-label="One less">−</button>
+          <span>${b.qty}</span>
+          <button data-action="qty" data-i="${i}" data-d="1" aria-label="One more" ${ok ? "" : "disabled"}>+</button>
+        </div>
+      </div>
+      ${swap ? `<div class="swap-row"><span class="t-caption">Swap for ${swap.name} · ${fmt(priceAt(swap.id))}?</span><button class="link-btn" data-action="swap" data-i="${i}">Swap</button></div>` : ""}
+    </div>`;
+}
+
+/* ---------- actions ---------- */
+function addToBag(id, qty = 1, fromPhone = false) {
+  const line = state.bag.find(b => b.id === id);
+  if (line) line.qty += qty; else state.bag.push({ id, qty, fromPhone });
+}
+function changed() {
+  save(); renderHeader(); touchSync();
+  if (!drawer.hidden) renderBag();
+}
+
+function setRestaurant(rid) {
+  if (rid === state.rid) return;
+  // Price change only for items sold at both restaurants; unsold items are reported separately.
+  const old = state.rid;
+  const diff = state.bag.filter(b => soldAt(b.id, old) && soldAt(b.id, rid))
+    .reduce((s, b) => s + (priceAt(b.id, rid) - priceAt(b.id, old)) * b.qty, 0);
+  state.rid = rid;
+  if (state.bag.length) {
+    const unsold = state.bag.filter(b => !soldAt(b.id)).length;
+    priceNote = `Prices updated for ${RESTAURANTS[rid].short} (${diff >= 0 ? "+" : "−"}${fmt(Math.abs(diff))}).` +
+      (unsold ? ` ${unsold} item isn't sold here.` : "");
+    toast(priceNote);
+  } else {
+    toast(`Showing prices at ${RESTAURANTS[rid].name}`);
+  }
+  save(); route(); touchSync();
+  if (!drawer.hidden) renderBag();
+}
+
+function signIn(then) {
+  state.signedIn = true;
+  let merged = 0;
+  if (!state.phoneMerged) {
+    // Merge, never replace: the guest bag stays and the phone's items are added.
+    PHONE_BAG.forEach(p => { addToBag(p.id, p.qty, true); merged += p.qty; });
+    state.phoneMerged = true;
+  }
+  state.orders.forEach(o => { delete o.guest; });
+  closeModal();
+  toast(merged ? `Signed in · ${merged} item from your phone added to your bag` : "Signed in · bag synced with your phone", merged ? ["View bag", openBag] : null);
+  changed();
+  if (then) location.hash = "#" + then;
+  route();
+}
+function signOut() {
+  // Demo reset so the flow can be tried again.
+  state = { signedIn: false, rid: state.rid, bag: [], orders: [], phoneMerged: false };
+  save(); closeBag(); toast("Signed out · demo reset"); location.hash = "#menu"; route();
+}
+
+function placeOrder() {
+  const t = bagTotals();
+  if (!t.count) return;
+  const when = (document.querySelector("input[name=when]:checked") || {}).value || new Date().toISOString();
+  const id = "W" + Math.random().toString(36).slice(2, 5).toUpperCase();
+  const local = new Date(); local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
+  const order = finalizeOrder({
+    id, at: local.toISOString().slice(0, 16), rid: state.rid, source: "web", pickupAt: when,
+    guest: !state.signedIn || undefined,
+    items: state.bag.filter(b => soldAt(b.id)).map(b => ({ id: b.id, name: ITEMS[b.id].name, qty: b.qty, cents: priceAt(b.id) }))
+  });
+  state.orders.push(order);
+  state.bag = state.bag.filter(b => !soldAt(b.id));
+  changed();
+  location.hash = "#placed/" + id;
+}
+
+function reorder(id) {
+  const o = findOrder(id);
+  let n = 0;
+  o.items.filter(i => soldAt(i.id)).forEach(i => { addToBag(i.id, i.qty); n += i.qty; });
+  changed();
+  toast(`Added ${n} item${n === 1 ? "" : "s"} to your bag`, ["View bag", openBag]);
+}
+
+function downloadReceipt(id) {
+  const o = findOrder(id);
+  const w = 40;
+  const row = (l, r) => l.slice(0, w - r.length - 1).padEnd(w - r.length) + r;
+  const lines = [
+    "McDonald's · pickup receipt",
+    "(student prototype, not a real order)",
+    "",
+    `Order #${o.id}`,
+    `${fmtDate(o.at)} · Pickup`,
+    RESTAURANTS[o.rid].name,
+    "-".repeat(w),
+    ...o.items.map(i => row(`${i.qty} x ${i.name.replace(/[®™]/g, "")}`, fmt(i.cents * i.qty))),
+    "-".repeat(w),
+    row("Subtotal", fmt(o.subtotal)),
+    row("Tax (8.875%)", fmt(o.tax)),
+    row("Fees", "$0.00"),
+    row("Total", fmt(o.total)),
+    ""
+  ];
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/plain" }));
+  a.download = `receipt-${o.id}.txt`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast(`Receipt for order #${o.id} downloaded`);
+}
+
+/* ---------- modal ---------- */
+function openSignIn(then, reason) {
+  pendingAfterSignIn = then || null;
+  modalCard.innerHTML = `
+    <h2 class="t-heading" id="modalTitle">${reason === "checkout" ? "Sign in to check out" : "Sign in"}</h2>
+    <p class="t-body-s">${reason === "checkout"
+      ? "Your bag stays as it is. Signing in syncs it with your phone and saves this order to your history."
+      : "Signing in syncs your bag with the app and shows your past orders. Your bag stays as it is."}</p>
+    <div class="stack">
+      <button class="btn btn-primary btn-block" data-action="do-sign-in">Sign in (demo account)</button>
+      ${reason === "checkout"
+        ? `<button class="btn btn-secondary btn-block" data-action="guest">Continue as guest</button>`
+        : `<button class="btn btn-secondary btn-block" data-action="close-modal">Not now</button>`}
+    </div>
+    <p class="t-caption muted" style="margin-bottom:0">Prototype: no password needed and nothing is sent anywhere.</p>`;
+  scrim.hidden = false; modal.hidden = false;
+  modal.querySelector("button").focus();
+}
+function closeModal() {
+  modal.hidden = true;
+  if (drawer.hidden) scrim.hidden = true;
+}
+
+/* ---------- toast ---------- */
+function toast(msg, action) {
+  toastEl.innerHTML = `<span>${msg}</span>${action ? `<button data-action="toast-action">${action[0]}</button>` : ""}`;
+  toastEl._action = action && action[1];
+  toastEl.hidden = false;
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => { toastEl.hidden = true; lastRemoved = null; }, 5000);
+}
+const toastEl = document.getElementById("toast");
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-action]");
+  if (!el) {
+    if (!wherePop.hidden && !e.target.closest(".where")) closeWhere();
+    return;
+  }
+  const a = el.dataset.action;
+  if (a !== "set-rid" && !el.closest(".where")) closeWhere();
+  switch (a) {
+    case "add": {
+      addToBag(el.dataset.id);
+      changed();
+      toast(`${ITEMS[el.dataset.id].name} added · ${state.signedIn ? "synced with your phone" : "bag has " + bagCount()}`, ["View bag", openBag]);
+      break;
+    }
+    case "qty": {
+      const i = +el.dataset.i, line = state.bag[i];
+      line.qty += +el.dataset.d;
+      if (line.qty <= 0) {
+        state.bag.splice(i, 1);
+        lastRemoved = { line: { ...line, qty: 1 }, i };
+        toast(`${ITEMS[line.id].name} removed`, ["Undo", undoRemove]);
+      }
+      changed();
+      break;
+    }
+    case "swap": {
+      const i = +el.dataset.i, line = state.bag[i];
+      const swapId = ITEMS[line.id].swap;
+      state.bag.splice(i, 1);
+      addToBag(swapId, line.qty);
+      toast(`Swapped for ${ITEMS[swapId].name}`);
+      changed();
+      break;
+    }
+    case "close-bag": closeBag(); break;
+    case "checkout":
+      if (!state.signedIn) openSignIn("checkout", "checkout");
+      else { closeBag(); location.hash = "#checkout"; }
+      break;
+    case "do-sign-in": closeBag(); signIn(pendingAfterSignIn); break;
+    case "guest": closeModal(); closeBag(); location.hash = "#checkout"; break;
+    case "close-modal": closeModal(); break;
+    case "sign-in": openSignIn(el.dataset.then, el.dataset.then === "checkout" ? "checkout" : ""); break;
+    case "sign-out": if (confirm("Sign out of the demo? This resets the prototype.")) signOut(); break;
+    case "place": placeOrder(); break;
+    case "pick-order": location.hash = "#orders/" + el.dataset.id; break;
+    case "reorder": reorder(el.dataset.id); break;
+    case "receipt": downloadReceipt(el.dataset.id); break;
+    case "open-where": openWhere(); break;
+    case "set-rid": closeWhere(); setRestaurant(el.dataset.rid); break;
+    case "jump": e.preventDefault(); document.getElementById(el.dataset.cat).scrollIntoView({ behavior: "smooth" }); break;
+    case "toast-action": toastEl.hidden = true; toastEl._action && toastEl._action(); break;
+  }
+});
+function undoRemove() {
+  if (!lastRemoved) return;
+  state.bag.splice(lastRemoved.i, 0, lastRemoved.line);
+  lastRemoved = null;
+  changed();
+}
+function openWhere() {
+  if (!drawer.hidden) closeBag();
+  window.scrollTo({ top: 0 });
+  wherePop.hidden = false; whereBtn.setAttribute("aria-expanded", "true");
+  wherePop.querySelector("button").focus();
+}
+function closeWhere() { wherePop.hidden = true; whereBtn.setAttribute("aria-expanded", "false"); }
+
+whereBtn.addEventListener("click", e => { e.stopPropagation(); wherePop.hidden ? openWhere() : closeWhere(); });
+bagBtn.addEventListener("click", openBag);
+scrim.addEventListener("click", () => { if (!modal.hidden) closeModal(); else closeBag(); });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (!modal.hidden) closeModal(); else if (!drawer.hidden) closeBag(); else closeWhere();
+});
+addEventListener("hashchange", () => { route(); window.scrollTo({ top: 0 }); });
+
+route();
+</script>
+</body>
