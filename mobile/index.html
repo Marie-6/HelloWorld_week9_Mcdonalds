@@ -94,9 +94,10 @@ h2.title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .promo b{display:block;font-size:16px}
 .promo span{font-size:14px}
 /* carousels */
-.rail{display:flex;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 4px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.rail{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 4px;scroll-padding-inline:18px;scroll-snap-type:x mandatory;scrollbar-width:none}
 .rail::-webkit-scrollbar{display:none}
-.tile{flex:0 0 150px;scroll-snap-align:start;background:none;border:0;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.tile{flex:0 0 150px;scroll-snap-align:start;background:none;border:0;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column;align-self:flex-start}
+.reward{align-self:flex-start;display:flex;flex-direction:column}
 .tile .ph{height:150px;border-radius:8px;background:var(--canvas);overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
 .tile .nm{font-size:15px;margin-top:8px;line-height:1.3}
 .deal{flex:0 0 132px}
@@ -104,7 +105,7 @@ h2.title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .deal .nm{font-weight:700;font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .deal .exp{font-size:13px;color:var(--muted)}
 .deal.added .ph{outline:2px solid var(--ink);outline-offset:-2px}
-.ph img{width:100%;height:100%;object-fit:contain}
+.ph img{width:100%;height:100%;object-fit:contain;object-position:center;padding:10%;box-sizing:border-box}
 .hero .art img,.trend .art img{width:100%;display:block}
 .hero-ph img{max-height:180px;max-width:100%;object-fit:contain}
 .ph svg{width:78%;height:78%}
@@ -121,22 +122,16 @@ h2.title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .again .ph{grid-row:2/4;grid-column:2;width:72px;height:72px;border-radius:10px;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .again .btn{grid-column:1/-1;margin-top:10px}
 /* order cards */
-.order-card{display:grid;grid-template-columns:52px 1fr auto;gap:2px 12px;padding:14px;margin-bottom:10px;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;align-items:start}
-.order-card .ph{grid-row:1/4;width:52px;height:52px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.order-card .when{font-size:12px;color:var(--muted)}
-.order-card .what{font-weight:700;font-size:15px;line-height:1.3}
+.order-card{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:10px;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.order-card .ph{flex:0 0 56px;width:56px;height:56px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.oc-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.order-card .when{font-size:13px;color:var(--muted)}
+.order-card .what{font-weight:700;font-size:16px;line-height:1.3}
 .order-card .where{font-size:13px;color:var(--muted)}
-.order-card .tot{grid-row:1/3;grid-column:3;text-align:right}
-.order-card .tot .price{font-size:17px;display:block}
-.order-card .tot .tax{font-size:11px;color:var(--muted)}
-.order-card .go{grid-column:3;text-align:right;font-size:13px;font-weight:600;align-self:end}
-.order-card .where{grid-column:2}
-.order-card.noimg{grid-template-columns:1fr auto}
-.order-card.noimg .tot,.order-card.noimg .go{grid-column:2}
-.order-card.noimg .where{grid-column:1}
-.again.noimg{grid-template-columns:1fr}
-.item.noimg{grid-template-columns:1fr auto}
-.ph:empty{display:none}
+.order-card .go{font-size:14px;font-weight:600;color:var(--link);margin-top:6px}
+.order-card .tot{flex:0 0 auto;text-align:right;display:flex;flex-direction:column;gap:2px}
+.order-card .tot .price{font-size:17px;line-height:1.3;margin-top:17px}
+.order-card .tot .tax{font-size:12px;color:var(--muted)}
 /* order tab */
 .toggle{display:inline-flex;border:1px solid #9a9a9a;border-radius:var(--r-btn);background:var(--surface);padding:2px}
 .toggle button{border:0;background:none;font:inherit;font-size:15px;padding:7px 18px;border-radius:var(--r-btn);cursor:pointer;color:var(--ink)}
@@ -344,10 +339,10 @@ const REWARDS = [
 ];
 function seedOrders() {
 return [
-{ id: "o1", when: "Nov 9 · 9:20 PM", store: "jfk", art: "chicken", img: "spicy-mccrispy.png", lines: [{ name: "Spicy McCrispy™", opt: "Item only", price: 5.89, ref: "spicy", meal: "none" }] },
-{ id: "o2", when: "Oct 28 · 3:50 PM", store: "jfk", art: "fries", img: "meal-mccrispy.png", lines: [{ name: "McCrispy™ Meal", opt: "Medium · French Fries, Lemonade", price: 9.59, ref: "mccrispy", meal: "med" }] },
-{ id: "o3", when: "Oct 21 · 4:03 PM", store: "jfk", art: "strips", img: "meal-mccrispy-strips.png", lines: [{ name: "4 pc McCrispy™ Strips Meal", opt: "Medium · French Fries, Sprite®", price: 11.49, ref: "strips", meal: "med" }] },
-{ id: "o4", when: "Oct 5 · 4:06 PM", store: "jfk", art: "flurry", img: "mm-mcflurry.png", lines: [
+{ id: "o1", when: "Nov 9 · 9:20 PM", store: "jfk", art: "chicken", lines: [{ name: "Spicy McCrispy™", opt: "Item only", price: 5.89, ref: "spicy", meal: "none" }] },
+{ id: "o2", when: "Oct 28 · 3:50 PM", store: "jfk", art: "fries", lines: [{ name: "McCrispy™ Meal", opt: "Medium · French Fries, Lemonade", price: 9.59, ref: "mccrispy", meal: "med" }] },
+{ id: "o3", when: "Oct 21 · 4:03 PM", store: "jfk", art: "strips", lines: [{ name: "4 pc McCrispy™ Strips Meal", opt: "Medium · French Fries, Sprite®", price: 11.49, ref: "strips", meal: "med" }] },
+{ id: "o4", when: "Oct 5 · 4:06 PM", store: "jfk", art: "flurry", lines: [
 { name: "$6 McChicken® Meal Deal", opt: "Small · Fries, 4 pc McNuggets®, Coke®", price: 6.00 },
 { name: "M&M® McFlurry®", opt: "", price: 4.19, ref: "mm", meal: "none" } ] },
 ];
@@ -398,19 +393,19 @@ return `<span class="brand">My<b>McD</b></span>${titles[S.tab] ? `<span class="t
 }
 /* -------- Screens -------- */
 function orderCard(o) {
-const t = oTot(o);
-const ph = pic(o.img);
-return `<button class="order-card${ph ? "" : " noimg"}" data-open="${o.id}">
+const t = oTot(o), ph = pic(o.img);
+return `<button class="order-card" data-open="${o.id}">
 ${ph ? `<span class="ph">${ph}</span>` : ""}
+<span class="oc-main">
 <span class="when">${esc(o.when)}</span>
-<span class="tot"><span class="price">${money(t.total)}</span><span class="tax">incl. ${money(t.tax)} tax</span></span>
 <span class="what">${esc(oTitle(o))}</span>
 <span class="where">${esc(STORES.find(s => s.id === o.store).name)}</span>
-<span class="go">Details ›</span>
+<span class="go">View details</span>
+</span>
+<span class="tot"><span class="price">${money(t.total)}</span><span class="tax">incl. ${money(t.tax)} tax</span></span>
 </button>`;
 }
 function home() {
-const last = S.orders[0], t = oTot(last);
 return `<div class="pad">
 <button class="hero" data-cat="breakfast" aria-label="Breakfast, see the menu" style="background:linear-gradient(160deg,#FFE7A3 0%,#F9CF5E 60%,#F4BC40 100%)">
 <span class="k">Good morning, Aria</span>
@@ -421,13 +416,6 @@ return `<div class="pad">
 </button>
 <p class="fine">Breakfast hours vary by restaurant.</p>
 <button class="promo" data-push="rewards" style="grid-template-columns:1fr 16px"><span><b>More points, more free food</b><span>Unlock bonus offers and earn more on your next order</span></span><span>›</span></button>
-<div class="again${last.img ? "" : " noimg"}">
-<span class="kicker">Order again</span>
-<span class="name">${esc(oTitle(last))}</span>
-${last.img ? `<span class="ph">${pic(last.img)}</span>` : ""}
-<p>Last ordered ${esc(last.when.split(" · ")[0])} · paid ${money(t.total)}</p>
-<button class="btn" data-addall="${last.id}">Add to bag</button>
-</div>
 <div class="sec"><div class="sec-h"><h3>Menu</h3><button class="more-link" data-tab-go="order">Full menu →</button></div>
 <div class="rail">${MENU.map(c => `<button class="tile" data-cat="${c.id}"><div class="ph">${pic(c.img, c.art)}</div><div class="nm">${esc(c.cat)}</div></button>`).join("")}</div></div>
 <div class="sec"><div class="sec-h"><h3>App Exclusive Deals</h3><button class="more-link" data-push-deals>View all →</button></div>
