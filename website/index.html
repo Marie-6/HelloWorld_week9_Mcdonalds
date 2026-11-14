@@ -128,6 +128,16 @@ header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); 
   cursor: pointer; text-align: left; color: var(--ink); text-decoration: none; font-size: 14px; line-height: 24px;
 }
 .opt:hover, .opt:active, .opt[aria-checked="true"] { background: var(--light-gray); }
+#wherePop { width: min(360px, calc(100vw - 36px)); }
+.seg { display: flex; gap: var(--s1); background: var(--light-gray); border-radius: var(--r-pill); padding: var(--s1); }
+.seg button { flex: 1; min-height: 44px; border: 1px solid transparent; border-radius: var(--r-pill); background: none; font-weight: 700; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--canvas); border-color: var(--ink); }
+.seg button:active { background: var(--canvas); }
+.pop-h { display: block; margin: var(--s2) var(--s2) var(--s1); }
+.addr-row { display: flex; gap: var(--s1); padding: 0 var(--s1) var(--s1); }
+.addr-row input, .field { flex: 1; min-width: 0; min-height: 48px; padding: 0 var(--s3); border: 1px solid var(--ink); border-radius: var(--r-pill); font-size: 16px; background: var(--canvas); }
+.field { width: 100%; }
+.addr-err { color: var(--ink); margin: 0 var(--s2) var(--s1); }
 .sheet { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; background: var(--canvas); border-bottom: 1px solid var(--line); }
 .sheet-inner { max-width: 1440px; margin: 0 auto; padding: var(--s3) var(--margin) var(--s4); }
 .mega { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s2); }
@@ -150,7 +160,11 @@ header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); 
 .mob-nav a, .mob-nav button { width: 100%; justify-content: flex-start; }
 .mob-nav .mega { grid-template-columns: 1fr 1fr; margin-bottom: var(--s3); }
 
-@media (max-width: 1440px) { .where .muted, .tool .label { display: none; } }
+@media (max-width: 1440px) { .tool .label { display: none; } }
+.where-text { display: inline-block; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 1440px) { .where-text { max-width: 200px; } }
+@media (max-width: 1366px) { .where-text { max-width: 150px; } }
+@media (max-width: 900px) { .where-text { max-width: none; } }
 @media (max-width: 1240px) {
   .desk-only { display: none !important; }
   .mob-only { display: inline-flex !important; }
@@ -354,6 +368,7 @@ footer.site { border-top: 1px solid var(--line); padding: var(--s3) var(--margin
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
   <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"/><path d="M9 8h6M9 12h6"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
 </svg>
 
@@ -384,7 +399,7 @@ footer.site { border-top: 1px solid var(--line); padding: var(--s3) var(--margin
     </button>
     <div class="has-pop where">
       <button class="nav-item tool" id="whereBtn" data-pop="wherePop" aria-expanded="false" aria-controls="wherePop">
-        <svg class="ico"><use href="#i-pin"/></svg><span><span class="muted">Pickup ·</span> <strong id="whereName"></strong></span><svg class="ico chev"><use href="#i-chev"/></svg>
+        <svg class="ico"><use href="#i-pin" id="whereIco"/></svg><span class="where-text"><span class="muted" id="whereMode">Pickup ·</span> <strong id="whereName"></strong></span><svg class="ico chev"><use href="#i-chev"/></svg>
       </button>
       <div class="pop" id="wherePop" role="menu" hidden></div>
     </div>
@@ -464,6 +479,11 @@ const RESTAURANTS = {
   b23: { name: "Broadway & 23rd St", short: "Broadway & 23rd", wait: 8, delta: 0 },
   usq: { name: "Union Sq · 14th St", short: "Union Sq", wait: 12, delta: 20 }
 };
+// Delivery comes from the chosen restaurant. Fee and timing are illustrative.
+const DELIVERY_FEE = 299;
+const DELIVERY_EXTRA_MIN = 20;
+const SAVED_ADDRESS = "150 W 22nd St, Apt 4B"; // the demo account's saved home address
+const addrShort = a => a.split(",")[0];
 
 // Prices are in cents at Broadway & 23rd; Union Sq adds RESTAURANTS.usq.delta.
 // Photos live in img/<id>.png (from the mcdonalds.com breakfast, Extra Value Meals and McCafé menus).
@@ -626,7 +646,7 @@ const ACCOUNT_ORDERS = [
     items: [["egg-mcmuffin", 1, 479, { remove: ["Butter"] }], ["hash-browns", 1, 219], ["coffee", 1, 160, { size: "Small", addins: ["Light Cream"] }]] },
   { id: "M7F9", at: "2026-11-10T08:41", rid: "usq", source: "app",
     items: [["sausage-mcmuffin-egg", 1, 519], ["coffee", 1, 180, { size: "Small", addins: ["Light Cream", "Sugar"] }]] },
-  { id: "M6C3", at: "2026-11-06T09:02", rid: "b23", source: "app",
+  { id: "M6C3", at: "2026-11-06T09:02", rid: "b23", source: "app", mode: "delivery", address: SAVED_ADDRESS, fee: DELIVERY_FEE,
     items: [["hotcakes-sausage", 1, 529, { extra: ["Whipped Butter"] }], ["oj", 1, 279]] },
   { id: "M5A1", at: "2026-11-03T08:20", rid: "b23", source: "app",
     items: [["sausage-mcgriddles", 2, 299]] }
@@ -637,10 +657,13 @@ const PHONE_BAG = [{ id: "hash-browns", qty: 1 }];
 
 /* ---------- state ---------- */
 const STORE_KEY = "mcd-proto-v1";
-const freshState = rid => ({ signedIn: false, rid: rid || "b23", bag: [], orders: [], phoneMerged: false });
+const freshState = rid => ({ signedIn: false, rid: rid || "b23", mode: "pickup", address: "", bag: [], orders: [], phoneMerged: false });
 let state = load() || freshState();
+state.mode = state.mode === "delivery" && state.address ? "delivery" : "pickup";
+state.address = state.address || "";
 state.bag = state.bag.filter(b => ITEMS[b.id]).map(b => ({ ...b, cfg: normCfg(b.id, b.cfg) }));
-let priceNote = null;  // shown once after a restaurant change
+let priceNote = null;  // shown once after a restaurant or pickup/delivery change
+let popMode = null;    // Pickup/Delivery tab shown in the location menu before it is committed
 let syncing = false;
 let lastRemoved = null;
 let pendingAfterSignIn = null;
@@ -661,13 +684,17 @@ function taxOf(sub) { return Math.round(sub * TAX_RATE); }
 function finalizeOrder(o) {
   const subtotal = o.items.reduce((s, i) => s + i.cents * i.qty, 0);
   const tax = taxOf(subtotal);
-  return { ...o, subtotal, tax, total: subtotal + tax };
+  const fee = o.fee || 0;
+  return { ...o, subtotal, tax, fee, total: subtotal + tax + fee };
 }
 function bagTotals() {
   const live = state.bag.filter(b => soldAt(b.id));
   const subtotal = live.reduce((s, b) => s + unitPrice(b.id, b.cfg) * b.qty, 0);
   const tax = taxOf(subtotal);
-  return { subtotal, tax, total: subtotal + tax, count: live.reduce((s, b) => s + b.qty, 0), skipped: state.bag.length - live.length };
+  const count = live.reduce((s, b) => s + b.qty, 0);
+  // The delivery fee is part of the total from the first item, never added at payment.
+  const fee = state.mode === "delivery" && count ? DELIVERY_FEE : 0;
+  return { subtotal, tax, fee, total: subtotal + tax + fee, count, skipped: state.bag.length - live.length };
 }
 const bagCount = () => state.bag.reduce((s, b) => s + b.qty, 0);
 
@@ -706,13 +733,60 @@ addEventListener("offline", renderSync);
 function megaHTML() {
   return MENU.map(c => `<a href="#menu/${c.key}" data-action="jump" data-sec="${c.key}"><img src="img/${c.thumb}.png" alt="">${c.cat}</a>`).join("");
 }
-function renderHeader() {
-  whereName.textContent = RESTAURANTS[state.rid].short;
-  wherePop.innerHTML = Object.entries(RESTAURANTS).map(([rid, r]) => `
+function renderWherePop(err) {
+  const m = popMode || state.mode;
+  const list = Object.entries(RESTAURANTS).map(([rid, r]) => `
     <button class="opt" role="menuitemradio" aria-checked="${rid === state.rid}" data-action="set-rid" data-rid="${rid}">
       <strong class="t-body-s">${r.name}</strong>
-      <span class="t-caption muted">Ready in about ${r.wait} min${rid === "usq" ? " · no McGriddles®" : ""}</span>
+      <span class="t-caption muted">${m === "delivery" ? `Delivers in about ${r.wait + DELIVERY_EXTRA_MIN} min` : `Ready in about ${r.wait} min`}${rid === "usq" ? " · no McGriddles®" : ""}</span>
     </button>`).join("");
+  wherePop.innerHTML = `
+    <div class="seg" role="group" aria-label="Pickup or delivery">
+      <button data-action="pop-mode" data-mode="pickup" aria-pressed="${m === "pickup"}">Pickup</button>
+      <button data-action="pop-mode" data-mode="delivery" aria-pressed="${m === "delivery"}">Delivery</button>
+    </div>
+    ${m === "pickup" ? `<span class="pop-h t-caption muted">Pick up from</span>${list}` : `
+      <label class="pop-h t-caption muted" for="addr">Deliver to</label>
+      <div class="addr-row">
+        <input id="addr" autocomplete="street-address" placeholder="Street address, apt" value="${state.address.replace(/"/g, "&quot;")}">
+        <button class="btn btn-secondary" data-action="set-address">Deliver here</button>
+      </div>
+      ${err ? `<p class="addr-err t-caption">${err}</p>` : ""}
+      ${state.signedIn ? `<button class="opt" data-action="use-saved"><strong class="t-body-s">Home</strong><span class="t-caption muted">${SAVED_ADDRESS}</span></button>` : ""}
+      <span class="pop-h t-caption muted">From restaurant · ${fmt(DELIVERY_FEE)} delivery fee</span>${list}
+      <p class="t-caption muted" style="margin:6px 12px">Prototype: any New York address works. Nothing is sent anywhere.</p>`}`;
+}
+function setMode(mode) {
+  popMode = null;
+  if (mode === state.mode) { renderHeader(); return; }
+  state.mode = mode;
+  const r = RESTAURANTS[state.rid];
+  const msg = mode === "delivery"
+    ? `Delivery to ${addrShort(state.address)} from ${r.short}${state.bag.length ? ` · ${fmt(DELIVERY_FEE)} delivery fee added` : ""}`
+    : `Pickup at ${r.name}${state.bag.length ? " · no delivery fee" : ""}`;
+  if (state.bag.length) priceNote = msg + ".";
+  toast(msg);
+  save();
+  const y = scrollY;
+  if (item) { renderView(returnHash); renderItemBody(); } else route();
+  scrollTo(0, y);
+  touchSync();
+  if (!drawer.hidden) renderBag();
+}
+function setAddress(a) {
+  a = (a || "").trim().replace(/\s+/g, " ");
+  if (a.length < 5 || !/\d/.test(a)) { renderWherePop("Enter a street address with a number, like 150 W 22nd St."); addr.focus(); return; }
+  state.address = a;
+  closePops();
+  if (state.mode === "delivery") { save(); toast(`Delivering to ${addrShort(a)}`); renderHeader(); if (!drawer.hidden) renderBag(); if (currentView === "checkout") route(); }
+  else setMode("delivery");
+}
+function renderHeader() {
+  const delivering = state.mode === "delivery";
+  whereMode.textContent = delivering ? "Delivery ·" : "Pickup ·";
+  whereName.textContent = delivering ? addrShort(state.address) : RESTAURANTS[state.rid].short;
+  whereIco.setAttribute("href", delivering ? "#i-home" : "#i-pin");
+  renderWherePop();
   acctLabel.textContent = state.signedIn ? "Marie" : "Sign in";
   acctBtn.dataset.action = mobAcct.dataset.action = state.signedIn ? "sign-out" : "sign-in";
   mobAcct.textContent = state.signedIn ? "Sign out (resets demo)" : "Sign in";
@@ -742,6 +816,7 @@ const bagCount_el = document.getElementById("bagCount");
 /* ---------- popovers & sheets ---------- */
 function openPop(id) {
   closePops(id);
+  if (id === "wherePop") renderWherePop();
   const el = document.getElementById(id);
   el.hidden = false;
   document.querySelectorAll(`[data-pop="${id}"]`).forEach(b => b.setAttribute("aria-expanded", "true"));
@@ -749,6 +824,7 @@ function openPop(id) {
   else { const f = el.querySelector("button, a"); f && f.focus({ preventScroll: true }); }
 }
 function closePops(except) {
+  if (except !== "wherePop") popMode = null;
   for (const id of ["megaSheet", "searchSheet", "mobSheet", "morePop", "wherePop"]) {
     if (id === except) continue;
     document.getElementById(id).hidden = true;
@@ -806,7 +882,7 @@ function renderMenu(sec) {
       <div>
         <div class="menu-intro">
           <h1 class="t-display">Breakfast</h1>
-          <p class="t-body-s muted">Prices at ${r.name} · Order here for pickup, no app needed.</p>
+          <p class="t-body-s muted">Prices at ${r.name} · Order here for pickup or delivery, no app needed.</p>
         </div>
         ${MENU.map(c => `
           <section class="sec" id="sec-${c.key}" aria-labelledby="h-${c.key}">
@@ -859,7 +935,7 @@ function summaryHTML(t, extra = "") {
     <div class="summary">
       <div class="line"><span>Subtotal</span><span>${fmt(t.subtotal)}</span></div>
       <div class="line"><span>Tax (8.875%)</span><span>${fmt(t.tax)}</span></div>
-      <div class="line"><span>Fees</span><span>$0.00</span></div>
+      <div class="line"><span>${t.fee ? "Delivery fee" : "Fees"}</span><span>${fmt(t.fee || 0)}</span></div>
       <div class="line total"><span>Total</span><span>${fmt(t.total)}</span></div>
       ${extra}
     </div>`;
@@ -873,27 +949,30 @@ function renderCheckout() {
     return;
   }
   const now = new Date();
-  const asap = new Date(now.getTime() + r.wait * 60000);
-  const later = new Date(now.getTime() + 30 * 60000);
+  const delivering = state.mode === "delivery";
+  const asap = new Date(now.getTime() + (r.wait + (delivering ? DELIVERY_EXTRA_MIN : 0)) * 60000);
+  const later = new Date(now.getTime() + (delivering ? 60 : 30) * 60000);
   view.innerHTML = `
     <div class="page-head"><h1 class="t-display">Checkout</h1></div>
     <div class="checkout-layout">
       <div>
         <fieldset>
-          <legend class="t-heading">Pickup at</legend>
+          <legend class="t-heading">${delivering ? "Deliver to" : "Pickup at"}</legend>
           <div class="panel" style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-            <div><strong>${r.name}</strong><div class="t-caption muted">Counter or drive-thru pickup</div></div>
+            <div><strong>${delivering ? state.address : r.name}</strong><div class="t-caption muted">${delivering ? `From ${r.name} · ${fmt(DELIVERY_FEE)} delivery fee` : "Counter or drive-thru pickup"}</div></div>
             <button class="link-btn" data-action="open-where">Change</button>
           </div>
+          ${delivering ? `<label class="t-body-s" for="dropoff" style="display:block;margin:12px 0 6px">Drop-off notes (optional)</label>
+          <input class="field" id="dropoff" maxlength="120" placeholder="e.g. Leave at the front desk, buzz 4B">` : ""}
         </fieldset>
         <fieldset>
-          <legend class="t-heading">Pickup time</legend>
+          <legend class="t-heading">${delivering ? "Delivery time" : "Pickup time"}</legend>
           <label class="radio"><input type="radio" name="when" value="${asap.toISOString()}" checked> As soon as possible · about ${fmtTime(asap)}</label>
-          <label class="radio"><input type="radio" name="when" value="${later.toISOString()}"> In 30 minutes · ${fmtTime(later)}</label>
+          <label class="radio"><input type="radio" name="when" value="${later.toISOString()}"> ${delivering ? "In 1 hour" : "In 30 minutes"} · ${fmtTime(later)}</label>
         </fieldset>
         <fieldset>
           <legend class="t-heading">Payment</legend>
-          <label class="radio"><input type="radio" name="pay" checked> Pay at the restaurant</label>
+          <label class="radio"><input type="radio" name="pay" checked> ${delivering ? "Pay when it arrives" : "Pay at the restaurant"}</label>
           <p class="t-caption muted">Prototype: no card details are asked for and no payment is taken.</p>
         </fieldset>
         ${state.signedIn ? "" : `<p class="note">You're checking out as a guest. This order is saved on this device. <button class="link-btn" data-action="sign-in" data-then="checkout">Sign in</button> to sync it with your phone.</p>`}
@@ -926,7 +1005,9 @@ function renderPlaced(id) {
     <div class="confirm-head">
       <span class="t-caption muted">Order #${o.id}</span>
       <h1 class="t-display">Order placed</h1>
-      <p class="t-body-s" style="margin:0">Pick it up at <strong>${RESTAURANTS[o.rid].name}</strong> around <strong>${fmtTime(new Date(o.pickupAt))}</strong>. Pay at the counter.</p>
+      <p class="t-body-s" style="margin:0">${o.mode === "delivery"
+        ? `Delivering to <strong>${o.address}</strong> from ${RESTAURANTS[o.rid].name}, around <strong>${fmtTime(new Date(o.pickupAt))}</strong>. Pay when it arrives.${o.notes ? ` Note: “${o.notes.replace(/</g, "&lt;")}”` : ""}`
+        : `Pick it up at <strong>${RESTAURANTS[o.rid].name}</strong> around <strong>${fmtTime(new Date(o.pickupAt))}</strong>. Pay at the counter.`}</p>
       <span class="t-caption muted">${o.guest ? "Saved on this device. Sign in to see it on your phone too." : "Also in Orders on your phone."}</span>
     </div>
     <div class="panel" style="max-width:560px">
@@ -962,12 +1043,12 @@ function renderOrders(selId) {
       <div role="list">
         ${list.map(o => `
           <button class="order-row" role="listitem" aria-current="${o.id === sel.id}" data-action="pick-order" data-id="${o.id}">
-            <span class="t-caption muted">${fmtDate(o.at)} · Pickup${o.source === "app" ? " · in the app" : " · on the web"}</span>
+            <span class="t-caption muted">${fmtDate(o.at)} · ${o.mode === "delivery" ? "Delivery" : "Pickup"}${o.source === "app" ? " · in the app" : " · on the web"}</span>
             <span></span>
             <span class="thumbs">${o.items.map(i => `<img src="img/${i.id}.png" alt="">`).join("")}</span>
             <span class="items">${o.items.map(i => (i.qty > 1 ? i.qty + " × " : "") + i.name).join(", ")}</span>
             <span class="price">${fmt(o.total)}</span>
-            <span class="t-caption muted">${RESTAURANTS[o.rid].name}</span>
+            <span class="t-caption muted">${o.mode === "delivery" ? `To ${addrShort(o.address)} · from ${RESTAURANTS[o.rid].short}` : RESTAURANTS[o.rid].name}</span>
             <span class="t-body-s">Details →</span>
           </button>`).join("")}
       </div>
@@ -982,10 +1063,12 @@ function orderDetailHTML(o) {
   const r = RESTAURANTS[state.rid];
   const notes = [];
   if (avail.length < o.items.length) notes.push(`${o.items.length - avail.length} item isn't sold at ${r.short} and won't be added.`);
-  if (avail.length && nowTotal !== o.total) notes.push(`Today's price at ${r.short} is ${fmt(nowTotal)} (you paid ${fmt(o.total)}).`);
+  const paidItems = o.subtotal + o.tax;
+  if (avail.length && nowTotal !== paidItems) notes.push(`Today's price for these items at ${r.short} is ${fmt(nowTotal)} (you paid ${fmt(paidItems)}${o.fee ? `, plus the ${fmt(o.fee)} delivery fee` : ""}).`);
   return `
-    <span class="t-caption muted">Order #${o.id} · ${fmtDate(o.at)} · Pickup</span>
-    <h2 class="t-heading" style="margin:6px 0 12px">${RESTAURANTS[o.rid].name}</h2>
+    <span class="t-caption muted">Order #${o.id} · ${fmtDate(o.at)} · ${o.mode === "delivery" ? "Delivery" : "Pickup"}</span>
+    <h2 class="t-heading" style="margin:6px 0 ${o.mode === "delivery" ? 0 : 12}px">${o.mode === "delivery" ? `Delivered to ${o.address}` : RESTAURANTS[o.rid].name}</h2>
+    ${o.mode === "delivery" ? `<p class="t-caption muted" style="margin:0 0 12px">From ${RESTAURANTS[o.rid].name}</p>` : ""}
     ${receiptHTML(o)}
     ${notes.map(n => `<p class="note">${n}</p>`).join("")}
     <div class="actions">
@@ -1021,7 +1104,9 @@ function renderBag() {
   drawerBody.innerHTML = `
     <div class="panel" style="margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <div><span class="t-caption muted">Pickup at</span><div><strong>${r.name}</strong></div><span class="t-caption muted">Ready in about ${r.wait} min</span></div>
+        ${state.mode === "delivery"
+          ? `<div><span class="t-caption muted">Delivery to</span><div><strong>${state.address}</strong></div><span class="t-caption muted">From ${r.name} · about ${r.wait + DELIVERY_EXTRA_MIN} min</span></div>`
+          : `<div><span class="t-caption muted">Pickup at</span><div><strong>${r.name}</strong></div><span class="t-caption muted">Ready in about ${r.wait} min</span></div>`}
         <button class="link-btn" data-action="open-where">Change</button>
       </div>
     </div>
@@ -1240,8 +1325,10 @@ function placeOrder() {
   const when = (document.querySelector("input[name=when]:checked") || {}).value || new Date().toISOString();
   const id = "W" + Math.random().toString(36).slice(2, 5).toUpperCase();
   const local = new Date(); local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
+  const notes = ((document.getElementById("dropoff") || {}).value || "").trim();
   const order = finalizeOrder({
     id, at: local.toISOString().slice(0, 16), rid: state.rid, source: "web", pickupAt: when,
+    mode: state.mode, address: state.mode === "delivery" ? state.address : undefined, notes: notes || undefined, fee: t.fee,
     guest: !state.signedIn || undefined,
     items: state.bag.filter(b => soldAt(b.id)).map(b => ({ id: b.id, name: ITEMS[b.id].name, qty: b.qty, cents: unitPrice(b.id, b.cfg), cfg: normCfg(b.id, b.cfg), opts: optsText(b.id, b.cfg) }))
   });
@@ -1264,19 +1351,19 @@ function downloadReceipt(id) {
   const w = 44;
   const row = (l, r) => l.slice(0, w - r.length - 1).padEnd(w - r.length) + r;
   const lines = [
-    "McDonald's · pickup receipt",
+    `McDonald's · ${o.mode === "delivery" ? "delivery" : "pickup"} receipt`,
     "(student prototype, not a real order)",
     "",
     `Order #${o.id}`,
-    `${fmtDate(o.at)} · Pickup`,
-    RESTAURANTS[o.rid].name,
+    `${fmtDate(o.at)} · ${o.mode === "delivery" ? "Delivery" : "Pickup"}`,
+    ...(o.mode === "delivery" ? [`To: ${o.address}`, `From: ${RESTAURANTS[o.rid].name}`] : [RESTAURANTS[o.rid].name]),
     "-".repeat(w),
     ...o.items.flatMap(i => [row(`${i.qty} x ${i.name.replace(/[®™]/g, "")}`, fmt(i.cents * i.qty))]
       .concat(i.opts ? ["    " + i.opts.replace(/[®™]/g, "")] : [])),
     "-".repeat(w),
     row("Subtotal", fmt(o.subtotal)),
     row("Tax (8.875%)", fmt(o.tax)),
-    row("Fees", "$0.00"),
+    row(o.fee ? "Delivery fee" : "Fees", fmt(o.fee || 0)),
     row("Total", fmt(o.total)),
     ""
   ];
@@ -1413,7 +1500,15 @@ document.addEventListener("click", e => {
     case "reorder": reorder(el.dataset.id); break;
     case "receipt": downloadReceipt(el.dataset.id); break;
     case "open-where": closeItem(); closeBag(); scrollTo({ top: 0 }); openPop("wherePop"); break;
-    case "set-rid": setRestaurant(el.dataset.rid); break;
+    case "set-rid": popMode = null; setRestaurant(el.dataset.rid); break;
+    case "pop-mode": {
+      const m = el.dataset.mode;
+      if (m === "pickup" || state.address) setMode(m);
+      else { popMode = m; renderWherePop(); addr.focus(); }
+      break;
+    }
+    case "set-address": setAddress(addr.value); break;
+    case "use-saved": setAddress(SAVED_ADDRESS); break;
     case "jump": {
       e.preventDefault();
       const target = document.getElementById("sec-" + el.dataset.sec);
@@ -1446,6 +1541,7 @@ itemModal.addEventListener("change", e => {
   again && again.focus({ preventScroll: true });
 });
 
+wherePop.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "addr") { e.preventDefault(); setAddress(e.target.value); } });
 q.addEventListener("input", renderResults);
 q.addEventListener("keydown", e => {
   if (e.key === "Enter") { const first = results.querySelector("[data-action=detail]"); first && first.click(); }
