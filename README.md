@@ -48,6 +48,6 @@ Both experiences are checked against one rule sheet:
 
 - McDonald's *Feel-Good Design Cheatsheets* v1.2 (Sept 2019)
 - UI values from mcdonalds.com, as captured by [shadcn.io/design/mcdonalds](https://www.shadcn.io/design/mcdonalds)
-- Speedee typeface: [Fonts In Use](https://fontsinuse.com/typefaces/231234/speedee). Prototypes use Inter as a stand-in.
+- Speedee typeface: [Fonts In Use](https://fontsinuse.com/typefaces/231234/speedee). The prototype uses Speedee where it's installed on your computer and Inter otherwise; the font file is never in this repo (see Design Spec, 02 Typography).
 
 *Prices are illustrative. McDonald's, the Golden Arches, and Speedee are trademarks of McDonald's. This is a student design exercise and is not affiliated with McDonald's.*
