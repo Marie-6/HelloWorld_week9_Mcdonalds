@@ -76,3 +76,16 @@ The "Menu" tab is now called "Order", like the real app. Screens use my real res
 **What else could explain it:** this is one run of each version, so some of the difference could be chance. B was also asked for "the total paid" in its second rule, which may be why it still showed totals.
 
 **Still uncertain:** would B forget the tax every time, or only sometimes? And should the "Checkout Now" bar count as a main button?
+
+## 06 Before and after
+
+The real app today (my own screenshots, Nov 13, 2026) next to our clickable prototype, for the same four steps.
+
+![Before and after](../assets/before-after.png)
+
+| Step | Before (real app) | After (our redesign) |
+|---|---|---|
+| Finding the bag | No bag on the home screen until you add something; then a "Checkout Now" bar appears. | Bag is a tab on every screen, with a count. |
+| The bag | Called "Your order", and shows only the subtotal. | "Your bag" shows the restaurant, pickup time, Subtotal, Tax, Fees and Total. |
+| Past orders | Under More → Recents & Faves, with no prices. | An Orders tab; every card shows the total paid, tax included. |
+| Exact prices | "Quickly reorder" is a second list of orders, also without prices. | Each order opens to every item price, tax, fees and total, with "Add all to bag" and a receipt. |
