@@ -124,3 +124,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **36.** "maybe add a readme for website. keep it core and simple"
 - Added `website/README.md`: what it is, the live link, what you can do, the spec it's built on, the font note, and the files. ✅
+
+**37.** "A redesign of the mcdonalds.com breakfast menu that lets you order on the website, with the same bag as the app. it should be “The McDonald's website only lets you browse the menu, and the app hides your bag, past orders and what you actually paid. So I redesigned both: …” something like this, redesign the cart nd reciept and make people can order online using laptop"
+- Rewrote the website README intro around the problem and the fix (ordering on a laptop, a synced cart, receipts), using Marie's wording, with "we" because the app side is Xinyu's. ✅

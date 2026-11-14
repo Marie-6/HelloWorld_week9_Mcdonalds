@@ -1,15 +1,14 @@
 # McDonald's website: Task B
 
-A redesign of the [mcdonalds.com breakfast menu](https://www.mcdonalds.com/us/en-us/full-menu/breakfast.html) that lets you **order on the website**, with the same bag as the app.
+The [McDonald's website](https://www.mcdonalds.com/us/en-us/full-menu/breakfast.html) only lets you browse the menu, and the app hides your bag, past orders and what you actually paid. So we redesigned both, starting with the cart and the receipt. On the website, you can now **order on your laptop** for pickup or delivery, the **bag stays in sync** between the website and the app, and you can **find past orders** with every item's price, the tax and the total in one step.
 
 **Try it:** [marie-6.github.io/Mcdonalds/website](https://marie-6.github.io/Mcdonalds/website/)
 
 ## What you can do
 
-- Browse the breakfast menu and open any item to see its details and customize it
-- Order for **pickup or delivery**; any fee is shown before checkout
-- Keep one bag that syncs with the phone; sign-in is asked only at checkout
-- Find past orders with every price, and download a receipt
+- **Order on a laptop:** browse the breakfast menu, customize items, and check out for pickup or delivery
+- **Cart:** one bag shared with the app, with every price, the tax and any fee shown before checkout
+- **Receipt:** every past order lists item prices, tax and total in one place; download it or add it all to the bag again
 
 ## Built on
 
