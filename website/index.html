@@ -37,7 +37,7 @@
 @font-face { font-family: "Speedee Local"; src: local("Speedee Bold"), local("Speedee-Bold"); font-weight: 700; }
 
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; } /* short pages don't lose the scrollbar and widen */
 body {
   margin: 0;
   background: var(--canvas);
@@ -102,11 +102,12 @@ header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); 
 .nav-item .chev { width: 16px; height: 16px; }
 .nav-item[aria-expanded="true"] .chev { transform: rotate(180deg); }
 .tool { font-weight: 400; }
-#ctaSlot .btn { min-width: 220px; } /* room for "Checkout · $00.00" so the header never shifts */
+#ctaSlot { display: inline-flex; width: 220px; }
+#ctaSlot .btn { width: 100%; }
 .spacer { flex: 1; }
 .badge {
   display: inline-flex; align-items: center; justify-content: center;
-  min-width: 20px; height: 20px; padding: 0 var(--s1);
+  width: 24px; height: 20px; padding: 0;
   border-radius: var(--r-pill); background: var(--red); color: var(--canvas);
   font-size: 10px; line-height: 14.5px; font-weight: 700;
 }
@@ -160,12 +161,14 @@ header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); 
 .mob-nav a, .mob-nav button { width: 100%; justify-content: flex-start; }
 .mob-nav .mega { grid-template-columns: 1fr 1fr; margin-bottom: var(--s3); }
 
-@media (max-width: 1440px) { .tool .label { display: none; } }
-.where-text { display: inline-block; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-@media (max-width: 1440px) { .where-text { max-width: 200px; } }
-@media (max-width: 1366px) { .where-text { max-width: 150px; } }
-@media (max-width: 900px) { .where-text { max-width: none; } }
-@media (max-width: 1240px) {
+@media (max-width: 1520px) { .tool .label, .tool #acctLabel { display: none; } }
+/* Every header slot has a fixed width so changing its text never pushes the others (the header is right-aligned). */
+.where-text { display: inline-block; width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+@media (max-width: 1520px) { .where-text { width: 200px; } }
+@media (max-width: 1366px) { .where-text { width: 150px; } }
+@media (max-width: 900px) { .where-text { width: auto; max-width: calc(100vw - 120px); } }
+#acctLabel { display: inline-block; width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+@media (max-width: 1300px) {
   .desk-only { display: none !important; }
   .mob-only { display: inline-flex !important; }
 }
@@ -406,7 +409,7 @@ footer.site { border-top: 1px solid var(--line); padding: var(--s3) var(--margin
     <button class="nav-item tool desk-only" id="acctBtn"><svg class="ico"><use href="#i-user"/></svg><span class="label" id="acctLabel"></span></button>
     <a class="nav-item mob-only" href="#orders" data-nav="orders" aria-label="Orders"><svg class="ico ico-orders"><use href="#i-receipt"/></svg><span class="label-orders">Orders</span></a>
     <button class="btn btn-secondary" id="bagBtn" data-action="open-bag" aria-label="Open bag">
-      <svg class="ico"><use href="#i-bag"/></svg><span class="label-bag">Bag</span> <span class="badge" id="bagCount" hidden>0</span>
+      <svg class="ico"><use href="#i-bag"/></svg><span class="label-bag">Bag</span> <span class="badge" id="bagCount" style="visibility:hidden">0</span>
     </button>
     <span id="ctaSlot" class="desk-only"></span>
     <button class="icon-btn mob-only" data-pop="mobSheet" aria-expanded="false" aria-controls="mobSheet" aria-label="Open navigation"><svg class="ico"><use href="#i-menu"/></svg></button>
@@ -791,17 +794,19 @@ function renderHeader() {
   acctBtn.dataset.action = mobAcct.dataset.action = state.signedIn ? "sign-out" : "sign-in";
   mobAcct.textContent = state.signedIn ? "Sign out (resets demo)" : "Sign in";
   const n = bagCount();
-  bagCount_el.textContent = n;
-  bagCount_el.hidden = n === 0;
+  bagCount_el.textContent = n > 99 ? "99" : n;
+  bagCount_el.style.visibility = n ? "visible" : "hidden"; // keeps its space so the header never shifts
   bagBtn.setAttribute("aria-label", `Open bag, ${n} item${n === 1 ? "" : "s"}`);
 
   // One Gold primary per screen: on the menu the header CTA is the primary
   // (only once the bag has something to check out); elsewhere it's secondary.
   const t = bagTotals();
   if (currentView === "menu") {
-    ctaSlot.innerHTML = t.count ? `<button class="btn btn-primary" data-action="open-bag">Checkout · ${fmt(t.total)}</button>` : "";
-  } else if (currentView === "checkout" || currentView === "item") {
-    ctaSlot.innerHTML = "";
+    ctaSlot.innerHTML = t.count
+      ? `<button class="btn btn-primary" data-action="open-bag">Checkout · ${fmt(t.total)}</button>`
+      : `<a class="btn btn-primary" href="#menu/${MENU[0].key}">Order Now</a>`;
+  } else if (currentView === "checkout") {
+    ctaSlot.innerHTML = ""; // the page's own "Place order" is the one Gold action; the slot keeps its width
   } else {
     ctaSlot.innerHTML = `<a class="btn btn-secondary" href="#menu">Order Now</a>`;
   }
