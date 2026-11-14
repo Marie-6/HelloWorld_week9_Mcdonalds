@@ -146,3 +146,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **43.** "maybe here go back to the last version" (+ the three buttons)
 - Back to the two buttons from before: "Design Spec" and "Project README". Design Spec still opens the spec image on the page (prompt 41), and "The design" section with all three frames stays at the bottom. ✅
+
+**44.** "delete this one" (+ the Design Spec button)
+- Removed the Design Spec button from the top of the demo page. Only "Project README" is left there; the spec is still in "The design" section at the bottom. ✅
