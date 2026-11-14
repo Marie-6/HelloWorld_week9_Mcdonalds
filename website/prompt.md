@@ -130,3 +130,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **38.** "okay, combine the mobile and the website together in one page for demonstration"
 - Added `demo/index.html`: the problem and the redesign in one paragraph, the live website in a laptop frame and Xinyu's live app in a phone frame (both clickable, scaled to fit), "Try it" steps for each, and links to open them full screen. Linked from both READMEs. ✅
+
+**39.** "https://marie-6.github.io/Mcdonalds/mobile/ the mobile one should look like this"
+- In the demo, the app was loaded under 520px wide, so it switched to edge-to-edge mode and lost its iPhone frame. It's now loaded wide enough to keep Xinyu's own iPhone frame (status bar, Dynamic Island, home bar), with her notes column and page background hidden, so only the phone shows. Xinyu's `mobile/index.html` wasn't changed. ✅
