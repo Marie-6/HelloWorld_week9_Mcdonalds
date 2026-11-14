@@ -38,7 +38,7 @@ A grad student on a laptop who wants breakfast without picking up their phone. T
 
 - **Web Header** (Active = Menu or Orders): logo, Our Menu, Meal Deals, Orders, More; then Search, the location (Pickup · restaurant or Delivery · street), account, Bag with its count, and one fixed Gold slot ("Order Now" with an empty bag, "Checkout · $X" with items). Under 1300px it becomes logo, Search, Orders, Bag and a menu button.
 - **Category Rail:** the menu categories with photos, in a Light Gray panel; the current one is bold with a Red bar.
-- **Menu Card:** photo, name and price at the selected restaurant, with a direct "Add to bag". Clicking the photo or name opens Product details.
+- **Menu Card:** photo, name and price at the selected restaurant, with a direct "Add to bag". McDonald's photos leave empty space above the food, so each category's photo frame is cut just above its tallest item's food (bottom-aligned): no food is cropped, every photo in a row keeps the same scale, and the title sits close to its products. Clicking the photo or name opens Product details.
 - **Product details**, **Customize groups** and **Location menu:** see the Design Spec, 04 Components.
 
 ## 03 Screens

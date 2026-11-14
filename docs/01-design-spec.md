@@ -66,7 +66,7 @@ Tracking is −0.15px. Numbers use tabular (fixed-width) figures, so prices don'
 ## 03 Shape, spacing & elevation
 
 - **Radius:** 0 for text blocks, 12 for cards and images, 48 for pill buttons.
-- **Spacing:** 6, 12, 18 and 30px.
+- **Spacing:** 6, 12, 18 and 30px, and 60 (2 × 30) between menu sections. A heading always sits closer to its own content than to the section above it.
 - **Elevation:** none. Separate surfaces with a divider or a Light Gray background, not a shadow. A selected state is a 1px Ink border, never a shadow.
 
 ## 04 Components

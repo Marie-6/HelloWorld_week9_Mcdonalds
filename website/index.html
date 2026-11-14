@@ -206,15 +206,19 @@ main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) var(-
 .rail-row[aria-current="true"]::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--red); }
 .menu-intro { text-align: center; margin-bottom: var(--s4); }
 .menu-intro p { margin: var(--s2) 0 0; }
-.sec { scroll-margin-top: calc(var(--hh, 80px) + 18px); margin-bottom: var(--s4); }
-.sec > h2 { text-align: center; margin-bottom: var(--s4); }
+/* A category title sits closer to its own products (18) than to the section above (60 = 2 × 30). */
+.sec { scroll-margin-top: calc(var(--hh, 80px) + 18px); margin-bottom: calc(2 * var(--s4)); }
+.sec > h2 { text-align: center; margin-bottom: var(--s3); }
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4) var(--s3); }
 .tile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--s2); }
 .tile-open {
   display: flex; flex-direction: column; align-items: center; gap: var(--s2); width: 100%;
   background: none; border: 0; padding: 0; cursor: pointer; border-radius: var(--r-card);
 }
-.tile-open img { width: 100%; max-width: 210px; height: auto; aspect-ratio: 1; object-fit: contain; }
+/* Product photos put the food at the bottom of a square with empty space above. Each category's frame is cut
+   just above its tallest item's food (--ar, set per section), bottom-aligned, so nothing is cropped and every
+   photo in a row keeps the same scale. */
+.tile-open img { width: 100%; max-width: 210px; height: auto; aspect-ratio: var(--ar, 1); object-fit: cover; object-position: center bottom; }
 .tile-open:hover .tile-name, .tile-open:active .tile-name { text-decoration: underline; }
 .tile-open:active img { opacity: .8; }
 .tile-name { font-size: 16px; line-height: 23px; }
@@ -351,7 +355,9 @@ body.bag-open .toast { bottom: 100px; }
 .checkout-layout { display: grid; grid-template-columns: 1fr 400px; gap: var(--s4); align-items: start; }
 @media (max-width: 860px) { .checkout-layout { grid-template-columns: 1fr; } }
 fieldset { border: 0; padding: 0; margin: 0 0 var(--s4); }
-legend { padding: 0; margin-bottom: var(--s2); }
+legend { float: left; width: 100%; padding: 0; margin-bottom: var(--s2); } /* a floated legend takes margins like a heading */
+legend + * { clear: both; }
+legend.t-heading { margin-bottom: var(--s2); } /* .t-heading resets margins */
 .radio { display: flex; align-items: center; gap: var(--s2); min-height: 48px; padding: var(--s1) var(--s3); background: var(--light-gray); border: 1px solid transparent; border-radius: var(--r-card); margin-bottom: var(--s1); cursor: pointer; }
 .radio:has(input:checked) { border-color: var(--ink); }
 .radio input { accent-color: var(--ink); width: 18px; height: 18px; }
@@ -711,6 +717,18 @@ const findOrder = id => allOrders().find(o => o.id === id);
 
 const fmtDate = iso => new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 const fmtTime = d => d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+// Where the food starts in each 480px photo (first non-transparent row, measured from the image files).
+const FOOD_TOP = {
+  "meal-sausage-mcmuffin-egg": 64, "meal-egg-mcmuffin": 64, "meal-bec-biscuit": 67, "meal-sausage-biscuit-egg": 65, "meal-sec-mcgriddles": 45,
+  "meal-bec-mcgriddles": 58, "meal-sausage-burrito": 70, "meal-bec-bagel": 51, "meal-steak-bagel": 51,
+  "egg-mcmuffin": 178, "sausage-mcmuffin-egg": 184, "sausage-mcmuffin": 219, "bec-biscuit": 208, "sausage-biscuit-egg": 172,
+  "egg-cheese-biscuit": 193, "sausage-biscuit": 221, "sausage-mcgriddles": 228, "bec-mcgriddles": 216, "sec-mcgriddles": 166,
+  "bec-bagel": 184, "sec-bagel": 162, "steak-bagel": 135, "hotcakes": 260, "hotcakes-sausage": 265, "big-breakfast": 250,
+  "big-breakfast-hotcakes": 210, "hash-browns": 11, "sausage-burrito": 266, "oatmeal": 219, "coffee": 192, "iced-coffee": 93,
+  "hot-chocolate": 135, "oj": 80
+};
+// Frame aspect for a category: keep 12px (of 480) above its tallest food.
+const sectionAspect = c => { const cut = Math.max(0, Math.min(...c.items.map(i => FOOD_TOP[i.id] ?? 0)) - 12); return (480 / (480 - cut)).toFixed(3); };
 const photo = (id, lazy = true) => `<img src="img/${id}.png" alt="" ${lazy ? 'loading="lazy"' : ""} width="480" height="480">`;
 const plain = s => s.replace(/[®™]/g, "").toLowerCase();
 
@@ -894,7 +912,7 @@ function renderMenu(sec) {
         ${MENU.map(c => `
           <section class="sec" id="sec-${c.key}" aria-labelledby="h-${c.key}">
             <h2 class="t-display" id="h-${c.key}">${c.cat}</h2>
-            <div class="grid">${c.items.map(tileHTML).join("")}</div>
+            <div class="grid" style="--ar:${sectionAspect(c)}">${c.items.map(tileHTML).join("")}</div>
           </section>`).join("")}
       </div>
     </div>`;
@@ -908,7 +926,7 @@ function tileHTML(it) {
   return `
     <article class="tile ${ok ? "" : "off"}">
       <button class="tile-open" data-action="detail" data-id="${it.id}" aria-label="${it.name}, details">
-        ${photo(it.id)}
+        <img src="img/${it.id}.png" alt="" loading="lazy" width="480" height="480">
         <span class="tile-name">${it.name}</span>
       </button>
       <span class="price">${ok ? fmt(priceAt(it.id)) : "Not at " + RESTAURANTS[state.rid].short}</span>
