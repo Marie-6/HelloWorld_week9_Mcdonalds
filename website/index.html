@@ -200,13 +200,33 @@ main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 }
 @media (max-width: 520px) { .grid { gap: var(--s3) var(--s2); } .tile .btn { min-width: 0; width: 100%; } }
 
-/* Product page */
-.crumbs { display: flex; flex-wrap: wrap; gap: var(--s1); align-items: center; margin-bottom: var(--s3); font-size: 14px; }
-.crumbs a { color: var(--ink); }
-.item-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: start; }
-.item-photo { position: sticky; top: calc(var(--hh, 80px) + 18px); background: var(--light-gray); border-radius: var(--r-card); display: flex; justify-content: center; padding: var(--s4); }
-.item-photo img { width: 100%; max-width: 420px; height: auto; aspect-ratio: 1; object-fit: contain; }
+/* Product pop-up: details first, customizing is opt-in */
+.modal-card.item-card { padding: 0; width: min(640px, 100%); max-height: calc(100vh - 36px); display: flex; flex-direction: column; overflow: hidden; }
+.ic-body { overflow-y: auto; padding: var(--s4) var(--s4) var(--s3); }
+.ic-body .modal-close { position: absolute; top: var(--s2); right: var(--s2); background: var(--canvas); z-index: 1; }
+.ic-body h2 { padding-right: 48px; }
+.item-photo { background: var(--light-gray); border-radius: var(--r-card); display: flex; justify-content: center; padding: var(--s3); margin-top: var(--s3); }
+.item-photo img { width: 100%; max-width: 260px; height: auto; aspect-ratio: 1; object-fit: contain; }
 .item-facts { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); margin: var(--s2) 0; font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s2); }
+.chips span { display: inline-flex; align-items: center; min-height: 32px; padding: 0 var(--s2); border: 1px solid var(--line); border-radius: var(--r-pill); font-size: 14px; }
+.sub-h { margin-top: var(--s4); }
+.cust-toggle {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s2); width: 100%; margin-top: var(--s4);
+  min-height: 64px; padding: var(--s2) var(--s3); background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card); cursor: pointer; text-align: left;
+}
+.cust-toggle:active { background: var(--light-gray); }
+.cust-toggle .chev { width: 20px; height: 20px; transition: none; }
+.cust-toggle[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.ic-foot { border-top: 1px solid var(--line); padding: var(--s2) var(--s4); display: flex; align-items: center; justify-content: flex-end; gap: var(--s3); background: var(--canvas); }
+.ic-foot .btn { flex: 1; max-width: 340px; }
+@media (max-width: 600px) {
+  .modal.item-modal { align-items: flex-end; padding: 0; }
+  .modal-card.item-card { width: 100%; max-height: 92vh; border-radius: var(--r-card) var(--r-card) 0 0; border-width: 1px 0 0; }
+  .ic-body { padding: var(--s3) var(--s3) var(--s2); }
+  .ic-foot { padding: var(--s2) var(--s3); }
+  .ic-foot .btn { max-width: none; }
+}
 .opt-group { margin-top: var(--s4); }
 .opt-group > header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s1); padding-bottom: var(--s1); border-bottom: 1px solid var(--line); }
 .opt-group .rule { font-size: 14px; color: var(--muted); }
@@ -218,16 +238,7 @@ main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 .usual { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s2); margin-top: var(--s2); }
 .usual button { text-align: left; background: var(--canvas); border: 1px solid var(--line); border-radius: var(--r-card); padding: var(--s2); cursor: pointer; min-height: 88px; display: flex; flex-direction: column; gap: 2px; }
 .usual button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
-.buybar { position: sticky; bottom: 0; z-index: 6; background: var(--canvas); border-top: 1px solid var(--line); margin-top: var(--s4); padding: var(--s2) 0; display: flex; align-items: center; justify-content: flex-end; gap: var(--s3); }
-.buybar .btn { min-width: 260px; }
 .opts { font-size: 10px; line-height: 14.5px; color: var(--muted); }
-@media (max-width: 900px) {
-  .item-layout { grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
-  .item-photo { position: static; padding: var(--s3); }
-  .item-photo img { max-width: 240px; }
-  .buybar { margin: var(--s4) calc(-1 * var(--margin)) 0; padding: var(--s2) var(--margin); }
-  .buybar .btn { min-width: 0; flex: 1; }
-}
 
 /* Panels */
 .panel { background: var(--light-gray); border-radius: var(--r-card); padding: var(--s3); }
@@ -264,6 +275,7 @@ main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 
 /* Modal */
 .modal { position: fixed; z-index: 51; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--s3); }
+#modal { z-index: 52; } /* sign-in can open on top of the product pop-up */
 .modal-card { position: relative; background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card); padding: var(--s4); width: min(440px, 100%); max-height: calc(100vh - 36px); overflow-y: auto; }
 .modal-card p { margin: var(--s2) 0 var(--s3); }
 .modal-close { position: absolute; top: var(--s2); right: var(--s2); }
@@ -415,6 +427,13 @@ footer.site { border-top: 1px solid var(--line); padding: var(--s3) var(--margin
 
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
   <div class="modal-card" id="modalCard"></div>
+</div>
+
+<div class="modal item-modal" id="itemModal" role="dialog" aria-modal="true" aria-labelledby="itemTitle" hidden>
+  <div class="modal-card item-card">
+    <div class="ic-body" id="itemBody"></div>
+    <div class="ic-foot" id="buybar"></div>
+  </div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -733,11 +752,23 @@ function renderResults() {
 }
 
 /* ---------- views ---------- */
+// #item/<id>[/<bag line>] opens the product pop-up over whatever page was showing.
 function route() {
-  const [name, arg, arg2] = location.hash.replace(/^#/, "").split("/");
-  currentView = ["orders", "checkout", "placed"].includes(name) || (name === "item" && ITEMS[arg]) ? name : "menu";
-  if (currentView === "item") renderItem(arg, arg2);
-  else if (currentView === "orders") renderOrders(arg);
+  const h = location.hash;
+  const [name, arg, arg2] = h.replace(/^#/, "").split("/");
+  if (name === "item" && ITEMS[arg]) {
+    if (!view.innerHTML.trim()) renderView(returnHash);
+    openItem(arg, arg2);
+    return;
+  }
+  if (item) closeItem();
+  returnHash = h || "#menu";
+  renderView(h);
+}
+function renderView(h) {
+  const [name, arg] = h.replace(/^#/, "").split("/");
+  currentView = ["orders", "checkout", "placed"].includes(name) ? name : "menu";
+  if (currentView === "orders") renderOrders(arg);
   else if (currentView === "checkout") renderCheckout();
   else if (currentView === "placed") renderPlaced(arg);
   else renderMenu(arg);
@@ -1006,29 +1037,32 @@ function bagItemHTML(b, i) {
     </div>`;
 }
 
-/* ---------- product page ---------- */
-// item = { id, cfg, qty, edit (bag line index or null) } while the product page is open.
+/* ---------- product pop-up ---------- */
+// Opens over the current page. Details come first; options stay folded until the person asks.
+// item = { id, cfg, qty, edit (bag line index or null), open (customize expanded) } while open.
 let item = null;
-function renderItem(id, editArg) {
+let returnHash = "#menu";
+function openItem(id, editArg) {
   const edit = editArg !== undefined && state.bag[+editArg] && state.bag[+editArg].id === id ? +editArg : null;
-  item = { id, edit, cfg: edit !== null ? normCfg(id, state.bag[edit].cfg) : defaultCfg(id), qty: edit !== null ? state.bag[edit].qty : 1 };
-  const it = ITEMS[id], cat = CAT_OF[id];
-  const facts = INGREDIENTS[id] ? `${INGREDIENTS[id][0]} Cal.` : (MEAL_BASE(id) && INGREDIENTS[MEAL_BASE(id)] ? `${INGREDIENTS[MEAL_BASE(id)][0]} Cal. sandwich` : "");
-  view.innerHTML = `
-    <nav class="crumbs" aria-label="Breadcrumb">
-      <a href="#menu">Breakfast</a><span class="muted">/</span><a href="#menu/${cat.key}">${cat.cat}</a><span class="muted">/</span><span>${it.name}</span>
-    </nav>
-    <div class="item-layout">
-      <div class="item-photo">${photo(id, false)}</div>
-      <div>
-        <h1 class="t-display">${it.name}</h1>
-        <div class="item-facts"><span class="price" id="itemEach"></span>${facts ? `<span class="muted">${facts}</span>` : ""}<span class="muted">${RESTAURANTS[state.rid].name}</span></div>
-        <p class="t-body-s" style="margin:0">${it.desc}.</p>
-        <div id="itemBody"></div>
-      </div>
-    </div>
-    <div class="buybar" id="buybar"></div>`;
+  item = { id, edit, open: edit !== null,
+    cfg: edit !== null ? normCfg(id, state.bag[edit].cfg) : defaultCfg(id), qty: edit !== null ? state.bag[edit].qty : 1 };
+  closePops();
   renderItemBody();
+  scrim.hidden = false; itemModal.hidden = false;
+  itemBody.scrollTop = 0;
+  itemBody.querySelector("[data-action=close-item]").focus({ preventScroll: true });
+}
+function closeItem() {
+  if (!item) return;
+  item = null;
+  itemModal.hidden = true;
+  if (drawer.hidden && modal.hidden) scrim.hidden = true;
+  if (location.hash.startsWith("#item/")) history.replaceState(null, "", location.pathname + location.search + returnHash);
+}
+function whatsIn(id) {
+  const base = MEAL_BASE(id);
+  if (base) return [ITEMS[base].name, "Hash Browns", "Small drink of your choice"];
+  return (INGREDIENTS[id] || [0, []])[1];
 }
 function renderItemBody() {
   const { id, cfg } = item;
@@ -1037,12 +1071,24 @@ function renderItemBody() {
   const groups = optionGroups(id);
   const usual = usualFor(id);
   const swap = !ok && it.swap ? ITEMS[it.swap] : null;
-  itemEach.textContent = ok ? fmt(unitPrice(id, cfg)) : "Not at " + RESTAURANTS[state.rid].short;
+  const cal = INGREDIENTS[id] ? `${INGREDIENTS[id][0]} Cal.` : (MEAL_BASE(id) && INGREDIENTS[MEAL_BASE(id)] ? `${INGREDIENTS[MEAL_BASE(id)][0]} Cal. sandwich` : "");
+  const summary = optsText(id, cfg) || "As it comes";
   itemBody.innerHTML = `
+    <button class="icon-btn modal-close" data-action="close-item" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button>
+    <h2 class="t-display" id="itemTitle">${it.name}</h2>
+    <div class="item-facts">
+      <span class="price">${ok ? fmt(unitPrice(id, cfg)) : "Not at " + RESTAURANTS[state.rid].short}</span>
+      ${cal ? `<span class="muted">${cal}</span>` : ""}
+      <span class="muted">${RESTAURANTS[state.rid].name}</span>
+    </div>
+    <p class="t-body-s" style="margin:0">${it.desc}.</p>
+    <div class="item-photo">${photo(id, false)}</div>
     ${ok ? "" : `<p class="note">Not sold at ${RESTAURANTS[state.rid].short}.${swap ? ` <a href="#item/${swap.id}">See ${swap.name}</a> instead,` : ""} or <button class="link-btn" data-action="open-where" style="padding:0">change restaurant</button>.</p>`}
+    <h3 class="t-heading sub-h">What's in it</h3>
+    <div class="chips">${whatsIn(id).map(i => `<span>${i}</span>`).join("")}</div>
     ${usual.length ? `
       <section class="opt-group">
-        <header><h2 class="t-heading">Your usual</h2><span class="rule">From your past orders</span></header>
+        <header><h3 class="t-heading">Your usual</h3><span class="rule">From your past orders</span></header>
         <div class="usual">${usual.map(u => `
           <button data-action="use-usual" data-key='${u.key.replace(/'/g, "&#39;")}' aria-pressed="${u.key === cfgKey(id, cfg)}">
             <strong class="t-body-s">Ordered ${new Date(u.at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</strong>
@@ -1050,8 +1096,13 @@ function renderItemBody() {
             <span class="price t-body-s">${fmt(unitPrice(id, u.cfg))}</span>
           </button>`).join("")}</div>
       </section>` : (!state.signedIn && groups.length ? `<p class="t-caption muted" style="margin-top:18px"><button class="link-btn" data-action="sign-in" style="padding:0">Sign in</button> to see how you usually order this.</p>` : "")}
-    ${groups.map(g => groupHTML(g, cfg, ok)).join("")}
-    ${groups.length ? "" : `<p class="t-body-s muted" style="margin-top:30px">This item comes as it is. No changes needed.</p>`}`;
+    ${groups.length && ok ? `
+      <button class="cust-toggle" data-action="toggle-cust" aria-expanded="${item.open}" aria-controls="custGroups">
+        <span><strong>Customize</strong><br><span class="t-body-s muted">${summary}</span></span>
+        <svg class="ico chev"><use href="#i-chev"/></svg>
+      </button>
+      <div id="custGroups" ${item.open ? "" : "hidden"}>${groups.map(g => groupHTML(g, cfg, ok)).join("")}</div>` : ""}
+    ${groups.length ? "" : `<p class="t-body-s muted" style="margin-top:30px">This item comes as it is.</p>`}`;
   buybar.innerHTML = `
     <div class="stepper" role="group" aria-label="Quantity">
       <button data-action="item-qty" data-d="-1" aria-label="One less" ${item.qty <= 1 ? "disabled" : ""}>−</button>
@@ -1088,16 +1139,16 @@ function usualFor(id) {
 }
 function itemAdd() {
   const { id, cfg, qty, edit } = item;
+  closeItem();
   if (edit !== null && state.bag[edit]) {
     state.bag.splice(edit, 1);
     addToBag(id, qty, false, cfg, edit);
     changed();
-    toast(`${ITEMS[id].name} updated`, ["View bag", openBag]);
-    location.hash = "#menu/" + CAT_OF[id].key;
+    openBag();
+    toast(`${ITEMS[id].name} updated`);
   } else {
     addToBag(id, qty, false, cfg);
     added(id, qty);
-    renderItem(id);
   }
 }
 
@@ -1136,7 +1187,7 @@ function setRestaurant(rid) {
   }
   save();
   const y = scrollY;
-  if (currentView === "item") { renderItemBody(); renderHeader(); } else route();
+  if (item) { renderView(returnHash); renderItemBody(); } else route();
   scrollTo(0, y);
   touchSync();
   if (!drawer.hidden) renderBag();
@@ -1287,6 +1338,14 @@ document.addEventListener("click", e => {
     }
     case "detail": location.hash = "#item/" + el.dataset.id; break;
     case "edit-line": closeBag(); break;
+    case "close-item": closeItem(); break;
+    case "toggle-cust": {
+      item.open = !item.open;
+      el.setAttribute("aria-expanded", String(item.open));
+      custGroups.hidden = !item.open;
+      if (item.open) custGroups.querySelector("input").focus({ preventScroll: true });
+      break;
+    }
     case "item-qty": item.qty = Math.max(1, item.qty + +el.dataset.d); renderItemBody(); buybar.querySelector(`[data-d="${el.dataset.d}"]`).focus(); break;
     case "item-add": itemAdd(); break;
     case "use-usual": {
@@ -1332,7 +1391,7 @@ document.addEventListener("click", e => {
     case "pick-order": location.hash = "#orders/" + el.dataset.id; break;
     case "reorder": reorder(el.dataset.id); break;
     case "receipt": downloadReceipt(el.dataset.id); break;
-    case "open-where": closeBag(); scrollTo({ top: 0 }); openPop("wherePop"); break;
+    case "open-where": closeItem(); closeBag(); scrollTo({ top: 0 }); openPop("wherePop"); break;
     case "set-rid": setRestaurant(el.dataset.rid); break;
     case "jump": {
       e.preventDefault();
@@ -1351,18 +1410,18 @@ function undoRemove() {
   changed();
 }
 
-// Option checkboxes and radios on the product page.
-view.addEventListener("change", e => {
+// Option checkboxes and radios in the product pop-up.
+itemModal.addEventListener("change", e => {
   const inp = e.target.closest("input[data-group]");
   if (!inp || !item) return;
   const g = inp.dataset.group;
   if (inp.type === "radio") item.cfg[g] = inp.value;
-  else item.cfg[g] = [...view.querySelectorAll(`input[data-group="${g}"]:checked`)].map(i => i.value);
+  else item.cfg[g] = [...itemModal.querySelectorAll(`input[data-group="${g}"]:checked`)].map(i => i.value);
   // "No X" and "Extra X" can't both be on.
   const other = g === "remove" ? "extra" : g === "extra" ? "remove" : null;
   if (other && inp.checked && item.cfg[other]) item.cfg[other] = item.cfg[other].filter(v => v !== inp.value);
-  const y = scrollY; renderItemBody(); scrollTo(0, y);
-  const again = view.querySelector(`input[data-group="${g}"][value="${CSS.escape(inp.value)}"]`);
+  const y = itemBody.scrollTop; renderItemBody(); itemBody.scrollTop = y;
+  const again = itemModal.querySelector(`input[data-group="${g}"][value="${CSS.escape(inp.value)}"]`);
   again && again.focus({ preventScroll: true });
 });
 
@@ -1370,15 +1429,16 @@ q.addEventListener("input", renderResults);
 q.addEventListener("keydown", e => {
   if (e.key === "Enter") { const first = results.querySelector("[data-action=detail]"); first && first.click(); }
 });
-scrim.addEventListener("click", () => { if (!modal.hidden) closeModal(); else closeBag(); });
+scrim.addEventListener("click", () => { if (!modal.hidden) closeModal(); else if (item) closeItem(); else closeBag(); });
+itemModal.addEventListener("click", e => { if (e.target === itemModal) closeItem(); });
 document.addEventListener("keydown", e => {
   if (e.key === "/" && document.activeElement.tagName !== "INPUT") { e.preventDefault(); openPop("searchSheet"); }
   if (e.key !== "Escape") return;
-  if (!modal.hidden) closeModal(); else if (!drawer.hidden) closeBag(); else closePops();
+  if (!modal.hidden) closeModal(); else if (item) closeItem(); else if (!drawer.hidden) closeBag(); else closePops();
 });
 addEventListener("hashchange", () => {
   closePops();
-  const sec = location.hash.startsWith("#menu/");
+  const sec = location.hash.startsWith("#menu/") || location.hash.startsWith("#item/");
   route();
   if (!sec) scrollTo({ top: 0 });
 });
