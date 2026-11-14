@@ -38,6 +38,7 @@ body {
   font-family: Inter, system-ui, sans-serif;
   font-size: 16px; line-height: 23px; font-weight: 400;
   letter-spacing: -0.15px;
+  font-variant-numeric: tabular-nums; /* every digit the same width, so totals don't nudge the layout */
 }
 button, input { font: inherit; letter-spacing: inherit; color: inherit; }
 a { color: var(--info); }
@@ -94,6 +95,7 @@ header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); 
 .nav-item .chev { width: 16px; height: 16px; }
 .nav-item[aria-expanded="true"] .chev { transform: rotate(180deg); }
 .tool { font-weight: 400; }
+#ctaSlot .btn { min-width: 220px; } /* room for "Checkout · $00.00" so the header never shifts */
 .spacer { flex: 1; }
 .badge {
   display: inline-flex; align-items: center; justify-content: center;
@@ -141,11 +143,12 @@ header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); 
 .mob-nav a, .mob-nav button { width: 100%; justify-content: flex-start; }
 .mob-nav .mega { grid-template-columns: 1fr 1fr; margin-bottom: var(--s3); }
 
-@media (max-width: 1360px) { .where .muted { display: none; } }
-@media (max-width: 1180px) { .tool .label { display: none; } }
-@media (max-width: 900px) {
+@media (max-width: 1440px) { .where .muted, .tool .label { display: none; } }
+@media (max-width: 1240px) {
   .desk-only { display: none !important; }
   .mob-only { display: inline-flex !important; }
+}
+@media (max-width: 900px) {
   .bar { flex-wrap: wrap; gap: var(--s1); }
   .where { order: 10; width: 100%; }
   .mega { grid-template-columns: 1fr 1fr; gap: var(--s1); }
