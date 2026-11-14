@@ -8,18 +8,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* McDonald's Speedee (Bold for headlines, Regular for text) when it is installed
-on this computer. The font files are not included here; Inter is used otherwise. */
-@font-face{font-family:"Speedee Head";src:local("Speedee Bold"),local("Speedee-Bold"),local("Speedee");font-weight:700 800}
-@font-face{font-family:"Speedee Body";src:local("Speedee Regular"),local("Speedee-Regular");font-weight:400 500}
+/* Speedee (Dalton Maag, © McDonald's) is used only when installed on this
+computer: Regular for text, Bold for headings, prices and buttons.
+The font files are not included here; Inter is used otherwise. */
+@font-face{font-family:"Speedee App";src:local("Speedee Regular"),local("Speedee-Regular");font-weight:400}
+@font-face{font-family:"Speedee App";src:local("Speedee Bold"),local("Speedee-Bold");font-weight:700}
 :root{
+/* page chrome around the phone */
 --page:#e9e9e6; --page-ink:#292929; --page-muted:#666;
-/* App tokens: 01 Design Spec + values read from the real app screenshots */
---gold:#FFBC0D; --gold-app:#F4BC40; --gold-stroke:#C08B00;
---red:#DB0007; --berry:#8A1C5E; --wine:#A3254F;
---ink:#292929; --muted:#7C7C7C; --line:#E2E2E2;
---canvas:#FFFFFF; --bg:#F7F7F7; --surface:#F1F1F1; --link:#1F6FC5;
---r-btn:48px; --r-card:12px;
+/* 01 Design Spec — color */
+--gold:#FFBC0D; --gold-stroke:#C08B00; --red:#DB0007; --charcoal:#2D2D2D; --lgray:#F7F7F7;
+--ink:#292929; --muted:#7C7C7C; --divider:#D6D6D6; --canvas:#FFFFFF; --focus:#006BAE;
+/* 03 Shape: two radii */
+--r-card:12px; --r-btn:48px;
 color-scheme:light; box-sizing:border-box;
 padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
@@ -28,21 +29,21 @@ padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bot
 *{box-sizing:border-box}
 html,body{height:100%}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--page);color:var(--page-ink);font-family:Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:48px;padding:28px;flex-wrap:wrap}
+body{margin:0;background:var(--page);color:var(--page-ink);font-family:Inter,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:48px;padding:30px;flex-wrap:wrap}
 .notes{max-width:300px;font-size:14px;line-height:1.55;color:var(--page-muted)}
-.notes h1{font-size:20px;line-height:1.25;color:var(--page-ink);margin:0 0 10px}
-.notes ul{padding-left:18px;margin:8px 0}
-.notes .reset{font:inherit;font-weight:600;background:none;border:1px solid var(--page-muted);color:var(--page-ink);border-radius:48px;padding:8px 16px;cursor:pointer;margin-top:6px}
-/* ---------- iPhone frame ---------- */
-.iphone{position:relative;width:417px;height:876px;border-radius:68px;background:#1c1c1e;padding:12px;
-box-shadow:inset 0 0 0 2px #3a3a3c, 0 0 0 1px #0d0d0d}
+.notes h1{font-size:20px;line-height:1.25;color:var(--page-ink);margin:0 0 12px}
+.notes ul{padding-left:18px;margin:6px 0}
+.notes .reset{font:inherit;font-weight:600;background:none;border:1px solid var(--page-muted);color:var(--page-ink);border-radius:48px;padding:8px 18px;cursor:pointer;margin-top:6px}
+/* ---------- iPhone frame (device, not UI) ---------- */
+.iphone{position:relative;width:417px;height:876px;border-radius:68px;background:#1c1c1e;padding:12px;box-shadow:inset 0 0 0 2px #3a3a3c,0 0 0 1px #0d0d0d}
 .iphone::before,.iphone::after{content:"";position:absolute;width:4px;background:#2c2c2e;border-radius:2px}
 .iphone::before{left:-4px;top:180px;height:64px;box-shadow:0 84px 0 #2c2c2e}
 .iphone::after{right:-4px;top:230px;height:96px}
-.phone{position:relative;width:393px;height:852px;border-radius:56px;overflow:hidden;background:var(--bg);color:var(--ink);display:flex;flex-direction:column}
+.phone{position:relative;overflow:clip;width:393px;height:852px;border-radius:56px;overflow:hidden;background:var(--canvas);color:var(--ink);display:flex;flex-direction:column;
+font-family:"Speedee App",Inter,"Helvetica Neue",Arial,sans-serif;font-weight:400;font-size:16px;line-height:23px}
 .island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:20px;background:#000;z-index:50}
-.status{height:54px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 46px;font-weight:600;font-size:16px;background:var(--canvas);position:relative;z-index:40}
+.status{height:54px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 46px;font-weight:700;font-size:16px;background:var(--canvas);position:relative;z-index:40}
 .status .icons{display:flex;gap:6px;align-items:center}
 .status svg{display:block}
 .homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#111;z-index:60}
@@ -53,183 +54,175 @@ box-shadow:inset 0 0 0 2px #3a3a3c, 0 0 0 1px #0d0d0d}
 .phone{width:100%;height:100%;border-radius:0}
 .status{display:none}
 }
+/* ---------- 02 Typography: Display 36/40 · Heading 16/20 · Body 16/23 · Body S 14/24 · Button 16/20 · Caption 10/14.5 ---------- */
+.display{font-size:36px;line-height:40px;font-weight:700;letter-spacing:-.01em}
+h2.title,.sec-h h3,h3.sub{font-size:16px;line-height:20px;font-weight:700;margin:0}
+.muted{color:var(--muted)}
+.small{font-size:14px;line-height:24px}
+.caption,.fine,.note{font-size:10px;line-height:14.5px;color:var(--muted)}
+.price{font-variant-numeric:tabular-nums;font-weight:700}
+p{margin:0}
 /* ---------- app shell ---------- */
-.appbar{flex:0 0 auto;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--canvas);border-bottom:1px solid var(--line);position:relative;z-index:30}
-.appbar .ttl{font-size:17px;font-weight:800;position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
-.phone :is(.title,.sec-h h3,.hero .h,.hero .k,.trend .h,.rcard .big,.again .name,.cat-row b,.brand,.appbar .ttl,.codecard .num,.codecard h4,.promo b,.mi .nm,.reward .nm,.order-card .what,.item .nm,.summary .ln.total,.btn,.tab,.more-link,.price,.pts,.seg button,.toggle button,.subtabs button,.chip,.tile .nm,.deal .nm,.trend .cta,.hero .ctas span,.list-row,.opt-row b,.rv){font-family:"Speedee Head",Inter,"Helvetica Neue",Arial,sans-serif}
-.phone{font-family:"Speedee Body",Inter,"Helvetica Neue",Arial,sans-serif;font-weight:500}
-.brand{font-weight:800;font-size:18px;letter-spacing:-.01em}
-.brand b{color:var(--wine)}
-.pts{display:inline-flex;align-items:center;gap:6px;border:1px solid #9a9a9a;border-radius:8px;padding:5px 10px;font-size:14px;font-weight:700;background:var(--canvas);color:var(--ink);cursor:pointer}
-.coin{width:16px;height:16px;border-radius:50%;border:2px solid var(--wine);display:inline-block;position:relative}
-.coin::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--gold)}
-.iconbtn{background:none;border:0;padding:8px;margin-left:-8px;cursor:pointer;color:var(--ink);font:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;gap:2px}
+.appbar{flex:0 0 auto;height:56px;display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;padding:0 18px;background:var(--canvas);border-bottom:1px solid var(--divider);position:relative;z-index:30}
+.appbar .ttl{font-size:16px;line-height:20px;font-weight:700;text-align:center;white-space:nowrap}
+.appbar>:last-child{justify-self:end}
+.brand{font-weight:700;font-size:16px;line-height:20px}
+.pts{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:120px;height:44px;border:1px solid var(--muted);border-radius:var(--r-btn);padding:0 12px;font:inherit;font-size:16px;line-height:20px;font-weight:700;background:var(--canvas);color:var(--ink);cursor:pointer;font-variant-numeric:tabular-nums}
+.coin{width:14px;height:14px;border-radius:50%;border:2px solid var(--charcoal);display:inline-block}
+.iconbtn{background:none;border:0;width:44px;height:44px;margin-left:-12px;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:center}
 .screen{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .screen::-webkit-scrollbar{display:none}
-.pad{padding:16px 18px 28px}
-.sec{margin-top:28px}
-.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
-.sec-h h3{font-size:24px;font-weight:800;margin:0;letter-spacing:-.01em}
-.more-link{background:none;border:0;padding:0;font:inherit;font-size:15px;font-weight:700;color:var(--link);cursor:pointer}
-h2.title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
-.muted{color:var(--muted)} .small{font-size:13px}
-.price{font-variant-numeric:tabular-nums;font-weight:700}
-:focus-visible{outline:3px solid var(--link);outline-offset:2px}
-/* buttons */
-.btn{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border-radius:var(--r-btn);font:inherit;font-size:16px;font-weight:600;cursor:pointer;border:1px solid var(--ink);background:var(--canvas);color:var(--ink)}
-.btn.primary{background:var(--gold-app);border-color:var(--gold-stroke);color:var(--ink)}
-.btn.sm{height:40px;font-size:14px;width:auto;padding:0 18px}
-.btn+.btn{margin-top:10px}
+.pad{padding:18px 18px 30px}
+.sec{margin-top:30px}
+.sec-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* links: Ink, underlined; 44px tall to tap */
+.ulink,.more-link,.linkbtn{display:inline-flex;align-items:center;min-height:44px;background:none;border:0;padding:0;font:inherit;font-size:14px;line-height:24px;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+/* buttons: one Gold primary per screen; secondary white with 1px Muted */
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border-radius:var(--r-btn);font:inherit;font-size:16px;line-height:20px;font-weight:700;cursor:pointer;border:1px solid var(--muted);background:var(--canvas);color:var(--ink)}
+.btn.primary{background:var(--gold);border-color:var(--gold-stroke);color:var(--ink)}
+.btn.sm{height:44px;width:auto;padding:0 18px}
+.btn+.btn{margin-top:12px}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-/* hero banner */
-.hero{margin:-16px -18px 0;position:relative;overflow:hidden;background:linear-gradient(160deg,#9fd2e8 0%,#5ea9cf 55%,#3f87b5 100%);color:var(--ink);padding:22px 18px 18px;min-height:250px;cursor:pointer;border:0;width:calc(100% + 36px);text-align:left;font:inherit;display:block}
-.hero .flake{position:absolute;color:#fff;opacity:.55;font-size:18px}
-.hero .k{font-size:17px;font-weight:800}
-.hero .h{font-size:34px;line-height:1.02;font-weight:800;letter-spacing:-.02em;margin:4px 0 6px;max-width:58%}
-.hero .s{font-size:15px;max-width:60%}
-.hero .art{position:absolute;right:-4px;top:30px;width:156px}
-.hero .ctas{display:flex;gap:12px;margin-top:16px;position:relative}
-.hero .ctas span{flex:1;height:44px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--canvas)}
-.hero .ctas span.go{background:var(--gold-app)}
-.fine{font-size:11px;color:var(--muted);margin:6px 0 0}
-.promo{display:grid;grid-template-columns:44px 1fr 16px;gap:12px;align-items:center;background:var(--canvas);border:1px solid var(--line);border-left:6px solid var(--berry);border-radius:var(--r-card);padding:14px;margin-top:22px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
-.promo b{display:block;font-size:16px}
-.promo span{font-size:14px}
-/* carousels */
-.rail{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 4px;scroll-padding-inline:18px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.phone button:active{filter:brightness(.92)}
+/* home hero: a Light Gray section, the only Gold is its main button */
+.hero{margin:-18px -18px 0;position:relative;overflow:hidden;background:var(--lgray);color:var(--ink);padding:30px 18px 18px;border:0;width:calc(100% + 36px);text-align:left;font:inherit;display:block;cursor:pointer}
+.hero .k{display:block;font-size:16px;line-height:20px;font-weight:700}
+.hero .h{display:block;margin:6px 0;max-width:62%}
+.hero .s{display:block;font-size:14px;line-height:24px;max-width:58%}
+.hero .art{position:absolute;right:-6px;top:30px;width:150px;aspect-ratio:1}
+.hero .ctas{display:flex;gap:12px;margin-top:18px;position:relative}
+.hero .ctas span{flex:1;height:48px;border-radius:var(--r-btn);display:flex;align-items:center;justify-content:center;font-size:16px;line-height:20px;font-weight:700;background:var(--canvas);border:1px solid var(--muted)}
+.hero .ctas span.go{background:var(--gold);border-color:var(--gold-stroke)}
+.fine{margin-top:6px}
+.promo{display:grid;grid-template-columns:1fr 16px;gap:12px;align-items:center;background:var(--lgray);border:0;border-radius:var(--r-card);padding:18px;margin-top:18px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.promo b{display:block;font-size:16px;line-height:20px}
+.promo span span{font-size:14px;line-height:24px}
+/* rails */
+.rail{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 6px;scroll-padding-inline:18px;scroll-snap-type:x mandatory;scrollbar-width:none}
 .rail::-webkit-scrollbar{display:none}
 .tile{flex:0 0 150px;scroll-snap-align:start;background:none;border:0;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column;align-self:flex-start}
-.reward{align-self:flex-start;display:flex;flex-direction:column}
-.tile .ph{height:150px;border-radius:8px;background:var(--canvas);overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
-.tile .nm{font-size:15px;margin-top:8px;line-height:1.3}
-.deal{flex:0 0 132px}
-.deal .ph{height:120px}
-.deal .nm{font-weight:700;font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.deal .exp{font-size:13px;color:var(--muted)}
-.deal.added .ph{outline:2px solid var(--ink);outline-offset:-2px}
+.tile .ph{height:150px;border-radius:var(--r-card);background:var(--lgray);display:flex;align-items:center;justify-content:center}
+.tile .nm{font-size:16px;line-height:20px;font-weight:700;margin-top:6px}
+.deal .nm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.deal .exp{font-size:14px;line-height:24px;color:var(--muted)}
+.deal.added .ph,.mi.added{box-shadow:none;outline:1px solid var(--ink);outline-offset:-1px}
 .ph img,.ring img,.art img,.hero-ph img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
 .ph,.ring>span,.hero-ph{overflow:hidden}
-.hero .art,.trend .art{aspect-ratio:1}
-.hero-ph img{width:180px;height:180px}
-.ph svg{width:78%;height:78%}
-.trend{display:block;width:100%;border:0;border-radius:var(--r-card);overflow:hidden;position:relative;padding:22px 18px;text-align:left;font:inherit;color:#fff;cursor:pointer;min-height:170px;margin-bottom:16px}
-.trend .h{font-size:28px;font-weight:800;line-height:1.05;max-width:60%;letter-spacing:-.01em}
-.trend .s{font-size:15px;margin:6px 0 14px;max-width:60%}
-.trend .cta{display:inline-flex;height:42px;padding:0 26px;align-items:center;border-radius:4px;background:var(--gold-app);color:var(--ink);font-size:16px}
-.trend .art{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:130px}
-/* again card */
-.again{background:var(--gold-app);border-radius:var(--r-card);padding:16px;margin-top:22px;display:grid;grid-template-columns:1fr 72px;gap:4px 12px}
-.again .kicker{font-size:12px;font-weight:700;letter-spacing:.03em;grid-column:1/-1}
-.again .name{font-size:19px;font-weight:800}
-.again p{margin:0;font-size:14px}
-.again .ph{grid-row:2/4;grid-column:2;width:72px;height:72px;border-radius:10px;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.again .btn{grid-column:1/-1;margin-top:10px}
-/* order cards */
-.order-card{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:10px;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
-.order-card .ph{flex:0 0 56px;width:56px;height:56px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.oc-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.order-card .when{font-size:13px;color:var(--muted)}
-.order-card .what{font-weight:700;font-size:16px;line-height:1.3}
-.order-card .where{font-size:13px;color:var(--muted)}
-.order-card .go{font-size:14px;font-weight:600;color:var(--link);margin-top:6px}
-.order-card .tot{flex:0 0 auto;text-align:right;display:flex;flex-direction:column;gap:2px}
-.order-card .tot .price{font-size:17px;line-height:1.3;margin-top:17px}
-.order-card .tot .tax{font-size:12px;color:var(--muted)}
+/* trending: Light Gray cards, secondary buttons */
+.trend{display:block;width:100%;border:0;border-radius:var(--r-card);overflow:hidden;position:relative;padding:18px;text-align:left;font:inherit;color:var(--ink);background:var(--lgray);cursor:pointer;min-height:168px;margin-bottom:12px}
+.trend .h{font-size:16px;line-height:20px;font-weight:700;max-width:58%}
+.trend .s{font-size:14px;line-height:24px;margin:6px 0 12px;max-width:58%}
+.trend .cta{display:inline-flex;height:44px;padding:0 18px;align-items:center;border-radius:var(--r-btn);background:var(--canvas);border:1px solid var(--muted);font-size:16px;line-height:20px;font-weight:700}
+.trend .art{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:120px;aspect-ratio:1}
+/* order row (Light Gray card): left = date · type, items, restaurant, link; right = total, tax */
+.order-card{display:flex;gap:12px;align-items:flex-start;padding:18px;margin-bottom:12px;background:var(--lgray);border:0;border-radius:var(--r-card);width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.oc-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.order-card .when,.order-card .where{font-size:14px;line-height:24px;color:var(--muted)}
+.order-card .what{font-weight:700;font-size:16px;line-height:20px}
+.order-card .go{font-size:14px;line-height:24px;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;margin-top:6px}
+.order-card .tot{flex:0 0 auto;text-align:right;display:flex;flex-direction:column}
+.order-card .tot .price{font-size:16px;line-height:20px;margin-top:24px}
+.order-card .tot .tax{font-size:14px;line-height:24px;color:var(--muted)}
 /* order tab */
-.toggle{display:inline-flex;border:1px solid #9a9a9a;border-radius:var(--r-btn);background:var(--surface);padding:2px}
-.toggle button{border:0;background:none;font:inherit;font-size:15px;padding:7px 18px;border-radius:var(--r-btn);cursor:pointer;color:var(--ink)}
-.toggle button[aria-pressed="true"]{background:var(--gold-app);font-weight:700;border:1px solid var(--gold-stroke)}
-.where-row{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;margin-top:16px}
-.pin{width:26px;height:30px}
-.where-row b{font-size:15px;display:block}
-.ulink{background:none;border:0;padding:0;font:inherit;font-size:15px;color:var(--link);text-decoration:underline;cursor:pointer}
-.subtabs{display:flex;gap:28px;border-bottom:1px solid var(--line);margin:18px -18px 0;padding:0 18px}
-.subtabs button{background:none;border:0;font:inherit;font-size:16px;padding:10px 0;cursor:pointer;color:var(--ink);border-bottom:4px solid transparent}
-.subtabs button[aria-pressed="true"]{font-weight:700;border-color:var(--gold-app)}
-.cat-row{display:grid;grid-template-columns:64px 1fr 14px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left;font:inherit;color:inherit;cursor:pointer}
-.cat-row .ph{width:64px;height:64px;border-radius:8px;background:var(--canvas);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.cat-row b{font-size:20px;font-weight:800}
-.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-.mi{background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);padding:10px;text-align:left;font:inherit;color:inherit;cursor:pointer}
-.mi .ph{height:110px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.mi .nm{font-weight:700;font-size:14px;line-height:1.3;min-height:36px}
-.mi .pr{font-size:13px;color:var(--muted);margin-top:2px}
+.toggle,.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--muted);border-radius:var(--r-btn);padding:3px;background:var(--canvas)}
+.seg{display:grid;width:100%}
+.toggle button,.seg button{min-height:44px;white-space:nowrap;border:1px solid transparent;background:none;font:inherit;font-size:16px;line-height:20px;padding:0 12px;border-radius:var(--r-btn);cursor:pointer;color:var(--ink)}
+.toggle button[aria-pressed="true"],.seg button[aria-pressed="true"]{border-color:var(--ink);font-weight:700}
+.where-row{display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:center;margin-top:12px}
+.where-row b{font-size:16px;line-height:20px;display:block}
+.pin{width:24px;height:28px}
+.subtabs{display:flex;gap:30px;border-bottom:1px solid var(--divider);margin:12px -18px 0;padding:0 18px}
+.subtabs button{min-height:44px;background:none;border:0;border-bottom:1px solid transparent;margin-bottom:-1px;font:inherit;font-size:16px;line-height:20px;cursor:pointer;color:var(--muted)}
+.subtabs button[aria-pressed="true"]{font-weight:700;color:var(--ink);border-bottom-color:var(--ink)}
+.cat-row{display:grid;grid-template-columns:64px 1fr 16px;gap:18px;align-items:center;padding:12px 0;border:0;border-bottom:1px solid var(--divider);width:100%;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.cat-row .ph{width:64px;height:64px;border-radius:var(--r-card);background:var(--lgray);display:flex;align-items:center;justify-content:center}
+.cat-row b{font-size:16px;line-height:20px}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.mi{background:var(--lgray);border:0;border-radius:var(--r-card);padding:12px;text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column}
+.mi .ph{height:120px;display:flex;align-items:center;justify-content:center}
+.mi .nm{font-weight:700;font-size:16px;line-height:20px;margin-top:6px;min-height:40px}
+.mi .pr{font-size:14px;line-height:24px;color:var(--muted)}
 /* bag */
-.place{background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);padding:12px 14px;display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center}
-.place b{font-size:15px}.place .small{display:block}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-btn);padding:5px 10px}
-.chip .dot{width:7px;height:7px;border-radius:50%;background:var(--ink)}
-.chip.web{margin-top:6px;padding:3px 9px}
-.item{display:grid;grid-template-columns:60px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}
-.item .ph{width:60px;height:60px;border-radius:8px;background:var(--canvas);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.item .nm{font-weight:700;font-size:15px;line-height:1.3}
-.item .opt{font-size:13px;color:var(--muted)}
+.place{background:var(--lgray);border-radius:var(--r-card);padding:12px 18px;display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:center}
+.place b{font-size:16px;line-height:20px;display:block}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:14px;line-height:24px;background:var(--lgray);border-radius:var(--r-card);padding:0 12px}
+.chip .dot{width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.chip.web{margin-top:6px}
+.notebox{background:var(--lgray);border-radius:var(--r-card);padding:12px 18px;margin-top:12px;font-size:14px;line-height:24px}
+.item{display:grid;grid-template-columns:60px 1fr auto;gap:12px;padding:18px 0;border-bottom:1px solid var(--divider);align-items:start}
+.item.noimg{grid-template-columns:1fr auto}
+.item .ph{width:60px;height:60px;border-radius:var(--r-card);background:var(--lgray);display:flex;align-items:center;justify-content:center}
+.item .nm{font-weight:700;font-size:16px;line-height:20px}
+.item .opt{font-size:14px;line-height:24px;color:var(--muted)}
 .item .right{text-align:right}
-.stepper{display:inline-flex;align-items:center;gap:4px;margin-top:8px}
-.stepper button{width:36px;height:36px;border-radius:50%;border:1px solid #9a9a9a;background:var(--canvas);font:inherit;font-size:18px;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:center}
-.stepper span{min-width:22px;text-align:center;font-weight:800;font-size:16px}
-.summary{background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);padding:14px 16px;margin-top:16px}
-.summary .ln{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);padding:3px 0}
-.summary .ln.total{color:var(--ink);font-size:18px;font-weight:800;border-top:1px solid var(--line);margin-top:8px;padding-top:10px}
-.empty{text-align:center;padding:36px 10px}
-.empty .ph{width:120px;height:120px;margin:0 auto 6px}
-/* rewards */
-.seg{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #9a9a9a;border-radius:var(--r-btn);padding:4px;background:var(--canvas)}
-.seg button{border:0;background:none;font:inherit;font-weight:700;font-size:15px;padding:10px 0;border-radius:var(--r-btn);cursor:pointer;color:var(--ink)}
-.seg button[aria-pressed="true"]{background:linear-gradient(90deg,var(--berry),var(--wine));color:#fff}
-.rcard{border-radius:var(--r-card);padding:22px 20px;margin-top:18px;color:#fff;background:linear-gradient(110deg,var(--berry),var(--wine));position:relative;overflow:hidden}
-.rcard .k{font-size:17px;font-weight:700}
-.rcard .big{font-size:44px;font-weight:800;letter-spacing:-.02em;margin:4px 0 12px}
+.stepper{display:inline-flex;align-items:center;gap:6px;margin-top:6px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:1px solid var(--muted);background:var(--canvas);font:inherit;font-size:16px;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:center}
+.stepper span{min-width:18px;text-align:center;font-weight:700;font-size:16px}
+.summary{background:var(--lgray);border-radius:var(--r-card);padding:18px;margin-top:18px}
+.summary .ln{display:flex;justify-content:space-between;gap:12px;font-size:14px;line-height:24px;color:var(--muted);font-variant-numeric:tabular-nums}
+.summary .ln.total{color:var(--ink);font-size:16px;line-height:20px;font-weight:700;border-top:1px solid var(--divider);margin-top:12px;padding-top:12px}
+.summary .ln.it{color:var(--ink);padding:6px 0}
+.empty{text-align:center;padding:30px 12px}
+.empty .ph{width:120px;height:120px;margin:0 auto 12px}
+.empty p{margin:6px 0 18px}
+/* rewards: Charcoal card, Light Gray tiles */
+.rcard{border-radius:var(--r-card);padding:18px;margin-top:18px;color:#fff;background:var(--charcoal)}
+.rcard .k{font-size:16px;line-height:20px;font-weight:700}
+.rcard .big{margin:6px 0 12px}
 .rcard .row{display:flex;gap:18px;align-items:center}
 .rcard .ulink{color:#fff}
-.rcard .rv{background:var(--gold-app);color:var(--ink);border:1px solid var(--gold-stroke);border-radius:6px;padding:8px 14px;font:inherit;font-size:15px;cursor:pointer}
-.rcard .coins{position:absolute;right:-10px;top:-10px;width:120px;opacity:.9}
-.reward{flex:0 0 160px;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0}
-.reward .ph{height:140px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line)}
-.reward .ring{width:116px;height:116px;border-radius:50%;padding:5px;background:conic-gradient(var(--wine),var(--gold-app),var(--wine));display:flex}
-.reward .ring>span{flex:1;border-radius:50%;background:var(--canvas);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.reward .body{padding:10px 12px 12px}
-.reward .nm{font-weight:800;font-size:15px;min-height:38px}
-.reward .cost{font-size:14px;display:flex;gap:6px;align-items:center}
-.reward[disabled]{opacity:.55;cursor:not-allowed}
-.codecard{border-radius:var(--r-card);overflow:hidden;margin-top:18px;background:var(--canvas);border:1px solid var(--line)}
-.codecard .top{background:var(--gold-app);padding:20px;text-align:center}
-.codecard .top h4{margin:0;font-size:20px;text-align:left}
-.codecard .top p{margin:4px 0 10px;text-align:left;font-size:14px}
-.codecard .num{font-size:52px;font-weight:800;letter-spacing:.12em}
-.qr{width:170px;height:170px;background:#fff;border-radius:12px;margin:10px auto 0;padding:12px}
-.codecard .bot{padding:18px 20px}
+.rcard .rv{height:44px;padding:0 18px;background:var(--gold);color:var(--ink);border:1px solid var(--gold-stroke);border-radius:var(--r-btn);font:inherit;font-size:16px;line-height:20px;font-weight:700;cursor:pointer}
+.reward{flex:0 0 160px;background:var(--lgray);border:0;border-radius:var(--r-card);text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0;align-self:flex-start;display:flex;flex-direction:column}
+.reward .ph{height:140px;display:flex;align-items:center;justify-content:center}
+.reward .ring{width:116px;height:116px;border-radius:50%;background:var(--canvas);display:flex}
+.reward .ring>span{flex:1;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.reward .body{padding:0 12px 12px}
+.reward .nm{font-weight:700;font-size:16px;line-height:20px;min-height:40px}
+.reward .cost{font-size:14px;line-height:24px;display:flex;gap:6px;align-items:center}
+.reward[disabled]{opacity:.5;cursor:not-allowed}
+.codecard{border-radius:var(--r-card);overflow:hidden;margin-top:18px;background:var(--lgray)}
+.codecard .top{padding:18px;text-align:center}
+.codecard .top h4{margin:0;font-size:16px;line-height:20px;text-align:left}
+.codecard .top p{margin:6px 0 12px;text-align:left;font-size:14px;line-height:24px}
+.codecard .num{letter-spacing:.12em}
+.qr{width:170px;height:170px;background:#fff;border-radius:var(--r-card);margin:12px auto 0;padding:12px}
+.codecard .bot{padding:18px;border-top:1px solid var(--divider)}
 /* more */
-.list-row{display:grid;grid-template-columns:40px 1fr 14px;gap:14px;align-items:center;padding:20px 18px;border-bottom:1px solid var(--line);background:var(--canvas);width:100%;border-left:0;border-right:0;border-top:0;text-align:left;font:inherit;font-size:17px;color:var(--ink);cursor:pointer}
-.list-row svg{width:28px;height:28px}
+.list-row{display:grid;grid-template-columns:30px 1fr 16px;gap:12px;align-items:center;min-height:60px;padding:12px 18px;border:0;border-bottom:1px solid var(--divider);background:var(--canvas);width:100%;text-align:left;font:inherit;font-size:16px;line-height:23px;color:var(--ink);cursor:pointer}
+.list-row svg{width:24px;height:24px;color:var(--charcoal)}
 /* dock & tabs */
 .dock{flex:0 0 auto;background:var(--canvas);position:relative;z-index:30}
-.cta{padding:10px 18px;border-top:1px solid var(--line)}
-.tabs{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);padding:6px 0 30px}
-@media (max-width:520px){.tabs{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}}
-.tab{background:none;border:0;font:inherit;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 0;position:relative}
-.tab svg{width:26px;height:26px}
+.cta{padding:12px 18px;border-top:1px solid var(--divider)}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--divider);padding:6px 0 30px}
+@media (max-width:520px){.tabs{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}}
+.tab{background:none;border:0;font:inherit;font-size:10px;line-height:14.5px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;min-height:44px;padding:6px 0;position:relative}
+.tab svg{width:24px;height:24px}
 .tab[aria-current="page"]{color:var(--ink);font-weight:700}
-.tab[aria-current="page"] svg{color:var(--gold-app)}
-.badge{position:absolute;top:1px;left:50%;margin-left:5px;min-width:19px;height:19px;border-radius:10px;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px;background:var(--surface);color:var(--ink);border:1px solid var(--line)}
-.badge.on{background:var(--red);color:#fff;border-color:var(--red)}
-/* sheet / toast */
+.badge{position:absolute;top:2px;left:50%;margin-left:6px;min-width:18px;height:18px;border-radius:9px;font-size:10px;line-height:14.5px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;background:var(--lgray);color:var(--ink)}
+.badge.on{background:var(--red);color:#fff}
+/* pop-ups: no outline, the dimmed page separates them */
 .scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);display:none;z-index:70}
-.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--canvas);border-radius:22px 22px 0 0;z-index:71;transform:translateY(105%);transition:transform .26s ease;max-height:90%;overflow-y:auto;padding:10px 20px 34px}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--canvas);border-radius:var(--r-card) var(--r-card) 0 0;z-index:71;transform:translateY(105%);transition:transform .25s ease;max-height:90%;overflow-y:auto;padding:12px 18px 30px}
 .sheet.open{transform:none}
-.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
-.sheet .hero-ph{height:180px;display:flex;align-items:center;justify-content:center;margin:4px 0 8px}
-.meal-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 16px}
-.meal-opts button{border:1px solid #9a9a9a;border-radius:6px;background:var(--bg);padding:10px 6px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
-.meal-opts button[aria-pressed="true"]{border:3px solid var(--ink);font-weight:700;background:var(--canvas)}
-.qty{display:inline-flex;align-items:center;border:1px solid #9a9a9a;border-radius:var(--r-btn);height:48px}
-.qty button{width:42px;height:46px;background:none;border:0;font:inherit;font-size:20px;cursor:pointer;color:var(--ink)}
-.qty span{min-width:24px;text-align:center;font-weight:700;font-size:17px}
-.toast{position:absolute;left:18px;right:18px;bottom:120px;background:var(--ink);color:#fff;border-radius:var(--r-card);padding:12px 14px;font-size:14px;font-weight:600;z-index:80;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none}
+.sheet h2.title{margin-bottom:6px}
+.grab{width:36px;height:6px;border-radius:3px;background:var(--divider);margin:0 auto 12px}
+.sheet .hero-ph{height:180px;display:flex;align-items:center;justify-content:center;margin:6px 0 12px}
+.hero-ph img{width:180px;height:180px}
+.meal-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 18px}
+.meal-opts button{border:1px solid transparent;border-radius:var(--r-card);background:var(--lgray);padding:12px 6px;font:inherit;font-size:14px;line-height:24px;cursor:pointer;color:var(--ink)}
+.meal-opts button[aria-pressed="true"]{border-color:var(--ink);background:var(--canvas)}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--muted);border-radius:var(--r-btn);height:48px}
+.qty button{width:44px;height:46px;background:none;border:0;font:inherit;font-size:16px;cursor:pointer;color:var(--ink)}
+.qty span{min-width:24px;text-align:center;font-weight:700;font-size:16px}
+.toast{position:absolute;left:18px;right:18px;bottom:120px;background:var(--charcoal);color:#fff;border-radius:var(--r-card);padding:12px 18px;font-size:14px;line-height:24px;z-index:80;opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s;pointer-events:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .toast.show{opacity:1;transform:none}
-.receipt .ln{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;font-variant-numeric:tabular-nums}
-.opt-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
-.note{font-size:12px;color:var(--muted);margin-top:18px;line-height:1.45}
+.toast.has-action{pointer-events:auto}
+.toast button{background:none;border:0;color:#fff;font:inherit;font-weight:700;text-decoration:underline;min-height:44px;cursor:pointer}
+.receipt .ln{display:flex;justify-content:space-between;font-size:14px;line-height:24px;font-variant-numeric:tabular-nums}
+.receipt .ln.total{font-size:16px;line-height:20px;font-weight:700;border-top:1px solid var(--divider);margin-top:12px;padding-top:12px}
+.opt-row{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:60px;padding:12px 0;border:0;border-bottom:1px solid var(--divider);width:100%;background:none;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.note{margin-top:18px}
 @media (prefers-reduced-motion:reduce){.sheet,.toast{transition:none}}
 </style>
 </head>
@@ -367,12 +360,19 @@ const store = () => STORES.find(s => s.id === S.store);
 const unitAt = (base) => r2(base + store().delta);
 const sum = ls => r2(ls.reduce((a, l) => a + l.unit * l.qty, 0));
 const bagTotals = () => { const sub = sum(S.bag); const fee = S.mode === "delivery" && S.bag.length ? (S.deals.includes("d4") && sub >= 20 ? 0 : 3.99) : 0; const tax = r2(sub * TAX); return { sub, fee, tax, total: r2(sub + tax + fee) }; };
-const oTot = o => { const sub = r2(o.lines.reduce((a, l) => a + l.price, 0)); const tax = r2(sub * TAX); return { sub, tax, total: r2(sub + tax) }; };
+const oTot = o => { const sub = r2(o.lines.reduce((a, l) => a + l.price, 0)); const tax = r2(sub * TAX); const fee = o.fee || 0; return { sub, tax, fee, total: r2(sub + tax + fee) }; };
+const feeRows = (t, label) => `<div class="ln"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="ln"><span>Tax (6.625%)</span><span>${money(t.tax)}</span></div><div class="ln"><span>${label || "Fees"}</span><span>${money(t.fee || 0)}</span></div>`;
+const typeOf = o => o.mode === "delivery" ? "Delivery" : "Pickup";
 const oTitle = o => o.lines.map(l => l.name).join(", ");
 const shortTitle = o => o.lines.length > 2 ? o.lines.slice(0, 2).map(l => l.name).join(", ") + ` + ${o.lines.length - 2} more` : oTitle(o);
 const count = () => S.bag.reduce((a, l) => a + l.qty, 0);
 const $ = id => document.getElementById(id);
-function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 1900); }
+function toast(m, undo) {
+const t = $("toast"); t.innerHTML = `<span>${esc(m)}</span>` + (undo ? `<button type="button" data-undo>Undo</button>` : "");
+t.classList.toggle("has-action", !!undo); t.classList.add("show"); clearTimeout(toast.t);
+if (undo) t.querySelector("[data-undo]").onclick = () => { undo(); t.classList.remove("show", "has-action"); };
+toast.t = setTimeout(() => t.classList.remove("show", "has-action"), undo ? 5000 : 1900);
+}
 function addItem(item, meal, qty, extra = {}) {
 const mk = meal && meal !== "none" ? meal : "none";
 const unit = extra.unit != null ? extra.unit : unitAt(item.price + MEAL[mk].add);
@@ -398,14 +398,14 @@ const titles = { rewards: "Rewards & Deals", order: "Order details", cat: "Menu"
 return `${back()}<span class="ttl">${esc(titles[v.type] || "")}</span>${v.type === "rewards" ? `<span></span>` : pts}`;
 }
 const titles = { home: "", order: "Order", bag: "Your bag", orders: "Your orders", more: "More" };
-return `<span class="brand">My<b>McD</b></span>${titles[S.tab] ? `<span class="ttl">${titles[S.tab]}</span>` : ""}${pts}`;
+return `<span class="brand">My<b>McD</b></span><span class="ttl">${titles[S.tab] || ""}</span>${pts}`;
 }
 /* -------- Screens -------- */
 function orderCard(o) {
 const t = oTot(o);
 return `<button class="order-card" data-open="${o.id}">
 <span class="oc-main">
-<span class="when">${esc(o.when)}</span>
+<span class="when">${esc(o.when)} · ${typeOf(o)}</span>
 <span class="what">${esc(shortTitle(o))}</span>
 <span class="where">${esc(STORES.find(s => s.id === o.store).name)}</span>
 <span class="go">View details</span>
@@ -415,15 +415,15 @@ return `<button class="order-card" data-open="${o.id}">
 }
 function home() {
 return `<div class="pad">
-<button class="hero" data-cat="breakfast" aria-label="Breakfast, see the menu" style="background:linear-gradient(160deg,#FFE7A3 0%,#F9CF5E 60%,#F4BC40 100%)">
+<button class="hero" data-cat="breakfast" aria-label="Breakfast, see the menu">
 <span class="k">Good morning, Aria</span>
-<span class="h" style="display:block">Breakfast, your way</span>
-<span class="s" style="display:block">McMuffins, biscuits, McGriddles® and hotcakes, until 10:30 AM.</span>
+<span class="h display">Breakfast, your way</span>
+<span class="s">McMuffins, biscuits, McGriddles® and hotcakes, until 10:30 AM.</span>
 <span class="art">${pic("big-breakfast-hotcakes.png", "cakes")}</span>
-<span class="ctas"><span class="go" style="background:var(--canvas);border:1px solid var(--ink)">Order breakfast</span><span>See all</span></span>
+<span class="ctas"><span class="go">Order breakfast</span><span>See all</span></span>
 </button>
 <p class="fine">Breakfast hours vary by restaurant.</p>
-<button class="promo" data-push="rewards" style="grid-template-columns:1fr 16px"><span><b>More points, more free food</b><span>Unlock bonus offers and earn more on your next order</span></span><span>›</span></button>
+<button class="promo" data-push="rewards"><span><b>More points, more free food</b><span>Unlock bonus offers and earn more on your next order</span></span><span>›</span></button>
 <div class="sec"><div class="sec-h"><h3>Menu</h3><button class="more-link" data-tab-go="order">Full menu →</button></div>
 <div class="rail">${MENU.map(c => `<button class="tile" data-cat="${c.id}"><div class="ph">${pic(c.img, c.art)}</div><div class="nm">${esc(c.cat)}</div></button>`).join("")}</div></div>
 <div class="sec"><div class="sec-h"><h3>App Exclusive Deals</h3><button class="more-link" data-push-deals>View all →</button></div>
@@ -431,10 +431,10 @@ return `<div class="pad">
 <div class="sec"><div class="sec-h"><h3>Recent orders</h3><button class="more-link" data-tab-go="orders">All →</button></div>
 ${S.orders.slice(0, 2).map(orderCard).join("")}</div>
 <div class="sec"><div class="sec-h"><h3>Trending</h3></div>
-<button class="trend" data-push-deals style="background:linear-gradient(150deg,#2e5c9a,#2f8f7a)"><div class="h">Bonus points on breakfast</div><div class="s">Double points on any breakfast meal this week.</div><span class="cta">See offers</span><span class="art">${pic("meal-egg-mcmuffin.png")}</span></button>
-<button class="trend" data-item="iced" style="background:linear-gradient(150deg,#4a2a1c,#7a3d22)"><div class="h">Iced Coffee</div><div class="s">Cold, smooth and made your way.</div><span class="cta">Order Now</span><span class="art">${pic("iced-coffee.png")}</span></button>
-<button class="trend" data-item="sgriddle" style="background:linear-gradient(150deg,#b8771c,#d99b2b)"><div class="h">Sausage McGriddles®</div><div class="s">Sweet griddle cakes, savory sausage.</div><span class="cta">Order Now</span><span class="art">${pic("sausage-mcgriddles.png")}</span></button>
-<button class="trend" data-item="hotcakessaus" style="background:linear-gradient(150deg,#8a4b1c,#b8771c)"><div class="h">Hotcakes and Sausage</div><div class="s">Warm hotcakes with syrup and butter.</div><span class="cta">Order Now</span><span class="art">${pic("hotcakes-sausage.png")}</span></button>
+<button class="trend" data-push-deals><div class="h">Bonus points on breakfast</div><div class="s">Double points on any breakfast meal this week.</div><span class="cta">See offers</span><span class="art">${pic("meal-egg-mcmuffin.png")}</span></button>
+<button class="trend" data-item="iced"><div class="h">Iced Coffee</div><div class="s">Cold, smooth and made your way.</div><span class="cta">Order Now</span><span class="art">${pic("iced-coffee.png")}</span></button>
+<button class="trend" data-item="sgriddle"><div class="h">Sausage McGriddles®</div><div class="s">Sweet griddle cakes, savory sausage.</div><span class="cta">Order Now</span><span class="art">${pic("sausage-mcgriddles.png")}</span></button>
+<button class="trend" data-item="hotcakessaus"><div class="h">Hotcakes and Sausage</div><div class="s">Warm hotcakes with syrup and butter.</div><span class="cta">Order Now</span><span class="art">${pic("hotcakes-sausage.png")}</span></button>
 </div>
 <p class="note">Prices are illustrative.</p>
 </div>`;
@@ -449,8 +449,8 @@ const head = `<div class="toggle" role="group" aria-label="Order type"><button a
 <div class="where-row">${ART.pin}<span><b>${S.mode === "pickup" ? esc(st.name) : "Deliver to 30 River Ct, Apt 4B"}</b><span class="small muted">${S.mode === "pickup" ? st.hours : "About 25–35 min · $3.99 delivery fee"}</span></span><button class="ulink" data-act="${S.mode === "pickup" ? "store" : "address"}">Change</button></div>
 <div class="subtabs">${["menu", "recent", "faves"].map(k => `<button aria-pressed="${S.orderSub === k}" data-osub="${k}">${{ menu: "Menu", recent: "Recent Orders", faves: "Faves" }[k]}</button>`).join("")}</div>`;
 let body = "";
-if (S.orderSub === "menu") body = `<h3 style="font-size:17px;margin:20px 0 4px">Explore our menu</h3>` + MENU.map(c => `<button class="cat-row" data-cat="${c.id}"><span class="ph">${pic(c.img, c.art)}</span><b>${esc(c.cat)}</b><span>›</span></button>`).join("");
-if (S.orderSub === "recent") body = `<p class="small muted" style="margin:16px 0 10px">Totals are what you paid, tax included.</p>` + S.orders.map(orderCard).join("");
+if (S.orderSub === "menu") body = `<h3 class="sub" style="margin:18px 0 6px">Explore our menu</h3>` + MENU.map(c => `<button class="cat-row" data-cat="${c.id}"><span class="ph">${pic(c.img, c.art)}</span><b>${esc(c.cat)}</b><span>›</span></button>`).join("");
+if (S.orderSub === "recent") body = `<p class="small muted" style="margin:12px 0">Totals are what you paid, tax included.</p>` + S.orders.map(orderCard).join("");
 if (S.orderSub === "faves") body = S.faves.length ? `<div class="menu-grid">${S.faves.map(id => miCard(byId(id))).join("")}</div>` : `<div class="empty"><p><b>No faves yet</b></p><p class="muted small">Tap the star on any item to save it here.</p></div>`;
 return `<div class="pad">${head}${body}</div>`;
 }
@@ -461,22 +461,22 @@ if (S.done) {
 const o = S.done, t = oTot(o);
 return `<div class="pad"><div class="empty">${o.img ? `<div class="ph">${pic(o.img)}</div>` : ""}
 <h2 class="title">Order placed</h2><p class="muted">${S.mode === "pickup" ? "Pickup at " + esc(store().name) + ". Ready in about 6 min." : "On its way. About 25–35 min."}</p>
-<div class="summary" style="text-align:left"><div class="ln"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="ln"><span>Tax</span><span>${money(t.tax)}</span></div><div class="ln total"><span>Total paid</span><span>${money(t.total)}</span></div></div>
-<p class="small muted" style="margin:14px 0">You earned ${Math.round(t.sub * 100)} points. This order is now in Orders, with its total.</p>
+<div class="summary" style="text-align:left">${feeRows(t)}<div class="ln total"><span>Total paid</span><span>${money(t.total)}</span></div></div>
+<p class="small muted" style="margin:12px 0 18px">You earned ${Math.round(t.sub * 100)} points. This order is now in Orders, with its total.</p>
 <button class="btn" data-tab-go="orders">Go to Orders</button>
 <p class="note">Demo only. Nothing was ordered or paid.</p></div></div>`;
 }
 const st = store();
-const head = `<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><span class="chip"><span class="dot"></span>Synced with website</span></div>
+const head = `<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><span class="chip"><span class="dot"></span>Synced with website</span></div>
 <div class="place">${ART.pin}<span><b>${S.mode === "pickup" ? "Pickup · " + esc(st.name) : "McDelivery · 30 River Ct, Apt 4B"}</b><span class="small muted">${S.mode === "pickup" ? "Ready in about 6 min · " + st.hours.replace("Now serving ", "") : "About 25–35 min"}</span></span><button class="ulink" data-act="${S.mode === "pickup" ? "store" : "address"}">Change</button></div>`;
 if (!S.bag.length) return `<div class="pad">${head}<div class="empty"><p><b>Your bag is empty</b></p><p class="muted small">Add something from the menu or reorder a past order.</p><button class="btn primary" data-tab-go="order">Browse the menu</button><button class="btn" data-tab-go="orders">See past orders</button></div></div>`;
 const t = bagTotals();
-return `<div class="pad">${head}
+return `<div class="pad">${head}${S.note ? `<div class="notebox" role="status">${esc(S.note)}</div>` : ""}
 ${S.bag.map((l, i) => `<div class="item${l.img ? "" : " noimg"}">${l.img ? `<span class="ph">${pic(l.img)}</span>` : ""}
 <span><span class="nm">${esc(l.name)}</span><br><span class="opt">${esc(l.opt)}</span>${l.web ? `<br><span class="chip web">Added on the website</span>` : ""}${l.deal ? `<br><span class="chip web">Deal applied</span>` : ""}</span>
 <span class="right"><span class="price">${money(r2(l.unit * l.qty))}</span><br><span class="stepper"><button aria-label="${l.qty === 1 ? "Remove" : "One less"} ${esc(l.name)}" data-dec="${i}">${l.qty === 1 ? `<svg width="14" height="16" viewBox="0 0 14 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 4h12M5 4V2h4v2M3 4l1 11h6l1-11"/></svg>` : "−"}</button><span>${l.qty}</span><button aria-label="One more ${esc(l.name)}" data-inc="${i}">+</button></span></span></div>`).join("")}
-<div class="summary"><div class="ln"><span>Subtotal</span><span>${money(t.sub)}</span></div>${S.mode === "delivery" ? `<div class="ln"><span>Delivery fee</span><span>${t.fee ? money(t.fee) : "Free"}</span></div>` : ""}<div class="ln"><span>Tax</span><span>${money(t.tax)}</span></div><div class="ln total"><span>Total</span><span>${money(t.total)}</span></div></div>
-<button class="btn" style="margin-top:14px" data-tab-go="order">Order more</button>
+<div class="summary">${feeRows(t, S.mode === "delivery" ? "Fees (delivery)" : "Fees")}<div class="ln total"><span>Total</span><span>${money(t.total)}</span></div></div>
+<button class="btn" style="margin-top:18px" data-tab-go="order">Order more</button>
 </div>`;
 }
 function orders() {
@@ -488,11 +488,11 @@ const today = r2(o.lines.reduce((a, l) => { const it = l.ref && byId(l.ref); ret
 const tt = r2(today + r2(today * TAX)), same = Math.abs(tt - t.total) < 0.005;
 return `<div class="pad">
 <div class="small muted">${esc(o.when)}</div>
-<h2 class="title" style="font-size:24px">${esc(oTitle(o))}</h2>
-<div class="small muted">Pickup · ${esc(STORES.find(s => s.id === o.store).name)}</div>
-<div class="summary">${o.lines.map(l => `<div class="ln" style="color:var(--ink);padding:6px 0"><span><b>${esc(l.name)}</b>${l.opt ? `<br><span class="small muted">${esc(l.opt)}</span>` : ""}</span><span class="price">${money(l.price)}</span></div>`).join("")}
-<div class="ln" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="ln"><span>Tax</span><span>${money(t.tax)}</span></div><div class="ln total"><span>Total paid</span><span>${money(t.total)}</span></div></div>
-<p class="small muted" style="margin:18px 0 10px">${same ? `Same price today at ${esc(store().name)}.` : `Today’s price at ${esc(store().name)}: ${money(tt)} with tax.`}</p>
+<h2 class="title">${esc(oTitle(o))}</h2>
+<div class="small muted">${typeOf(o)} · ${esc(STORES.find(s => s.id === o.store).name)}</div>
+<div class="summary">${o.lines.map(l => `<div class="ln it"><span><b>${esc(l.name)}</b>${l.opt ? `<br><span class="small muted">${esc(l.opt)}</span>` : ""}</span><span class="price">${money(l.price)}</span></div>`).join("")}
+<div style="border-top:1px solid var(--divider);margin-top:12px;padding-top:12px">${feeRows(t)}</div><div class="ln total"><span>Total paid</span><span>${money(t.total)}</span></div></div>
+<p class="small muted" style="margin:18px 0 12px">${same ? `Same price today at ${esc(store().name)}.` : `Today’s price at ${esc(store().name)}: ${money(tt)} with tax.`}</p>
 <button class="btn primary" data-addall="${o.id}">Add all to bag · ${money(tt)}</button>
 <button class="btn" data-receipt="${o.id}">Get receipt</button>
 </div>`;
@@ -502,15 +502,15 @@ const sub = S.rewardsSub;
 const seg = `<div class="seg" role="group">${[["rewards", "My Rewards"], ["deals", "Deals"], ["code", "Earn Points"]].map(([k, l]) => `<button aria-pressed="${sub === k}" data-rsub="${k}">${l}</button>`).join("")}</div>`;
 let body = "";
 if (sub === "rewards") body = `
-<div class="rcard"><div class="k">Hi Aria, you have</div><div class="big">${S.points.toLocaleString()} pts!</div>
+<div class="rcard"><div class="k">Hi Aria, you have</div><div class="big display">${S.points.toLocaleString()} pts!</div>
 <div class="row"><button class="ulink" data-act="how">How it works</button><button class="rv" data-rsub="code">Use my code</button></div></div>
 <div class="sec"><div class="sec-h"><h3>Aria’s Rewards</h3></div>
 <div class="rail">${REWARDS.map(r => `<button class="reward" data-reward="${r.id}" ${S.points < r.pts ? "disabled" : ""}><div class="ph"><span class="ring"><span>${pic(r.img)}</span></span></div><div class="body"><div class="nm">${esc(r.name)}</div><div class="cost"><span class="coin"></span>${r.pts.toLocaleString()} pts</div></div></button>`).join("")}</div></div>
-<div class="where-row" style="margin-top:22px">${ART.pin}<span class="small">Viewing what’s available for pickup at ${esc(store().name)}.</span><button class="ulink small" data-act="store">Change</button></div>`;
+<div class="where-row" style="margin-top:18px">${ART.pin}<span class="small">Viewing what’s available for pickup at ${esc(store().name)}.</span><button class="ulink small" data-act="store">Change</button></div>`;
 if (sub === "deals") body = `<div class="menu-grid">${DEALS.map(d => { const on = S.deals.includes(d.id); return `<button class="mi" data-deal="${d.id}"><div class="ph">${pic(d.img, d.art)}</div><div class="nm">${esc(d.name)}</div><div class="pr">${on ? "Added ✓" : d.exp}</div></button>`; }).join("")}</div>`;
-if (sub === "code") body = `<div class="codecard"><div class="top"><h4>Use your code to earn and save</h4><p>Share or scan your code before ordering</p><div class="num">39 80</div><div class="qr">${qr()}</div></div>
-<div class="bot"><b style="font-size:18px">Want to pay with your code?</b><p class="small" style="margin:4px 0 12px">Link a card to your account and check out faster.</p><button class="btn sm" data-act="pay">Add Payment Method</button></div></div>
-<button class="btn" style="margin-top:16px" data-act="receiptpts">Add missing points from a receipt</button>`;
+if (sub === "code") body = `<div class="codecard"><div class="top"><h4>Use your code to earn and save</h4><p>Share or scan your code before ordering</p><div class="num display">39 80</div><div class="qr">${qr()}</div></div>
+<div class="bot"><b>Want to pay with your code?</b><p class="small" style="margin:6px 0 12px">Link a card to your account and check out faster.</p><button class="btn sm" data-act="pay">Add Payment Method</button></div></div>
+<button class="btn" style="margin-top:18px" data-act="receiptpts">Add missing points from a receipt</button>`;
 return `<div class="pad">${seg}${body}</div>`;
 }
 function qr() {
@@ -538,22 +538,22 @@ return MORE.map(([k, l, p]) => `<button class="list-row" data-more="${k}"><svg v
 }
 function page(v) { return `<div class="pad">${v.html}</div>`; }
 /* -------- Sheets -------- */
-function openSheet(html) { $("sheet").innerHTML = `<div class="grab"></div>` + html; $("scrim").style.display = "block"; requestAnimationFrame(() => $("sheet").classList.add("open")); setTimeout(() => { const f = $("sheet").querySelector("button"); f && f.focus(); }, 280); }
+function openSheet(html) { $("sheet").innerHTML = `<div class="grab"></div>` + html; $("scrim").style.display = "block"; requestAnimationFrame(() => $("sheet").classList.add("open")); setTimeout(() => { const f = $("sheet").querySelector("button"); f && f.focus({ preventScroll: true }); }, 280); }
 function closeSheet() { $("sheet").classList.remove("open"); $("scrim").style.display = "none"; }
-function info(title, body, btn = "Done") { openSheet(`<h2 class="title" id="sheetTitle" style="font-size:22px">${title}</h2><p class="muted">${body}</p><button class="btn" data-close>${btn}</button>`); }
+function info(title, body, btn = "Done") { openSheet(`<h2 class="title" id="sheetTitle">${title}</h2><p class="muted">${body}</p><button class="btn" data-close>${btn}</button>`); }
 function itemSheet(id) {
 const it = byId(id); let meal = "none", qty = 1;
 const draw = () => {
 const unit = unitAt(it.price + MEAL[meal].add), fav = S.faves.includes(id);
-openSheet(`<h2 class="title" id="sheetTitle" style="font-size:26px">${esc(it.name)}</h2>
-<div style="font-size:15px">${money(unitAt(it.price))} &nbsp; ${it.cal || ""}</div>
-<button class="ulink" data-fav="${id}" style="margin-top:8px;display:inline-flex;gap:6px;align-items:center">${fav ? "★" : "☆"} ${fav ? "Saved to Faves" : "Favorite"}</button>
+openSheet(`<h2 class="title" id="sheetTitle">${esc(it.name)}</h2>
+<div class="small muted">${money(unitAt(it.price))} · ${it.cal || ""} · ${esc(store().name)}</div>
+<button class="ulink" data-fav="${id}" style="gap:6px">${fav ? "★" : "☆"} ${fav ? "Saved to Faves" : "Favorite"}</button>
 <div class="hero-ph">${pic(meal !== "none" && it.mealImg ? it.mealImg : it.img, it.art)}</div>
 <button class="btn" data-act="customize">Customize</button>
-${it.meal ? `<h3 style="margin:18px 0 0;font-size:18px">Make it a meal?</h3><div class="small">Add a side and a drink</div><div class="meal-opts">${Object.entries(MEAL).map(([k, m]) => `<button aria-pressed="${k === meal}" data-meal="${k}"><b>${m.label === "Item only" ? "Item only" : m.label}</b><br><span class="muted">${m.add ? "+" + money(m.add) : ""}</span></button>`).join("")}</div>` : `<div style="height:16px"></div>`}
+${it.meal ? `<h3 class="sub" style="margin:18px 0 0">Make it a meal?</h3><div class="small">Add a side and a drink</div><div class="meal-opts">${Object.entries(MEAL).map(([k, m]) => `<button aria-pressed="${k === meal}" data-meal="${k}"><b>${m.label === "Item only" ? "Item only" : m.label}</b><br><span class="muted">${m.add ? "+" + money(m.add) : ""}</span></button>`).join("")}</div>` : `<div style="height:16px"></div>`}
 <div style="display:flex;gap:12px;align-items:center">
 <span class="qty"><button aria-label="One less" data-q="-1">−</button><span>${qty}</span><button aria-label="One more" data-q="1">+</button></span>
-<button class="btn primary" data-confirm style="flex:1"><b>Add to Bag</b>&nbsp;| ${money(r2(unit * qty))}</button>
+<button class="btn primary" data-confirm style="flex:1">Add to bag · ${money(r2(unit * qty))}</button>
 </div>
 <p class="note">Price before tax at ${esc(store().name)}. Your bag shows tax and the total before checkout.</p>`);
 const sh = $("sheet");
@@ -565,23 +565,23 @@ sh.querySelector("[data-confirm]").onclick = () => { addItem(it, it.meal ? meal 
 draw();
 }
 function storeSheet() {
-openSheet(`<h2 class="title" id="sheetTitle" style="font-size:22px">Choose a restaurant</h2><p class="small muted">Your bag stays the same. Prices update to the restaurant you pick.</p>
+openSheet(`<h2 class="title" id="sheetTitle">Choose a restaurant</h2><p class="small muted">Your bag stays the same. Prices update to the restaurant you pick.</p>
 ${STORES.map(s => `<button class="opt-row" data-store="${s.id}"><span><b>${esc(s.name)}</b><br><span class="small muted">${s.hours}${s.delta ? " · items +" + money(s.delta) : ""}</span></span><span>${S.store === s.id ? "✓" : ""}</span></button>`).join("")}`);
 }
 function receiptSheet(id) {
 const o = S.orders.find(x => x.id === id), t = oTot(o);
-openSheet(`<h2 class="title" id="sheetTitle" style="font-size:22px">Receipt</h2><div class="small muted">${esc(o.when)} · Pickup · ${esc(STORES.find(s => s.id === o.store).name)}</div>
-<div class="receipt" style="margin-top:14px">${o.lines.map(l => `<div class="ln"><span>${esc(l.name)}</span><span>${money(l.price)}</span></div>`).join("")}
-<div class="ln muted" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="ln muted"><span>Tax (6.625%)</span><span>${money(t.tax)}</span></div>
-<div class="ln" style="font-weight:800;font-size:17px"><span>Total paid</span><span>${money(t.total)}</span></div></div>
-<button class="btn" data-close style="margin-top:16px">Done</button>`);
+openSheet(`<h2 class="title" id="sheetTitle">Receipt</h2><div class="small muted">${esc(o.when)} · ${typeOf(o)} · ${esc(STORES.find(s => s.id === o.store).name)}</div>
+<div class="receipt" style="margin-top:12px">${o.lines.map(l => `<div class="ln"><span>${esc(l.name)}</span><span>${money(l.price)}</span></div>`).join("")}
+<div class="muted" style="border-top:1px solid var(--divider);margin-top:12px;padding-top:12px"><div class="ln"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="ln"><span>Tax (6.625%)</span><span>${money(t.tax)}</span></div><div class="ln"><span>Fees</span><span>${money(t.fee || 0)}</span></div></div>
+<div class="ln total"><span>Total paid</span><span>${money(t.total)}</span></div></div>
+<button class="btn" data-close style="margin-top:18px">Done</button>`);
 }
 function checkoutSheet() {
 const t = bagTotals();
-openSheet(`<h2 class="title" id="sheetTitle" style="font-size:22px">Review & pay</h2>
-<div class="summary" style="margin-top:8px"><div class="ln"><span>${S.mode === "pickup" ? "Pickup · " + esc(store().name) : "McDelivery"}</span><span></span></div><div class="ln"><span>${count()} item${count() === 1 ? "" : "s"}</span><span>${money(t.sub)}</span></div>${S.mode === "delivery" ? `<div class="ln"><span>Delivery fee</span><span>${t.fee ? money(t.fee) : "Free"}</span></div>` : ""}<div class="ln"><span>Tax</span><span>${money(t.tax)}</span></div><div class="ln total"><span>Total</span><span>${money(t.total)}</span></div></div>
+openSheet(`<h2 class="title" id="sheetTitle">Review & pay</h2>
+<div class="summary" style="margin-top:12px"><div class="ln"><span>${S.mode === "pickup" ? "Pickup · " + esc(store().name) : "McDelivery"}</span><span>${count()} item${count() === 1 ? "" : "s"}</span></div>${feeRows(t, S.mode === "delivery" ? "Fees (delivery)" : "Fees")}<div class="ln total"><span>Total</span><span>${money(t.total)}</span></div></div>
 <button class="opt-row" data-act="pay"><span><b>Payment</b><br><span class="small muted">Apple Pay (demo)</span></span><span>›</span></button>
-<button class="btn primary" data-place style="margin-top:16px">Place order · ${money(t.total)}</button>
+<button class="btn primary" data-place style="margin-top:18px">Place order · ${money(t.total)}</button>
 <p class="note">Demo only. Nothing is ordered or paid.</p>`);
 }
 /* -------- Render -------- */
@@ -592,10 +592,12 @@ let html;
 if (v) html = v.type === "order" ? detail(v.id) : v.type === "rewards" ? rewards() : v.type === "cat" ? catView(v.id) : page(v);
 else html = ({ home, order, bag, orders, more })[S.tab]();
 $("screen").innerHTML = html;
+if (S.tab === "bag" && !v) S.bagSeen = true;
+else if (S.bagSeen) { S.bag.forEach(l => { l.web = false; }); S.note = null; S.bagSeen = false; }
 if (scrollTop) $("screen").scrollTop = 0;
 document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-current", S.tab === b.dataset.tab ? "page" : "false"));
 const n = count(); $("badge").textContent = n; $("badge").classList.toggle("on", n > 0);
-$("cta").innerHTML = (S.tab === "bag" && !v && !S.done && S.bag.length) ? `<div class="cta"><button class="btn primary" data-checkout><b>Checkout</b>&nbsp;· ${money(bagTotals().total)}</button></div>` : "";
+$("cta").innerHTML = (S.tab === "bag" && !v && !S.done && S.bag.length) ? `<div class="cta"><button class="btn primary" data-checkout>Checkout · ${money(bagTotals().total)}</button></div>` : "";
 }
 /* -------- Events -------- */
 document.addEventListener("click", e => {
@@ -614,9 +616,12 @@ if (d.item) return itemSheet(d.item);
 if (d.mode) { S.mode = d.mode; return render(); }
 if (d.osub) { S.orderSub = d.osub; return render(); }
 if (d.inc) { S.bag[+d.inc].qty++; return render(); }
-if (d.dec) { const l = S.bag[+d.dec]; l.qty--; if (l.qty <= 0) { S.bag.splice(+d.dec, 1); toast("Removed from your bag"); } return render(); }
+if (d.dec) { const i = +d.dec, l = S.bag[i]; l.qty--; if (l.qty <= 0) { S.bag.splice(i, 1); render(); return toast(`${l.name} removed`, () => { l.qty = 1; S.bag.splice(i, 0, l); render(); }); } return render(); }
 if (d.store) { const old = S.store; S.store = d.store; const delta = store().delta - STORES.find(s => s.id === old).delta;
-S.bag.forEach(l => { if (!l.deal && !l.reward) l.unit = r2(l.unit + delta); }); closeSheet(); render(); return toast(delta ? `Prices updated for ${store().name}` : `Now ordering from ${store().name}`); }
+const moved = r2(delta * S.bag.filter(l => !l.deal && !l.reward).reduce((a, l) => a + l.qty, 0));
+S.bag.forEach(l => { if (!l.deal && !l.reward) l.unit = r2(l.unit + delta); });
+S.note = moved ? `Prices updated for ${store().name} (${moved > 0 ? "+" : "−"}${money(Math.abs(moved))}).` : null;
+closeSheet(); render(); return toast(moved ? S.note : `Now ordering from ${store().name}`); }
 if (d.addall) { const o = S.orders.find(x => x.id === d.addall);
 o.lines.forEach(l => { const it = l.ref && byId(l.ref); if (it) addItem(it, l.meal, 1); else addItem({ id: "x" + l.name, name: l.name, art: o.art }, null, 1, { unit: l.price, opt: l.opt, name: l.name }); });
 S.done = null; render(); return toast(`Added to your bag · ${count()} items now`); }
@@ -644,8 +649,7 @@ return push({ type: "page", ...pages[k] }); }
 if ("checkout" in d) return checkoutSheet();
 if ("place" in d) { const t = bagTotals();
 const lines = S.bag.map(l => ({ name: (l.qty > 1 ? l.qty + "× " : "") + l.name, opt: l.opt, price: r2(l.unit * l.qty) }));
-if (t.fee) lines.push({ name: "Delivery fee", opt: "", price: t.fee });
-const o = { id: "o" + Date.now(), when: "Today · just now", store: S.store, art: S.bag[0].art || "bag", img: S.bag[0].img, lines };
+const o = { id: "o" + Date.now(), when: "Today · just now", store: S.store, mode: S.mode, fee: t.fee, img: S.bag[0].img, lines };
 S.points += Math.round(t.sub * 100); S.orders.unshift(o); S.done = o; S.bag = []; closeSheet(); return render(true); }
 if (d.act) { const a = d.act;
 if (a === "store") return storeSheet();
