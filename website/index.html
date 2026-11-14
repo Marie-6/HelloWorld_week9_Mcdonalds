@@ -20,6 +20,7 @@
   --muted: #7C7C7C;
   --canvas: #FFFFFF;
   --info: #006BAE;
+  --line: #E6E6E6;
 
   --r-card: 12px;
   --r-pill: 48px;
@@ -40,6 +41,7 @@ body {
 }
 button, input { font: inherit; letter-spacing: inherit; color: inherit; }
 a { color: var(--info); }
+img { max-width: 100%; }
 
 /* Type scale: Display / Heading / Body / Body S / Button / Caption */
 .t-display { font-size: 36px; line-height: 40px; font-weight: 700; margin: 0; }
@@ -48,6 +50,8 @@ a { color: var(--info); }
 .t-caption { font-size: 10px; line-height: 14.5px; }
 .muted { color: var(--muted); }
 .price { font-weight: 700; }
+.center { text-align: center; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Buttons: 48px pills, pressed state is instant */
 .btn {
@@ -56,7 +60,6 @@ a { color: var(--info); }
   border-radius: var(--r-pill);
   font-size: 16px; line-height: 20px; font-weight: 700;
   cursor: pointer; text-decoration: none; white-space: nowrap;
-  transition: none;
 }
 .btn-primary { background: var(--gold); border: 1px solid var(--gold-stroke); color: var(--ink); }
 .btn-primary:active { background: var(--gold-stroke); }
@@ -69,136 +72,157 @@ a { color: var(--info); }
   color: var(--info); cursor: pointer; font-size: 14px; text-decoration: underline;
 }
 :focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+.ico { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Prototype banner */
-.proto {
-  background: var(--light-gray); border-bottom: 1px solid #e6e6e6;
-  padding: var(--s1) var(--margin); text-align: center;
-}
+.proto { background: var(--light-gray); border-bottom: 1px solid var(--line); padding: var(--s1) var(--margin); text-align: center; }
 
 /* Header */
-header.site {
-  position: sticky; top: 0; z-index: 20;
-  background: var(--canvas); border-bottom: 1px solid #e6e6e6;
-}
-.bar {
-  display: flex; align-items: center; gap: var(--s3);
-  padding: var(--s2) var(--margin); max-width: 1280px; margin: 0 auto;
-}
-.wordmark { display: inline-flex; align-items: center; min-height: 44px; margin-right: var(--s2); }
-.wordmark img { width: 44px; height: 44px; display: block; } /* square source, never stretched */
-nav.main { display: flex; gap: var(--s1); }
-nav.main a {
-  display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s2);
-  color: var(--ink); text-decoration: none; font-size: 14px; border-radius: var(--r-pill);
-}
-nav.main a[aria-current="page"] { font-weight: 700; background: var(--light-gray); }
-.spacer { flex: 1; }
-.chip {
+header.site { position: sticky; top: 0; z-index: 20; background: var(--canvas); border-bottom: 1px solid var(--line); }
+.bar { display: flex; align-items: center; gap: var(--s2); padding: var(--s2) var(--margin); max-width: 1440px; margin: 0 auto; }
+.logo { display: inline-flex; align-items: center; min-height: 44px; margin-right: var(--s2); flex: none; }
+.bar > * { flex-shrink: 0; }
+.bar > .spacer { flex-shrink: 1; }
+.logo img { width: 44px; height: 44px; display: block; } /* square source, never stretched */
+.nav-item {
   display: inline-flex; align-items: center; gap: var(--s1);
-  min-height: 44px; padding: 0 var(--s2);
-  background: none; border: 0; border-radius: var(--r-pill); cursor: pointer; font-size: 14px;
+  min-height: 44px; padding: 0 var(--s2); border: 0; background: none; border-radius: var(--r-pill);
+  color: var(--ink); text-decoration: none; font-size: 16px; line-height: 20px; font-weight: 700; cursor: pointer; white-space: nowrap;
 }
-.chip:active { background: var(--light-gray); }
-.bag-btn { position: relative; }
+.nav-item:hover { background: var(--light-gray); }
+.nav-item[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+.nav-item .chev { width: 16px; height: 16px; }
+.nav-item[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.tool { font-weight: 400; }
+.spacer { flex: 1; }
 .badge {
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 20px; height: 20px; padding: 0 var(--s1);
   border-radius: var(--r-pill); background: var(--red); color: var(--canvas);
   font-size: 10px; line-height: 14.5px; font-weight: 700;
 }
-.badge[hidden] { display: none; }
-.sync {
-  display: inline-flex; align-items: center; gap: var(--s1);
-  font-size: 10px; line-height: 14.5px; color: var(--muted);
-}
+.badge[hidden], [hidden] { display: none !important; }
+.sync { display: inline-flex; align-items: center; gap: var(--s1); font-size: 10px; line-height: 14.5px; color: var(--muted); }
 .sync::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
-.sync[data-state="syncing"]::before { background: var(--muted); }
-.sync[data-state="offline"]::before { background: var(--muted); }
+.sync[data-state="syncing"]::before, .sync[data-state="offline"]::before { background: var(--muted); }
 .sync[data-state="local"]::before { background: var(--canvas); border: 1px solid var(--muted); }
 
-.popover {
-  position: absolute; z-index: 30; margin-top: var(--s1);
-  background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card);
-  padding: var(--s1); min-width: 280px;
+/* Popovers & panels under the header */
+.pop {
+  position: absolute; z-index: 30; top: calc(100% + 6px);
+  background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card); padding: var(--s1); min-width: 260px;
 }
-.popover[hidden] { display: none; }
+.has-pop { position: relative; }
 .opt {
   display: flex; flex-direction: column; align-items: flex-start; width: 100%;
-  min-height: 44px; padding: var(--s1) var(--s2); background: none; border: 0;
-  border-radius: var(--r-card); cursor: pointer; text-align: left;
+  min-height: 44px; padding: var(--s1) var(--s2); background: none; border: 0; border-radius: var(--r-card);
+  cursor: pointer; text-align: left; color: var(--ink); text-decoration: none; font-size: 14px;
 }
 .opt:hover, .opt[aria-checked="true"] { background: var(--light-gray); }
+.sheet { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; background: var(--canvas); border-bottom: 1px solid var(--ink); }
+.sheet-inner { max-width: 1440px; margin: 0 auto; padding: var(--s3) var(--margin) var(--s4); }
+.mega { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s2); }
+.mega a {
+  display: flex; align-items: center; gap: var(--s2); min-height: 72px; padding: var(--s1) var(--s2);
+  border: 1px solid var(--line); border-radius: var(--r-card); color: var(--ink); text-decoration: none; font-size: 16px;
+}
+.mega a:hover { background: var(--light-gray); }
+.mega img { width: 56px; height: 56px; object-fit: contain; }
+.search-row { display: flex; gap: var(--s2); align-items: center; }
+.search-row input {
+  flex: 1; min-height: 48px; padding: 0 var(--s3); border: 1px solid var(--ink); border-radius: var(--r-pill); font-size: 16px; background: var(--canvas);
+}
+.results { margin-top: var(--s2); display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0 var(--s4); }
+.result { display: grid; grid-template-columns: 56px 1fr auto; gap: var(--s2); align-items: center; padding: var(--s1) 0; border-bottom: 1px solid var(--line); }
+.result img { width: 56px; height: 56px; object-fit: contain; }
+.result .name { background: none; border: 0; padding: 0; text-align: left; cursor: pointer; min-height: 44px; }
+.result .btn { min-height: 44px; padding: 0 var(--s2); font-size: 14px; }
+.mob-only { display: none !important; }
+.mob-nav a, .mob-nav button { width: 100%; justify-content: flex-start; }
+.mob-nav .mega { grid-template-columns: 1fr 1fr; margin-bottom: var(--s3); }
 
-@media (max-width: 760px) {
+@media (max-width: 1360px) { .where .muted { display: none; } }
+@media (max-width: 1180px) { .tool .label { display: none; } }
+@media (max-width: 900px) {
+  .desk-only { display: none !important; }
+  .mob-only { display: inline-flex !important; }
   .bar { flex-wrap: wrap; gap: var(--s1); }
-  .wordmark { margin-right: 0; }
-  nav.main { order: 3; width: 100%; }
-  .where { order: 4; width: 100%; }
-  .header-sync { display: none; }
+  .where { order: 10; width: 100%; }
+  .mega { grid-template-columns: 1fr 1fr; gap: var(--s1); }
+  .mega a { font-size: 14px; line-height: 20px; gap: var(--s1); min-height: 56px; min-width: 0; }
+  .mega img { width: 40px; height: 40px; flex: none; }
+  .mob-nav .sheet-inner { max-height: calc(100vh - 140px); overflow-y: auto; }
 }
 
 /* Layout */
-main { max-width: 1280px; margin: 0 auto; padding: var(--s4) var(--margin) 60px; }
+main { max-width: 1440px; margin: 0 auto; padding: var(--s4) var(--margin) 60px; }
 .page-head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s2) var(--s4); margin-bottom: var(--s4); }
 .page-head p { margin: var(--s1) 0 0; }
 
-/* Menu */
-.menu-layout { display: grid; grid-template-columns: 200px 1fr; gap: var(--s4); }
-.cats { position: sticky; top: 100px; align-self: start; display: flex; flex-direction: column; }
-.cats a {
-  display: flex; align-items: center; min-height: 44px; padding: 0 var(--s2);
-  color: var(--ink); text-decoration: none; font-size: 14px; border-radius: var(--r-pill);
+/* Menu: left rail + centered product grid, like the mcdonalds.com menu */
+.menu-layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 48px; align-items: start; }
+.rail { position: sticky; top: calc(var(--hh, 80px) + 18px); display: flex; flex-direction: column; gap: var(--s3); }
+.rail-box { border: 1px solid var(--line); border-radius: var(--r-card); padding: var(--s1) 0; overflow: hidden; }
+.rail-row {
+  position: relative; display: flex; align-items: center; gap: var(--s3);
+  min-height: 72px; padding: var(--s1) var(--s3); color: var(--ink); text-decoration: none; font-size: 16px;
 }
-.cats a:hover { background: var(--light-gray); }
-.cat { margin-bottom: var(--s4); scroll-margin-top: 100px; }
-.cat h2 { margin-bottom: var(--s2); }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--s3); }
-.card { display: flex; flex-direction: column; gap: var(--s2); }
-.thumb {
-  aspect-ratio: 4 / 3; border-radius: var(--r-card); background: var(--light-gray);
-  display: flex; align-items: center; justify-content: center; overflow: hidden;
+.rail-row:hover { background: var(--light-gray); }
+.rail-row img { width: 60px; height: 60px; object-fit: contain; flex: none; }
+.rail-row[aria-current="true"] { font-weight: 700; }
+.rail-row[aria-current="true"]::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--red); }
+.menu-intro { text-align: center; margin-bottom: 48px; }
+.menu-intro p { margin: var(--s2) 0 0; }
+.sec { scroll-margin-top: calc(var(--hh, 80px) + 18px); margin-bottom: 60px; }
+.sec > h2 { text-align: center; margin-bottom: var(--s4); }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4) var(--s3); }
+.tile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--s2); }
+.tile-open {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s2); width: 100%;
+  background: none; border: 0; padding: 0; cursor: pointer; border-radius: var(--r-card);
 }
-.thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.card .row { display: flex; justify-content: space-between; gap: var(--s2); align-items: baseline; }
-.card.off { opacity: .45; }
-.menu-layout > *, .page-head > *, .orders-layout > *, .checkout-layout > * { min-width: 0; }
-@media (max-width: 760px) {
+.tile-open img { width: 100%; max-width: 210px; height: auto; aspect-ratio: 1; object-fit: contain; }
+.tile-open:hover .tile-name { text-decoration: underline; }
+.tile-name { font-size: 16px; line-height: 23px; }
+.tile .btn { min-width: 160px; }
+.tile.off img, .tile.off .tile-name, .tile.off .price { opacity: .45; }
+@media (max-width: 1180px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .menu-layout { grid-template-columns: 240px minmax(0, 1fr); gap: var(--s4); } }
+@media (max-width: 900px) {
   .menu-layout { grid-template-columns: minmax(0, 1fr); }
-  .cats { position: static; flex-direction: row; overflow-x: auto; gap: var(--s1); }
-  .cats a { white-space: nowrap; background: var(--light-gray); }
-  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s2); }
+  .rail { position: sticky; top: var(--hh, 120px); z-index: 5; background: var(--canvas); margin: 0 calc(-1 * var(--margin)); padding: var(--s1) var(--margin); border-bottom: 1px solid var(--line); }
+  .rail-box { display: flex; overflow-x: auto; border: 0; padding: 0; gap: var(--s1); border-radius: 0; }
+  .rail-row { min-height: 48px; padding: var(--s1) var(--s2); white-space: nowrap; border-radius: var(--r-pill); background: var(--light-gray); font-size: 14px; gap: var(--s1); }
+  .rail-row img { width: 32px; height: 32px; }
+  .rail-row[aria-current="true"] { background: var(--canvas); box-shadow: inset 0 0 0 1px var(--ink); }
+  .rail-row[aria-current="true"]::before { display: none; }
+  .sec { scroll-margin-top: calc(var(--hh, 120px) + 72px); }
+  .menu-intro { margin: var(--s3) 0 var(--s4); }
 }
+@media (max-width: 520px) { .grid { gap: var(--s3) var(--s2); } .tile .btn { min-width: 0; width: 100%; } }
 
 /* Panels */
 .panel { background: var(--light-gray); border-radius: var(--r-card); padding: var(--s3); }
-.divider { border: 0; border-top: 1px solid #e6e6e6; margin: var(--s3) 0; }
+.divider { border: 0; border-top: 1px solid var(--line); margin: var(--s3) 0; }
 
 /* Bag drawer */
 .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 40; }
-.scrim[hidden], .drawer[hidden], .modal[hidden] { display: none; }
 .drawer {
   position: fixed; z-index: 41; top: 0; right: 0; bottom: 0; width: min(440px, 100%);
-  background: var(--canvas); border-left: 1px solid var(--ink);
-  display: flex; flex-direction: column;
+  background: var(--canvas); border-left: 1px solid var(--ink); display: flex; flex-direction: column;
 }
-.drawer-head { display: flex; align-items: center; justify-content: space-between; padding: var(--s3); border-bottom: 1px solid #e6e6e6; }
+.drawer-head { display: flex; align-items: center; justify-content: space-between; padding: var(--s3); border-bottom: 1px solid var(--line); }
 .drawer-body { flex: 1; overflow-y: auto; padding: var(--s3); }
-.drawer-foot { padding: var(--s3); border-top: 1px solid #e6e6e6; }
+.drawer-foot { padding: var(--s3); border-top: 1px solid var(--line); }
 .icon-btn {
   width: 44px; height: 44px; border-radius: 50%; border: 0; background: none; cursor: pointer;
-  font-size: 16px; display: inline-flex; align-items: center; justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center; color: var(--ink); flex: none;
 }
-.icon-btn:active { background: var(--light-gray); }
+.icon-btn:active, .icon-btn:hover { background: var(--light-gray); }
 
-.bag-item { display: grid; grid-template-columns: 56px 1fr auto; gap: var(--s2); padding: var(--s2) 0; border-bottom: 1px solid #e6e6e6; }
-.bag-item .thumb { aspect-ratio: 1; }
+.bag-item { display: grid; grid-template-columns: 64px 1fr auto; gap: var(--s2); padding: var(--s2) 0; border-bottom: 1px solid var(--line); }
+.bag-item > img { width: 64px; height: 64px; object-fit: contain; }
 .bag-item.off > :not(.swap-row) { opacity: .45; }
-.tag {
-  display: inline-flex; align-items: center; padding: 0 var(--s1);
-  border-radius: var(--r-pill); border: 1px solid var(--muted);
-  font-size: 10px; line-height: 14.5px; margin-top: var(--s1);
-}
+.tag { display: inline-flex; align-items: center; padding: 0 var(--s1); border-radius: var(--r-pill); border: 1px solid var(--muted); font-size: 10px; line-height: 14.5px; margin-top: var(--s1); }
 .stepper { display: inline-flex; align-items: center; border: 1px solid var(--ink); border-radius: var(--r-pill); height: 44px; }
 .stepper button { width: 44px; height: 42px; border: 0; background: none; cursor: pointer; font-size: 16px; border-radius: var(--r-pill); }
 .stepper button:active { background: var(--light-gray); }
@@ -206,13 +230,17 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
 .swap-row { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1); }
 
 .summary .line { display: flex; justify-content: space-between; font-size: 14px; line-height: 24px; }
-.summary .total { font-size: 16px; font-weight: 700; padding-top: var(--s1); margin-top: var(--s1); border-top: 1px solid #e6e6e6; }
+.summary .total { font-size: 16px; font-weight: 700; padding-top: var(--s1); margin-top: var(--s1); border-top: 1px solid var(--line); }
 .note { font-size: 14px; line-height: 24px; color: var(--ink); border-left: 2px solid var(--gold-stroke); padding-left: var(--s2); margin: var(--s2) 0; }
 
 /* Modal */
 .modal { position: fixed; z-index: 51; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--s3); }
-.modal-card { background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card); padding: var(--s4); width: min(420px, 100%); }
+.modal-card { position: relative; background: var(--canvas); border: 1px solid var(--ink); border-radius: var(--r-card); padding: var(--s4); width: min(440px, 100%); max-height: calc(100vh - 36px); overflow-y: auto; }
 .modal-card p { margin: var(--s2) 0 var(--s3); }
+.modal-close { position: absolute; top: var(--s2); right: var(--s2); }
+.detail { text-align: center; }
+.detail img { width: 200px; max-width: 60%; height: auto; aspect-ratio: 1; object-fit: contain; }
+.detail .qty-row { display: flex; justify-content: center; align-items: center; gap: var(--s3); margin: var(--s3) 0; }
 .stack { display: flex; flex-direction: column; gap: var(--s2); }
 
 /* Toast */
@@ -222,69 +250,119 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--s4) var(--margin) 60px;
   padding: var(--s1) var(--s1) var(--s1) var(--s3); display: flex; align-items: center; gap: var(--s2);
   font-size: 14px; line-height: 24px; max-width: calc(100% - 36px);
 }
-.toast[hidden] { display: none; }
 body.bag-open .toast { bottom: 100px; }
-.toast button {
-  background: none; border: 0; color: var(--canvas); font-weight: 700; text-decoration: underline;
-  min-height: 44px; padding: 0 var(--s2); cursor: pointer; white-space: nowrap;
-}
+.toast button { background: none; border: 0; color: var(--canvas); font-weight: 700; text-decoration: underline; min-height: 44px; padding: 0 var(--s2); cursor: pointer; white-space: nowrap; }
 
 /* Orders */
-.orders-layout { display: grid; grid-template-columns: minmax(280px, 400px) 1fr; gap: var(--s4); align-items: start; }
+.orders-layout { display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: var(--s4); align-items: start; }
 .order-row {
   display: grid; grid-template-columns: 1fr auto; gap: var(--s1) var(--s2); width: 100%;
-  padding: var(--s2); background: none; border: 0; border-bottom: 1px solid #e6e6e6;
+  padding: var(--s2); background: none; border: 0; border-bottom: 1px solid var(--line);
   text-align: left; cursor: pointer; border-radius: var(--r-card);
 }
 .order-row[aria-current="true"] { background: var(--light-gray); }
 .order-row:active { background: var(--light-gray); }
 .order-row .items { font-weight: 700; font-size: 14px; line-height: 20px; }
-.receipt-line { display: flex; justify-content: space-between; gap: var(--s2); font-size: 14px; line-height: 24px; }
+.order-row .thumbs { grid-column: 1 / -1; display: flex; gap: var(--s1); }
+.order-row .thumbs img { width: 40px; height: 40px; object-fit: contain; }
+.receipt-line { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: var(--s2); font-size: 14px; line-height: 24px; }
+.receipt-line img { width: 40px; height: 40px; object-fit: contain; }
 .actions { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
 @media (max-width: 860px) { .orders-layout { grid-template-columns: 1fr; } }
 
 /* Checkout */
-.checkout-layout { display: grid; grid-template-columns: 1fr 380px; gap: var(--s4); align-items: start; }
+.checkout-layout { display: grid; grid-template-columns: 1fr 400px; gap: var(--s4); align-items: start; }
 @media (max-width: 860px) { .checkout-layout { grid-template-columns: 1fr; } }
 fieldset { border: 0; padding: 0; margin: 0 0 var(--s4); }
 legend { padding: 0; margin-bottom: var(--s2); }
-.radio {
-  display: flex; align-items: center; gap: var(--s2); min-height: 48px; padding: var(--s1) var(--s3);
-  border: 1px solid #e6e6e6; border-radius: var(--r-card); margin-bottom: var(--s1); cursor: pointer;
-}
+.radio { display: flex; align-items: center; gap: var(--s2); min-height: 48px; padding: var(--s1) var(--s3); border: 1px solid var(--line); border-radius: var(--r-card); margin-bottom: var(--s1); cursor: pointer; }
 .radio:has(input:checked) { border-color: var(--ink); }
 .radio input { accent-color: var(--ink); width: 18px; height: 18px; }
 
 .empty { text-align: center; padding: 60px var(--s3); }
 .confirm-head { display: flex; flex-direction: column; gap: var(--s1); margin-bottom: var(--s4); }
+.menu-layout > *, .page-head > *, .orders-layout > *, .checkout-layout > * { min-width: 0; }
 
-footer.site { border-top: 1px solid #e6e6e6; padding: var(--s3) var(--margin); max-width: 1280px; margin: 0 auto; }
+footer.site { border-top: 1px solid var(--line); padding: var(--s3) var(--margin); max-width: 1440px; margin: 0 auto; }
 </style>
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 13H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+</svg>
 
 <div class="proto t-caption">Student design prototype (SVA MFA IxD), not affiliated with McDonald's. No real orders are placed and no payment is taken. Prices are illustrative. Logo and product photos © McDonald's.</div>
 
 <header class="site">
   <div class="bar">
-    <a class="wordmark" href="#menu"><img src="img/logo.jpg" width="44" height="44" alt="McDonald's home"></a>
-    <nav class="main" aria-label="Main">
-      <a href="#menu" data-nav="menu">Menu</a>
-      <a href="#orders" data-nav="orders">Orders</a>
+    <a class="logo" href="#menu"><img src="img/logo.jpg" width="44" height="44" alt="McDonald's home"></a>
+
+    <nav class="desk-only" aria-label="Main" style="display:flex;gap:6px">
+      <button class="nav-item" data-pop="megaSheet" aria-expanded="false" aria-controls="megaSheet">Our Menu <svg class="ico chev"><use href="#i-chev"/></svg></button>
+      <a class="nav-item" href="#menu/meals" data-nav="deals">Meal Deals</a>
+      <a class="nav-item" href="#orders" data-nav="orders">Orders</a>
+      <div class="has-pop">
+        <button class="nav-item" data-pop="morePop" aria-expanded="false" aria-controls="morePop">More <svg class="ico chev"><use href="#i-chev"/></svg></button>
+        <div class="pop" id="morePop" hidden>
+          <button class="opt" data-action="about">About this prototype</button>
+          <a class="opt" href="../">Design spec &amp; research</a>
+          <button class="opt" data-action="reset">Reset demo</button>
+        </div>
+      </div>
     </nav>
+
     <div class="spacer"></div>
-    <div class="where" style="position:relative">
-      <button class="chip" id="whereBtn" aria-haspopup="true" aria-expanded="false">
-        <span class="muted">Pickup ·</span> <strong id="whereName"></strong> <span aria-hidden="true">▾</span>
-      </button>
-      <div class="popover" id="wherePop" role="menu" hidden></div>
-    </div>
-    <span class="sync header-sync" id="syncHeader"></span>
-    <button class="chip" id="acctBtn"></button>
-    <button class="btn btn-secondary bag-btn" id="bagBtn" aria-label="Open bag">
-      Bag <span class="badge" id="bagCount" hidden>0</span>
+
+    <button class="nav-item tool" data-pop="searchSheet" aria-expanded="false" aria-controls="searchSheet" aria-label="Search the menu">
+      <svg class="ico"><use href="#i-search"/></svg><span class="label">Search</span>
     </button>
+    <div class="has-pop where">
+      <button class="nav-item tool" id="whereBtn" data-pop="wherePop" aria-expanded="false" aria-controls="wherePop">
+        <svg class="ico"><use href="#i-pin"/></svg><span><span class="muted">Pickup ·</span> <strong id="whereName"></strong></span><svg class="ico chev"><use href="#i-chev"/></svg>
+      </button>
+      <div class="pop" id="wherePop" role="menu" hidden></div>
+    </div>
+    <button class="nav-item tool desk-only" id="acctBtn"><svg class="ico"><use href="#i-user"/></svg><span class="label" id="acctLabel"></span></button>
+    <button class="btn btn-secondary" id="bagBtn" data-action="open-bag" aria-label="Open bag">
+      <svg class="ico"><use href="#i-bag"/></svg><span class="label-bag">Bag</span> <span class="badge" id="bagCount" hidden>0</span>
+    </button>
+    <span id="ctaSlot" class="desk-only"></span>
+    <button class="icon-btn mob-only" data-pop="mobSheet" aria-expanded="false" aria-controls="mobSheet" aria-label="Open navigation"><svg class="ico"><use href="#i-menu"/></svg></button>
   </div>
+
+  <div class="sheet" id="megaSheet" hidden><div class="sheet-inner">
+    <p class="t-heading" style="margin-bottom:12px">Breakfast menu</p>
+    <div class="mega" id="megaGrid"></div>
+  </div></div>
+
+  <div class="sheet" id="searchSheet" hidden><div class="sheet-inner">
+    <div class="search-row">
+      <label class="sr" for="q">Search breakfast</label>
+      <input id="q" type="search" placeholder="Search breakfast, e.g. McGriddles, coffee, bagel" autocomplete="off">
+      <button class="icon-btn" data-action="close-pops" aria-label="Close search"><svg class="ico"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="results" id="results"></div>
+  </div></div>
+
+  <div class="sheet mob-nav" id="mobSheet" hidden><div class="sheet-inner">
+    <p class="t-heading" style="margin-bottom:12px">Our Menu</p>
+    <div class="mega" id="mobMega"></div>
+    <div class="stack">
+      <a class="nav-item" href="#menu/meals">Meal Deals</a>
+      <a class="nav-item" href="#orders">Orders</a>
+      <button class="nav-item" id="mobAcct"></button>
+      <button class="nav-item" data-action="about">About this prototype</button>
+      <a class="nav-item" href="../">Design spec &amp; research</a>
+      <span class="sync" id="syncMob" style="padding:0 12px"></span>
+    </div>
+  </div></div>
 </header>
 
 <main id="view"></main>
@@ -300,7 +378,7 @@ footer.site { border-top: 1px solid #e6e6e6; padding: var(--s3) var(--margin); m
       <h2 class="t-heading" id="drawerTitle">Your bag</h2>
       <span class="sync" id="syncDrawer"></span>
     </div>
-    <button class="icon-btn" data-action="close-bag" aria-label="Close bag">✕</button>
+    <button class="icon-btn" data-action="close-bag" aria-label="Close bag"><svg class="ico"><use href="#i-x"/></svg></button>
   </div>
   <div class="drawer-body" id="drawerBody"></div>
   <div class="drawer-foot" id="drawerFoot"></div>
@@ -321,41 +399,53 @@ const RESTAURANTS = {
 };
 
 // Prices are in cents at Broadway & 23rd; Union Sq adds RESTAURANTS.usq.delta.
-// Photos live in img/<id>.png (from the mcdonalds.com breakfast and McCafé menus).
+// Photos live in img/<id>.png (from the mcdonalds.com breakfast, Extra Value Meals and McCafé menus).
+const MEAL_SIDES = "With Hash Browns and a small McCafé® Premium Roast Coffee";
 const MENU = [
-  { cat: "McMuffins®", items: [
+  { key: "meals", cat: "Breakfast Meal Deals", thumb: "meal-egg-mcmuffin", items: [
+    { id: "meal-sausage-mcmuffin-egg", name: "Sausage McMuffin® with Egg Meal", desc: MEAL_SIDES, cents: 779 },
+    { id: "meal-egg-mcmuffin", name: "Egg McMuffin® Meal", desc: MEAL_SIDES, cents: 759 },
+    { id: "meal-bec-biscuit", name: "Bacon, Egg & Cheese Biscuit Meal", desc: MEAL_SIDES, cents: 769 },
+    { id: "meal-sausage-biscuit-egg", name: "Sausage Biscuit with Egg Meal", desc: MEAL_SIDES, cents: 699 },
+    { id: "meal-sec-mcgriddles", name: "Sausage, Egg & Cheese McGriddles® Meal", desc: MEAL_SIDES, cents: 779, notAt: ["usq"], swap: "meal-sausage-mcmuffin-egg" },
+    { id: "meal-bec-mcgriddles", name: "Bacon, Egg & Cheese McGriddles® Meal", desc: MEAL_SIDES, cents: 779, notAt: ["usq"], swap: "meal-bec-biscuit" },
+    { id: "meal-sausage-burrito", name: "Sausage Burrito Meal", desc: "Two Sausage Burritos with Hash Browns and a small McCafé® Premium Roast Coffee", cents: 649 },
+    { id: "meal-bec-bagel", name: "Bacon, Egg & Cheese Bagel Meal", desc: MEAL_SIDES, cents: 829 },
+    { id: "meal-steak-bagel", name: "Steak, Egg & Cheese Bagel Meal", desc: MEAL_SIDES, cents: 899 }
+  ]},
+  { key: "mcmuffins", cat: "McMuffins®", thumb: "egg-mcmuffin", items: [
     { id: "egg-mcmuffin", name: "Egg McMuffin®", desc: "Egg, Canadian bacon and American cheese on an English muffin", cents: 479 },
     { id: "sausage-mcmuffin-egg", name: "Sausage McMuffin® with Egg", desc: "Sausage, egg and cheese on an English muffin", cents: 499 },
     { id: "sausage-mcmuffin", name: "Sausage McMuffin®", desc: "Sausage and cheese on an English muffin", cents: 249 }
   ]},
-  { cat: "Biscuits", items: [
+  { key: "biscuits", cat: "Biscuits", thumb: "bec-biscuit", items: [
     { id: "bec-biscuit", name: "Bacon, Egg & Cheese Biscuit", desc: "Bacon, egg and cheese on a warm biscuit", cents: 489 },
     { id: "sausage-biscuit-egg", name: "Sausage Biscuit with Egg", desc: "Sausage and egg on a warm biscuit", cents: 399 },
     { id: "egg-cheese-biscuit", name: "Egg & Cheese Biscuit", desc: "Egg and cheese on a warm biscuit", cents: 379 },
     { id: "sausage-biscuit", name: "Sausage Biscuit", desc: "Sausage on a warm biscuit", cents: 239 }
   ]},
-  { cat: "McGriddles®", items: [
+  { key: "mcgriddles", cat: "McGriddles®", thumb: "sausage-mcgriddles", items: [
     { id: "sausage-mcgriddles", name: "Sausage McGriddles®", desc: "Sausage between maple griddle cakes", cents: 319, notAt: ["usq"], swap: "sausage-mcmuffin" },
     { id: "bec-mcgriddles", name: "Bacon, Egg & Cheese McGriddles®", desc: "Bacon, egg and cheese between griddle cakes", cents: 499, notAt: ["usq"], swap: "bec-biscuit" },
     { id: "sec-mcgriddles", name: "Sausage, Egg & Cheese McGriddles®", desc: "Sausage, egg and cheese between griddle cakes", cents: 499, notAt: ["usq"], swap: "sausage-mcmuffin-egg" }
   ]},
-  { cat: "Bagels", items: [
+  { key: "bagels", cat: "Bagels", thumb: "steak-bagel", items: [
     { id: "bec-bagel", name: "Bacon, Egg & Cheese Bagel", desc: "Bacon, egg and cheese on a toasted bagel", cents: 529 },
     { id: "sec-bagel", name: "Sausage, Egg & Cheese Bagel", desc: "Sausage, egg and cheese on a toasted bagel", cents: 529 },
     { id: "steak-bagel", name: "Steak, Egg & Cheese Bagel", desc: "Steak, egg and cheese on a toasted bagel", cents: 599 }
   ]},
-  { cat: "Hotcakes & Platters", items: [
+  { key: "platters", cat: "Hotcakes & Platters", thumb: "big-breakfast", items: [
     { id: "hotcakes", name: "Hotcakes", desc: "Three hotcakes with butter and syrup", cents: 379 },
     { id: "hotcakes-sausage", name: "Hotcakes and Sausage", desc: "Three hotcakes with a side of sausage", cents: 529 },
     { id: "big-breakfast", name: "Big Breakfast®", desc: "Scrambled eggs, sausage, biscuit and hash browns", cents: 549 },
     { id: "big-breakfast-hotcakes", name: "Big Breakfast® with Hotcakes", desc: "The Big Breakfast® plus three hotcakes", cents: 699 }
   ]},
-  { cat: "Sides", items: [
+  { key: "sides", cat: "Sides", thumb: "hash-browns", items: [
     { id: "hash-browns", name: "Hash Browns", desc: "Shredded potato, golden and crispy", cents: 219 },
     { id: "sausage-burrito", name: "Sausage Burrito", desc: "Sausage, egg, cheese and peppers in a tortilla", cents: 229 },
     { id: "oatmeal", name: "Fruit & Maple Oatmeal", desc: "Oatmeal with diced apples and cranberries", cents: 329 }
   ]},
-  { cat: "McCafé® & Drinks", items: [
+  { key: "drinks", cat: "McCafé® & Drinks", thumb: "cat-mccafe", items: [
     { id: "coffee", name: "McCafé® Premium Roast Coffee", desc: "Small, freshly brewed", cents: 160 },
     { id: "iced-coffee", name: "McCafé® Iced Coffee", desc: "Small, with cream and sugar", cents: 249 },
     { id: "hot-chocolate", name: "McCafé® Hot Chocolate", desc: "Small, with whipped topping", cents: 259 },
@@ -381,17 +471,14 @@ const PHONE_BAG = [{ id: "hash-browns", qty: 1 }];
 
 /* ---------- state ---------- */
 const STORE_KEY = "mcd-proto-v1";
-let state = load() || {
-  signedIn: false,
-  rid: "b23",
-  bag: [],             // { id, qty, fromPhone }
-  orders: [],          // orders placed on this site
-  phoneMerged: false
-};
+const freshState = rid => ({ signedIn: false, rid: rid || "b23", bag: [], orders: [], phoneMerged: false });
+let state = load() || freshState();
+state.bag = state.bag.filter(b => ITEMS[b.id]);
 let priceNote = null;  // shown once after a restaurant change
 let syncing = false;
 let lastRemoved = null;
 let pendingAfterSignIn = null;
+let currentView = "menu";
 
 function load() {
   try { return JSON.parse(localStorage.getItem(STORE_KEY)); } catch { return null; }
@@ -426,7 +513,8 @@ const findOrder = id => allOrders().find(o => o.id === id);
 
 const fmtDate = iso => new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 const fmtTime = d => d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-const photo = id => `<img src="img/${id}.png" alt="" loading="lazy" width="480" height="480">`;
+const photo = (id, lazy = true) => `<img src="img/${id}.png" alt="" ${lazy ? 'loading="lazy"' : ""} width="480" height="480">`;
+const plain = s => s.replace(/[®™]/g, "").toLowerCase();
 
 /* ---------- sync badge ---------- */
 function syncLabel() {
@@ -437,7 +525,7 @@ function syncLabel() {
 }
 function renderSync() {
   const [s, label] = syncLabel();
-  for (const el of [syncHeader, syncDrawer]) { el.dataset.state = s; el.textContent = label; }
+  for (const el of [syncDrawer, syncMob]) { el.dataset.state = s; el.textContent = label; }
 }
 function touchSync() {
   if (!state.signedIn || !navigator.onLine) return renderSync();
@@ -449,6 +537,9 @@ addEventListener("online", renderSync);
 addEventListener("offline", renderSync);
 
 /* ---------- header ---------- */
+function megaHTML() {
+  return MENU.map(c => `<a href="#menu/${c.key}" data-action="jump" data-sec="${c.key}"><img src="img/${c.thumb}.png" alt="">${c.cat}</a>`).join("");
+}
 function renderHeader() {
   whereName.textContent = RESTAURANTS[state.rid].short;
   wherePop.innerHTML = Object.entries(RESTAURANTS).map(([rid, r]) => `
@@ -456,70 +547,132 @@ function renderHeader() {
       <strong class="t-body-s">${r.name}</strong>
       <span class="t-caption muted">Ready in about ${r.wait} min${rid === "usq" ? " · no McGriddles®" : ""}</span>
     </button>`).join("");
-  acctBtn.textContent = state.signedIn ? "Marie ▾" : "Sign in";
-  acctBtn.dataset.action = state.signedIn ? "sign-out" : "sign-in";
-  acctBtn.title = state.signedIn ? "Sign out (demo)" : "";
+  acctLabel.textContent = state.signedIn ? "Marie" : "Sign in";
+  acctBtn.dataset.action = mobAcct.dataset.action = state.signedIn ? "sign-out" : "sign-in";
+  mobAcct.textContent = state.signedIn ? "Sign out (resets demo)" : "Sign in";
   const n = bagCount();
   bagCount_el.textContent = n;
   bagCount_el.hidden = n === 0;
   bagBtn.setAttribute("aria-label", `Open bag, ${n} item${n === 1 ? "" : "s"}`);
+
+  // One Gold primary per screen: on the menu the header CTA is the primary
+  // (only once the bag has something to check out); elsewhere it's secondary.
+  const t = bagTotals();
+  if (currentView === "menu") {
+    ctaSlot.innerHTML = t.count ? `<button class="btn btn-primary" data-action="open-bag">Checkout · ${fmt(t.total)}</button>` : "";
+  } else if (currentView === "checkout") {
+    ctaSlot.innerHTML = "";
+  } else {
+    ctaSlot.innerHTML = `<a class="btn btn-secondary" href="#menu">Order Now</a>`;
+  }
+  document.querySelectorAll("[data-nav]").forEach(a => {
+    const on = (a.dataset.nav === "orders" && currentView === "orders");
+    if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
   renderSync();
 }
 const bagCount_el = document.getElementById("bagCount");
 
+/* ---------- popovers & sheets ---------- */
+function openPop(id) {
+  closePops(id);
+  const el = document.getElementById(id);
+  el.hidden = false;
+  document.querySelectorAll(`[data-pop="${id}"]`).forEach(b => b.setAttribute("aria-expanded", "true"));
+  if (id === "searchSheet") { q.focus(); renderResults(); }
+  else { const f = el.querySelector("button, a"); f && f.focus({ preventScroll: true }); }
+}
+function closePops(except) {
+  for (const id of ["megaSheet", "searchSheet", "mobSheet", "morePop", "wherePop"]) {
+    if (id === except) continue;
+    document.getElementById(id).hidden = true;
+    document.querySelectorAll(`[data-pop="${id}"]`).forEach(b => b.setAttribute("aria-expanded", "false"));
+  }
+}
+function renderResults() {
+  const term = plain(q.value.trim());
+  const all = MENU.flatMap(c => c.items.map(i => ({ ...i, cat: c.cat })));
+  const hits = term ? all.filter(i => plain(i.name + " " + i.desc + " " + i.cat).includes(term)) : all.filter(i => ["egg-mcmuffin", "meal-egg-mcmuffin", "hash-browns", "coffee", "sausage-mcgriddles", "hotcakes"].includes(i.id));
+  results.innerHTML = (term ? "" : `<p class="t-caption muted" style="grid-column:1/-1;margin:0">Popular this morning</p>`) +
+    (hits.length ? hits.slice(0, 12).map(i => {
+      const ok = soldAt(i.id);
+      return `<div class="result">
+        <img src="img/${i.id}.png" alt="">
+        <button class="name" data-action="detail" data-id="${i.id}"><strong class="t-body-s">${i.name}</strong><br><span class="t-caption muted">${i.cat} · ${ok ? fmt(priceAt(i.id)) : "Not at " + RESTAURANTS[state.rid].short}</span></button>
+        <button class="btn btn-secondary" data-action="add" data-id="${i.id}" ${ok ? "" : "disabled"}>Add</button>
+      </div>`;
+    }).join("") : `<p class="t-body-s" style="grid-column:1/-1">Nothing on the breakfast menu matches "${q.value.replace(/</g, "&lt;")}".</p>`);
+}
+
 /* ---------- views ---------- */
 function route() {
   const [name, arg] = location.hash.replace(/^#/, "").split("/");
-  document.querySelectorAll("[data-nav]").forEach(a => {
-    if (a.dataset.nav === (name || "menu")) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
-  });
-  if (name === "orders") renderOrders(arg);
-  else if (name === "checkout") renderCheckout();
-  else if (name === "placed") renderPlaced(arg);
-  else renderMenu();
+  currentView = ["orders", "checkout", "placed"].includes(name) ? name : "menu";
+  if (currentView === "orders") renderOrders(arg);
+  else if (currentView === "checkout") renderCheckout();
+  else if (currentView === "placed") renderPlaced(arg);
+  else renderMenu(arg);
   renderHeader();
 }
 
-function renderMenu() {
+function renderMenu(sec) {
   const r = RESTAURANTS[state.rid];
   view.innerHTML = `
-    <div class="page-head">
-      <div>
-        <h1 class="t-display">Breakfast</h1>
-        <p class="t-body-s muted">Prices at ${r.name} · Order here for pickup, no app needed.</p>
-      </div>
-    </div>
     <div class="menu-layout">
-      <nav class="cats" aria-label="Breakfast categories">
-        ${MENU.map((c, i) => `<a href="#menu" data-action="jump" data-cat="cat-${i}">${c.cat}</a>`).join("")}
-      </nav>
+      <aside class="rail">
+        <nav class="rail-box" aria-label="Breakfast categories">
+          ${MENU.map(c => `<a class="rail-row" href="#menu/${c.key}" data-action="jump" data-sec="${c.key}" aria-current="false"><img src="img/${c.thumb}.png" alt="">${c.cat}</a>`).join("")}
+        </nav>
+      </aside>
       <div>
-        ${MENU.map((c, i) => `
-          <section class="cat" id="cat-${i}">
-            <h2 class="t-heading">${c.cat}</h2>
-            <div class="grid">
-              ${c.items.map(cardHTML).join("")}
-            </div>
+        <div class="menu-intro">
+          <h1 class="t-display">Breakfast</h1>
+          <p class="t-body-s muted">Prices at ${r.name} · Order here for pickup, no app needed.</p>
+        </div>
+        ${MENU.map(c => `
+          <section class="sec" id="sec-${c.key}" aria-labelledby="h-${c.key}">
+            <h2 class="t-display" id="h-${c.key}">${c.cat}</h2>
+            <div class="grid">${c.items.map(tileHTML).join("")}</div>
           </section>`).join("")}
       </div>
     </div>`;
+  watchSections();
+  if (sec && document.getElementById("sec-" + sec)) {
+    requestAnimationFrame(() => document.getElementById("sec-" + sec).scrollIntoView());
+  }
 }
-function cardHTML(it) {
+function tileHTML(it) {
   const ok = soldAt(it.id);
   return `
-    <article class="card ${ok ? "" : "off"}">
-      <div class="thumb">${photo(it.id)}</div>
-      <div>
-        <div class="row">
-          <h3 class="t-heading">${it.name}</h3>
-          <span class="price">${ok ? fmt(priceAt(it.id)) : "—"}</span>
-        </div>
-        <div class="t-caption muted">${it.desc}</div>
-      </div>
-      ${ok
-        ? `<button class="btn btn-secondary btn-block" data-action="add" data-id="${it.id}">Add to bag · ${fmt(priceAt(it.id))}</button>`
-        : `<button class="btn btn-secondary btn-block" disabled>Not at ${RESTAURANTS[state.rid].short}</button>`}
+    <article class="tile ${ok ? "" : "off"}">
+      <button class="tile-open" data-action="detail" data-id="${it.id}" aria-label="${it.name}, details">
+        ${photo(it.id)}
+        <span class="tile-name">${it.name}</span>
+      </button>
+      <span class="price">${ok ? fmt(priceAt(it.id)) : "Not at " + RESTAURANTS[state.rid].short}</span>
+      <button class="btn btn-secondary" data-action="add" data-id="${it.id}" ${ok ? "" : "disabled"}>Add to bag</button>
     </article>`;
+}
+function setActiveSection(key) {
+  document.querySelectorAll(".rail-row").forEach(a => a.setAttribute("aria-current", String(a.dataset.sec === key)));
+  const on = document.querySelector(`.rail-row[data-sec="${key}"]`);
+  if (on && matchMedia("(max-width: 900px)").matches) on.scrollIntoView({ block: "nearest", inline: "center" });
+}
+// The current category is the last section whose top has passed just under the sticky header.
+let activeKey = null, scrollTick = false;
+function syncActiveSection() {
+  scrollTick = false;
+  const secs = document.querySelectorAll(".sec");
+  if (!secs.length) return;
+  const line = parseFloat(getComputedStyle(secs[0]).scrollMarginTop) + 40;
+  let key = MENU[0].key;
+  secs.forEach(s => { if (s.getBoundingClientRect().top <= line) key = s.id.replace("sec-", ""); });
+  if (key !== activeKey) { activeKey = key; setActiveSection(key); }
+}
+addEventListener("scroll", () => { if (!scrollTick) { scrollTick = true; requestAnimationFrame(syncActiveSection); } }, { passive: true });
+function watchSections() {
+  activeKey = null;
+  syncActiveSection();
 }
 
 function summaryHTML(t, extra = "") {
@@ -569,7 +722,7 @@ function renderCheckout() {
       <div class="panel">
         <h2 class="t-heading" style="margin-bottom:12px">Order summary</h2>
         ${state.bag.filter(b => soldAt(b.id)).map(b => `
-          <div class="receipt-line"><span>${b.qty} × ${ITEMS[b.id].name}</span><span>${fmt(priceAt(b.id) * b.qty)}</span></div>`).join("")}
+          <div class="receipt-line"><img src="img/${b.id}.png" alt=""><span>${b.qty} × ${ITEMS[b.id].name}</span><span>${fmt(priceAt(b.id) * b.qty)}</span></div>`).join("")}
         ${t.skipped ? `<p class="t-caption muted">${t.skipped} item not sold at ${r.short} stays in your bag and isn't included.</p>` : ""}
         <hr class="divider">
         ${summaryHTML(t)}
@@ -580,7 +733,7 @@ function renderCheckout() {
 
 function receiptHTML(o) {
   return `
-    ${o.items.map(i => `<div class="receipt-line"><span>${i.qty} × ${i.name}</span><span>${fmt(i.cents * i.qty)}</span></div>`).join("")}
+    ${o.items.map(i => `<div class="receipt-line"><img src="img/${i.id}.png" alt=""><span>${i.qty} × ${i.name}</span><span>${fmt(i.cents * i.qty)}</span></div>`).join("")}
     <hr class="divider">
     ${summaryHTML(o)}`;
 }
@@ -595,7 +748,7 @@ function renderPlaced(id) {
       <p class="t-body-s" style="margin:0">Pick it up at <strong>${RESTAURANTS[o.rid].name}</strong> around <strong>${fmtTime(new Date(o.pickupAt))}</strong>. Pay at the counter.</p>
       <span class="t-caption muted">${o.guest ? "Saved on this device. Sign in to see it on your phone too." : "Also in Orders on your phone."}</span>
     </div>
-    <div class="panel" style="max-width:520px">
+    <div class="panel" style="max-width:560px">
       <h2 class="t-heading" style="margin-bottom:12px">Receipt</h2>
       ${receiptHTML(o)}
       <div class="actions">
@@ -630,6 +783,7 @@ function renderOrders(selId) {
           <button class="order-row" role="listitem" aria-current="${o.id === sel.id}" data-action="pick-order" data-id="${o.id}">
             <span class="t-caption muted">${fmtDate(o.at)} · Pickup${o.source === "app" ? " · in the app" : " · on the web"}</span>
             <span></span>
+            <span class="thumbs">${o.items.map(i => `<img src="img/${i.id}.png" alt="">`).join("")}</span>
             <span class="items">${o.items.map(i => (i.qty > 1 ? i.qty + " × " : "") + i.name).join(", ")}</span>
             <span class="price">${fmt(o.total)}</span>
             <span class="t-caption muted">${RESTAURANTS[o.rid].name}</span>
@@ -661,6 +815,7 @@ function orderDetailHTML(o) {
 
 /* ---------- bag drawer ---------- */
 function openBag() {
+  closePops();
   renderBag();
   scrim.hidden = false; drawer.hidden = false;
   document.body.classList.add("bag-open");
@@ -700,7 +855,7 @@ function bagItemHTML(b, i) {
   const swap = !ok && it.swap ? ITEMS[it.swap] : null;
   return `
     <div class="bag-item ${ok ? "" : "off"}">
-      <div class="thumb">${photo(b.id)}</div>
+      ${photo(b.id, false)}
       <div>
         <div class="t-heading">${it.name}</div>
         <div class="t-caption muted">${ok ? fmt(priceAt(b.id)) + " each" : "Not sold at " + RESTAURANTS[state.rid].short}</div>
@@ -718,6 +873,42 @@ function bagItemHTML(b, i) {
     </div>`;
 }
 
+/* ---------- product detail ---------- */
+let detailQty = 1, detailId = null;
+function openDetail(id) {
+  closePops();
+  detailId = id; detailQty = 1;
+  renderDetail();
+  scrim.hidden = false; modal.hidden = false;
+  modal.querySelector("[data-action=detail-add], [data-action=close-modal]").focus();
+}
+function renderDetail() {
+  const it = ITEMS[detailId];
+  const ok = soldAt(detailId);
+  const swap = !ok && it.swap ? ITEMS[it.swap] : null;
+  modalCard.innerHTML = `
+    <button class="icon-btn modal-close" data-action="close-modal" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button>
+    <div class="detail">
+      ${photo(detailId, false)}
+      <h2 class="t-heading" id="modalTitle" style="margin-top:12px">${it.name}</h2>
+      <p class="t-body-s muted" style="margin:6px 0 0">${it.desc}</p>
+      <p class="t-caption muted" style="margin:6px 0 0">${RESTAURANTS[state.rid].name}</p>
+      ${ok ? `
+        <div class="qty-row">
+          <span class="price">${fmt(priceAt(detailId))} each</span>
+          <div class="stepper" role="group" aria-label="Quantity">
+            <button data-action="detail-qty" data-d="-1" aria-label="One less" ${detailQty <= 1 ? "disabled" : ""}>−</button>
+            <span>${detailQty}</span>
+            <button data-action="detail-qty" data-d="1" aria-label="One more">+</button>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" data-action="detail-add">Add ${detailQty} to bag · ${fmt(priceAt(detailId) * detailQty)}</button>`
+      : `
+        <p class="note" style="text-align:left">Not sold at ${RESTAURANTS[state.rid].short}.${swap ? ` Try ${swap.name} instead.` : ""}</p>
+        ${swap ? `<button class="btn btn-secondary btn-block" data-action="detail" data-id="${swap.id}">See ${swap.name}</button>` : ""}`}
+    </div>`;
+}
+
 /* ---------- actions ---------- */
 function addToBag(id, qty = 1, fromPhone = false) {
   const line = state.bag.find(b => b.id === id);
@@ -726,6 +917,11 @@ function addToBag(id, qty = 1, fromPhone = false) {
 function changed() {
   save(); renderHeader(); touchSync();
   if (!drawer.hidden) renderBag();
+}
+function added(id, qty) {
+  changed();
+  const sync = state.signedIn ? "synced with your phone" : `bag has ${bagCount()}`;
+  toast(`${qty > 1 ? qty + " × " : ""}${ITEMS[id].name} added · ${sync}`, ["View bag", openBag]);
 }
 
 function setRestaurant(rid) {
@@ -743,7 +939,9 @@ function setRestaurant(rid) {
   } else {
     toast(`Showing prices at ${RESTAURANTS[rid].name}`);
   }
-  save(); route(); touchSync();
+  save();
+  const y = scrollY; route(); scrollTo(0, y);
+  touchSync();
   if (!drawer.hidden) renderBag();
 }
 
@@ -762,10 +960,9 @@ function signIn(then) {
   if (then) location.hash = "#" + then;
   route();
 }
-function signOut() {
-  // Demo reset so the flow can be tried again.
-  state = { signedIn: false, rid: state.rid, bag: [], orders: [], phoneMerged: false };
-  save(); closeBag(); toast("Signed out · demo reset"); location.hash = "#menu"; route();
+function resetDemo(msg) {
+  state = freshState(state.rid);
+  save(); closeBag(); closeModal(); toast(msg); location.hash = "#menu"; route();
 }
 
 function placeOrder() {
@@ -795,7 +992,7 @@ function reorder(id) {
 
 function downloadReceipt(id) {
   const o = findOrder(id);
-  const w = 40;
+  const w = 44;
   const row = (l, r) => l.slice(0, w - r.length - 1).padEnd(w - r.length) + r;
   const lines = [
     "McDonald's · pickup receipt",
@@ -823,6 +1020,7 @@ function downloadReceipt(id) {
 
 /* ---------- modal ---------- */
 function openSignIn(then, reason) {
+  closePops();
   pendingAfterSignIn = then || null;
   modalCard.innerHTML = `
     <h2 class="t-heading" id="modalTitle">${reason === "checkout" ? "Sign in to check out" : "Sign in"}</h2>
@@ -836,6 +1034,17 @@ function openSignIn(then, reason) {
         : `<button class="btn btn-secondary btn-block" data-action="close-modal">Not now</button>`}
     </div>
     <p class="t-caption muted" style="margin-bottom:0">Prototype: no password needed and nothing is sent anywhere.</p>`;
+  scrim.hidden = false; modal.hidden = false;
+  modal.querySelector("button").focus();
+}
+function openAbout() {
+  closePops();
+  modalCard.innerHTML = `
+    <button class="icon-btn modal-close" data-action="close-modal" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button>
+    <h2 class="t-heading" id="modalTitle">About this prototype</h2>
+    <p class="t-body-s">A redesign of the mcdonalds.com breakfast menu for "One System, Two Experiences" (SVA MFA IxD, Assignment 2). It tests one rule: you can order on the website, and the bag and past orders are the same as in the app.</p>
+    <p class="t-body-s">Try it: add items, switch to Union Sq, check out, sign in, then open Orders and download a receipt. Nothing is really ordered.</p>
+    <div class="stack"><a class="btn btn-secondary btn-block" href="../">Read the design spec</a></div>`;
   scrim.hidden = false; modal.hidden = false;
   modal.querySelector("button").focus();
 }
@@ -856,20 +1065,31 @@ const toastEl = document.getElementById("toast");
 
 /* ---------- events ---------- */
 document.addEventListener("click", e => {
+  const popBtn = e.target.closest("[data-pop]");
+  if (popBtn) {
+    const id = popBtn.dataset.pop;
+    document.getElementById(id).hidden ? openPop(id) : closePops();
+    return;
+  }
   const el = e.target.closest("[data-action]");
   if (!el) {
-    if (!wherePop.hidden && !e.target.closest(".where")) closeWhere();
+    if (!e.target.closest(".pop, .sheet")) closePops();
     return;
   }
   const a = el.dataset.action;
-  if (a !== "set-rid" && !el.closest(".where")) closeWhere();
+  if (!el.closest(".sheet, .pop") || ["jump", "detail", "set-rid", "about", "reset", "sign-in", "sign-out", "close-pops"].includes(a)) {
+    if (!(a === "add" && el.closest("#searchSheet"))) closePops();
+  }
   switch (a) {
     case "add": {
       addToBag(el.dataset.id);
-      changed();
-      toast(`${ITEMS[el.dataset.id].name} added · ${state.signedIn ? "synced with your phone" : "bag has " + bagCount()}`, ["View bag", openBag]);
+      added(el.dataset.id, 1);
+      if (!searchSheet.hidden) renderResults();
       break;
     }
+    case "detail": openDetail(el.dataset.id); break;
+    case "detail-qty": detailQty = Math.max(1, detailQty + +el.dataset.d); renderDetail(); modal.querySelector(`[data-action=detail-qty][data-d="${el.dataset.d}"]`).focus(); break;
+    case "detail-add": addToBag(detailId, detailQty); closeModal(); added(detailId, detailQty); break;
     case "qty": {
       const i = +el.dataset.i, line = state.bag[i];
       line.qty += +el.dataset.d;
@@ -890,6 +1110,7 @@ document.addEventListener("click", e => {
       changed();
       break;
     }
+    case "open-bag": openBag(); break;
     case "close-bag": closeBag(); break;
     case "checkout":
       if (!state.signedIn) openSignIn("checkout", "checkout");
@@ -898,15 +1119,24 @@ document.addEventListener("click", e => {
     case "do-sign-in": closeBag(); signIn(pendingAfterSignIn); break;
     case "guest": closeModal(); closeBag(); location.hash = "#checkout"; break;
     case "close-modal": closeModal(); break;
+    case "close-pops": break;
     case "sign-in": openSignIn(el.dataset.then, el.dataset.then === "checkout" ? "checkout" : ""); break;
-    case "sign-out": if (confirm("Sign out of the demo? This resets the prototype.")) signOut(); break;
+    case "sign-out": if (confirm("Sign out of the demo? This resets the prototype.")) resetDemo("Signed out · demo reset"); break;
+    case "reset": if (confirm("Reset the demo? This clears the bag and orders placed here.")) resetDemo("Demo reset"); break;
+    case "about": openAbout(); break;
     case "place": placeOrder(); break;
     case "pick-order": location.hash = "#orders/" + el.dataset.id; break;
     case "reorder": reorder(el.dataset.id); break;
     case "receipt": downloadReceipt(el.dataset.id); break;
-    case "open-where": openWhere(); break;
-    case "set-rid": closeWhere(); setRestaurant(el.dataset.rid); break;
-    case "jump": e.preventDefault(); document.getElementById(el.dataset.cat).scrollIntoView({ behavior: "smooth" }); break;
+    case "open-where": closeBag(); scrollTo({ top: 0 }); openPop("wherePop"); break;
+    case "set-rid": setRestaurant(el.dataset.rid); break;
+    case "jump": {
+      e.preventDefault();
+      const target = document.getElementById("sec-" + el.dataset.sec);
+      if (target) { target.scrollIntoView({ behavior: "smooth" }); setActiveSection(el.dataset.sec); history.replaceState(null, "", "#menu/" + el.dataset.sec); }
+      else location.hash = "#menu/" + el.dataset.sec;
+      break;
+    }
     case "toast-action": toastEl.hidden = true; toastEl._action && toastEl._action(); break;
   }
 });
@@ -916,23 +1146,31 @@ function undoRemove() {
   lastRemoved = null;
   changed();
 }
-function openWhere() {
-  if (!drawer.hidden) closeBag();
-  window.scrollTo({ top: 0 });
-  wherePop.hidden = false; whereBtn.setAttribute("aria-expanded", "true");
-  wherePop.querySelector("button").focus();
-}
-function closeWhere() { wherePop.hidden = true; whereBtn.setAttribute("aria-expanded", "false"); }
 
-whereBtn.addEventListener("click", e => { e.stopPropagation(); wherePop.hidden ? openWhere() : closeWhere(); });
-bagBtn.addEventListener("click", openBag);
+q.addEventListener("input", renderResults);
+q.addEventListener("keydown", e => {
+  if (e.key === "Enter") { const first = results.querySelector("[data-action=detail]"); first && first.click(); }
+});
 scrim.addEventListener("click", () => { if (!modal.hidden) closeModal(); else closeBag(); });
 document.addEventListener("keydown", e => {
+  if (e.key === "/" && document.activeElement.tagName !== "INPUT") { e.preventDefault(); openPop("searchSheet"); }
   if (e.key !== "Escape") return;
-  if (!modal.hidden) closeModal(); else if (!drawer.hidden) closeBag(); else closeWhere();
+  if (!modal.hidden) closeModal(); else if (!drawer.hidden) closeBag(); else closePops();
 });
-addEventListener("hashchange", () => { route(); window.scrollTo({ top: 0 }); });
+addEventListener("hashchange", () => {
+  closePops();
+  const sec = location.hash.startsWith("#menu/");
+  route();
+  if (!sec) scrollTo({ top: 0 });
+});
 
+// Sticky pieces sit under the header, whose height changes with wrapping.
+const headerEl = document.querySelector("header.site");
+const setHeaderH = () => document.documentElement.style.setProperty("--hh", headerEl.querySelector(".bar").offsetHeight + "px");
+new ResizeObserver(setHeaderH).observe(headerEl.querySelector(".bar"));
+
+megaGrid.innerHTML = megaHTML();
+mobMega.innerHTML = megaHTML();
 route();
 </script>
 </body>
