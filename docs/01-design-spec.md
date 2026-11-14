@@ -20,8 +20,8 @@ This page holds the rules both experiences share. Mobile (page 2) is about findi
 
 | Name | Hex | Role |
 |---|---|---|
-| Ink | `#292929` | Default text and borders |
-| Muted | `#7C7C7C` | Secondary text |
+| Ink | `#292929` | Default text, and the border of a selected option |
+| Muted | `#7C7C7C` | Secondary text, and 1px outlines on secondary buttons, steppers and inputs |
 | Divider | `#D6D6D6` | 1px lines between header, sections and rows (the mcdonalds.com header line) |
 | Canvas | `#FFFFFF` | Page background and secondary button fill |
 | Gold Stroke | `#C08B00` | 1px border on the primary button |
@@ -54,7 +54,7 @@ The brand typeface is Speedee (custom, Dalton Maag, 2018). It isn't publicly lic
 
 | Component | What it is |
 |---|---|
-| **Button** (Primary / Secondary) | A 48px pill. Primary uses Gold, and there is only one per screen. Secondary is white with an Ink border. |
+| **Button** (Primary / Secondary) | A 48px pill. Primary uses Gold, and there is only one per screen. Secondary is white with a 1px Muted border. |
 | **Bag Item** | One line in the bag: name, options, price, and a quantity stepper (44px tall). It can show a label such as "Added on your phone". |
 | **Order Row** | One past order: date, pickup or delivery, items, restaurant, total, and "Details →". |
 | **Price Summary** | Subtotal, tax, an optional fee, and the total. |
