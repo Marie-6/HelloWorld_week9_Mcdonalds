@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>McDonald’s app redesign — Task A prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--page:#e9e9e6; --page-ink:#292929; --page-muted:#666;
+/* App tokens: 01 Design Spec + values read from the real app screenshots */
+--gold:#FFBC0D; --gold-app:#F4BC40; --gold-stroke:#C08B00;
+--red:#DB0007; --berry:#8A1C5E; --wine:#A3254F;
+--ink:#292929; --muted:#7C7C7C; --line:#E2E2E2;
+--canvas:#FFFFFF; --bg:#F7F7F7; --surface:#F1F1F1; --link:#1F6FC5;
+--r-btn:48px; --r-card:12px;
+color-scheme:light; box-sizing:border-box;
+padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#191918;--page-ink:#ececea;--page-muted:#a3a39e;color-scheme:dark}}
+:root[data-theme="dark"]{--page:#191918;--page-ink:#ececea;--page-muted:#a3a39e;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--page);color:var(--page-ink);font-family:Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:48px;padding:28px;flex-wrap:wrap}
+.notes{max-width:300px;font-size:14px;line-height:1.55;color:var(--page-muted)}
+.notes h1{font-size:20px;line-height:1.25;color:var(--page-ink);margin:0 0 10px}
+.notes ul{padding-left:18px;margin:8px 0}
+.notes .reset{font:inherit;font-weight:600;background:none;border:1px solid var(--page-muted);color:var(--page-ink);border-radius:48px;padding:8px 16px;cursor:pointer;margin-top:6px}
+/* ---------- iPhone frame ---------- */
+.iphone{position:relative;width:417px;height:876px;border-radius:68px;background:#1c1c1e;padding:12px;
+box-shadow:inset 0 0 0 2px #3a3a3c, 0 0 0 1px #0d0d0d}
+.iphone::before,.iphone::after{content:"";position:absolute;width:4px;background:#2c2c2e;border-radius:2px}
+.iphone::before{left:-4px;top:180px;height:64px;box-shadow:0 84px 0 #2c2c2e}
+.iphone::after{right:-4px;top:230px;height:96px}
+.phone{position:relative;width:393px;height:852px;border-radius:56px;overflow:hidden;background:var(--bg);color:var(--ink);display:flex;flex-direction:column}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:20px;background:#000;z-index:50}
+.status{height:54px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 46px;font-weight:600;font-size:16px;background:var(--canvas);position:relative;z-index:40}
+.status .icons{display:flex;gap:6px;align-items:center}
+.status svg{display:block}
+.homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#111;z-index:60}
+@media (max-width:520px){
+.stage{padding:0;gap:0}.notes{display:none}
+.iphone{width:100%;height:100vh;height:100dvh;padding:0;border-radius:0;box-shadow:none;background:none}
+.iphone::before,.iphone::after,.island,.homebar{display:none}
+.phone{width:100%;height:100%;border-radius:0}
+.status{display:none}
+}
+/* ---------- app shell ---------- */
+.appbar{flex:0 0 auto;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--canvas);border-bottom:1px solid var(--line);position:relative;z-index:30}
+.appbar .ttl{font-size:17px;font-weight:800;position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
+.brand{font-weight:800;font-size:18px;letter-spacing:-.01em}
+.brand b{color:var(--wine)}
+.pts{display:inline-flex;align-items:center;gap:6px;border:1px solid #9a9a9a;border-radius:8px;padding:5px 10px;font-size:14px;font-weight:700;background:var(--canvas);color:var(--ink);cursor:pointer}
+.coin{width:16px;height:16px;border-radius:50%;border:2px solid var(--wine);display:inline-block;position:relative}
+.coin::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--gold)}
+.iconbtn{background:none;border:0;padding:8px;margin-left:-8px;cursor:pointer;color:var(--ink);font:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;gap:2px}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.pad{padding:16px 18px 28px}
+.sec{margin-top:28px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.sec-h h3{font-size:24px;font-weight:800;margin:0;letter-spacing:-.01em}
+.more-link{background:none;border:0;padding:0;font:inherit;font-size:15px;font-weight:700;color:var(--link);cursor:pointer}
+h2.title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
+.muted{color:var(--muted)} .small{font-size:13px}
+.price{font-variant-numeric:tabular-nums;font-weight:700}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border-radius:var(--r-btn);font:inherit;font-size:16px;font-weight:600;cursor:pointer;border:1px solid var(--ink);background:var(--canvas);color:var(--ink)}
+.btn.primary{background:var(--gold-app);border-color:var(--gold-stroke);color:var(--ink)}
+.btn.sm{height:40px;font-size:14px;width:auto;padding:0 18px}
+.btn+.btn{margin-top:10px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+/* hero banner */
+.hero{margin:-16px -18px 0;position:relative;overflow:hidden;background:linear-gradient(160deg,#9fd2e8 0%,#5ea9cf 55%,#3f87b5 100%);color:var(--ink);padding:22px 18px 18px;min-height:250px;cursor:pointer;border:0;width:calc(100% + 36px);text-align:left;font:inherit;display:block}
+.hero .flake{position:absolute;color:#fff;opacity:.55;font-size:18px}
+.hero .k{font-size:17px;font-weight:800}
+.hero .h{font-size:34px;line-height:1.02;font-weight:800;letter-spacing:-.02em;margin:4px 0 6px;max-width:58%}
+.hero .s{font-size:15px;max-width:60%}
+.hero .art{position:absolute;right:-6px;bottom:52px;width:150px}
+.hero .ctas{display:flex;gap:12px;margin-top:16px;position:relative}
+.hero .ctas span{flex:1;height:44px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--canvas)}
+.hero .ctas span.go{background:var(--gold-app)}
+.fine{font-size:11px;color:var(--muted);margin:6px 0 0}
+.promo{display:grid;grid-template-columns:44px 1fr 16px;gap:12px;align-items:center;background:var(--canvas);border:1px solid var(--line);border-left:6px solid var(--berry);border-radius:var(--r-card);padding:14px;margin-top:22px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.promo b{display:block;font-size:16px}
+.promo span{font-size:14px}
+/* carousels */
+.rail{display:flex;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 4px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.tile{flex:0 0 150px;scroll-snap-align:start;background:none;border:0;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.tile .ph{height:150px;border-radius:8px;background:var(--canvas);overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.tile .nm{font-size:15px;margin-top:8px;line-height:1.3}
+.deal{flex:0 0 132px}
+.deal .ph{height:120px}
+.deal .nm{font-weight:700;font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.deal .exp{font-size:13px;color:var(--muted)}
+.deal.added .ph{outline:2px solid var(--ink);outline-offset:-2px}
+.ph img{width:100%;height:100%;object-fit:contain}
+.ph svg{width:78%;height:78%}
+.trend{display:block;width:100%;border:0;border-radius:var(--r-card);overflow:hidden;position:relative;padding:22px 18px;text-align:left;font:inherit;color:#fff;cursor:pointer;min-height:170px;margin-bottom:16px}
+.trend .h{font-size:28px;font-weight:800;line-height:1.05;max-width:60%;letter-spacing:-.01em}
+.trend .s{font-size:15px;margin:6px 0 14px;max-width:60%}
+.trend .cta{display:inline-flex;height:42px;padding:0 26px;align-items:center;border-radius:4px;background:var(--gold-app);color:var(--ink);font-size:16px}
+.trend .art{position:absolute;right:8px;bottom:10px;width:130px}
+/* again card */
+.again{background:var(--gold-app);border-radius:var(--r-card);padding:16px;margin-top:22px;display:grid;grid-template-columns:1fr 72px;gap:4px 12px}
+.again .kicker{font-size:12px;font-weight:700;letter-spacing:.03em;grid-column:1/-1}
+.again .name{font-size:19px;font-weight:800}
+.again p{margin:0;font-size:14px}
+.again .ph{grid-row:2/4;grid-column:2;width:72px;height:72px;border-radius:10px;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.again .btn{grid-column:1/-1;margin-top:10px}
+/* order cards */
+.order-card{display:grid;grid-template-columns:52px 1fr auto;gap:2px 12px;padding:14px;margin-bottom:10px;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;align-items:start}
+.order-card .ph{grid-row:1/4;width:52px;height:52px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.order-card .when{font-size:12px;color:var(--muted)}
+.order-card .what{font-weight:700;font-size:15px;line-height:1.3}
+.order-card .where{font-size:13px;color:var(--muted)}
+.order-card .tot{grid-row:1/3;grid-column:3;text-align:right}
+.order-card .tot .price{font-size:17px;display:block}
+.order-card .tot .tax{font-size:11px;color:var(--muted)}
+.order-card .go{grid-column:3;text-align:right;font-size:13px;font-weight:600;align-self:end}
+/* order tab */
+.toggle{display:inline-flex;border:1px solid #9a9a9a;border-radius:var(--r-btn);background:var(--surface);padding:2px}
+.toggle button{border:0;background:none;font:inherit;font-size:15px;padding:7px 18px;border-radius:var(--r-btn);cursor:pointer;color:var(--ink)}
+.toggle button[aria-pressed="true"]{background:var(--gold-app);font-weight:700;border:1px solid var(--gold-stroke)}
+.where-row{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;margin-top:16px}
+.pin{width:26px;height:30px}
+.where-row b{font-size:15px;display:block}
+.ulink{background:none;border:0;padding:0;font:inherit;font-size:15px;color:var(--link);text-decoration:underline;cursor:pointer}
+.subtabs{display:flex;gap:28px;border-bottom:1px solid var(--line);margin:18px -18px 0;padding:0 18px}
+.subtabs button{background:none;border:0;font:inherit;font-size:16px;padding:10px 0;cursor:pointer;color:var(--ink);border-bottom:4px solid transparent}
+.subtabs button[aria-pressed="true"]{font-weight:700;border-color:var(--gold-app)}
+.cat-row{display:grid;grid-template-columns:64px 1fr 14px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.cat-row .ph{width:64px;height:64px;border-radius:8px;background:var(--canvas);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cat-row b{font-size:20px;font-weight:800}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.mi{background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);padding:10px;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.mi .ph{height:110px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.mi .nm{font-weight:700;font-size:14px;line-height:1.3;min-height:36px}
+.mi .pr{font-size:13px;color:var(--muted);margin-top:2px}
+/* bag */
+.place{background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);padding:12px 14px;display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center}
+.place b{font-size:15px}.place .small{display:block}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-btn);padding:5px 10px}
+.chip .dot{width:7px;height:7px;border-radius:50%;background:var(--ink)}
+.chip.web{margin-top:6px;padding:3px 9px}
+.item{display:grid;grid-template-columns:60px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}
+.item .ph{width:60px;height:60px;border-radius:8px;background:var(--canvas);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.item .nm{font-weight:700;font-size:15px;line-height:1.3}
+.item .opt{font-size:13px;color:var(--muted)}
+.item .right{text-align:right}
+.stepper{display:inline-flex;align-items:center;gap:4px;margin-top:8px}
+.stepper button{width:36px;height:36px;border-radius:50%;border:1px solid #9a9a9a;background:var(--canvas);font:inherit;font-size:18px;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:center}
+.stepper span{min-width:22px;text-align:center;font-weight:800;font-size:16px}
+.summary{background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);padding:14px 16px;margin-top:16px}
+.summary .ln{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);padding:3px 0}
+.summary .ln.total{color:var(--ink);font-size:18px;font-weight:800;border-top:1px solid var(--line);margin-top:8px;padding-top:10px}
+.empty{text-align:center;padding:36px 10px}
+.empty .ph{width:120px;height:120px;margin:0 auto 6px}
+/* rewards */
+.seg{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #9a9a9a;border-radius:var(--r-btn);padding:4px;background:var(--canvas)}
+.seg button{border:0;background:none;font:inherit;font-weight:700;font-size:15px;padding:10px 0;border-radius:var(--r-btn);cursor:pointer;color:var(--ink)}
+.seg button[aria-pressed="true"]{background:linear-gradient(90deg,var(--berry),var(--wine));color:#fff}
+.rcard{border-radius:var(--r-card);padding:22px 20px;margin-top:18px;color:#fff;background:linear-gradient(110deg,var(--berry),var(--wine));position:relative;overflow:hidden}
+.rcard .k{font-size:17px;font-weight:700}
+.rcard .big{font-size:44px;font-weight:800;letter-spacing:-.02em;margin:4px 0 12px}
+.rcard .row{display:flex;gap:18px;align-items:center}
+.rcard .ulink{color:#fff}
+.rcard .rv{background:var(--gold-app);color:var(--ink);border:1px solid var(--gold-stroke);border-radius:6px;padding:8px 14px;font:inherit;font-size:15px;cursor:pointer}
+.rcard .coins{position:absolute;right:-10px;top:-10px;width:120px;opacity:.9}
+.reward{flex:0 0 160px;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0}
+.reward .ph{height:140px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line)}
+.reward .ring{width:116px;height:116px;border-radius:50%;padding:5px;background:conic-gradient(var(--wine),var(--gold-app),var(--wine));display:flex}
+.reward .ring>span{flex:1;border-radius:50%;background:var(--canvas);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.reward .body{padding:10px 12px 12px}
+.reward .nm{font-weight:800;font-size:15px;min-height:38px}
+.reward .cost{font-size:14px;display:flex;gap:6px;align-items:center}
+.reward[disabled]{opacity:.55;cursor:not-allowed}
+.codecard{border-radius:var(--r-card);overflow:hidden;margin-top:18px;background:var(--canvas);border:1px solid var(--line)}
+.codecard .top{background:var(--gold-app);padding:20px;text-align:center}
+.codecard .top h4{margin:0;font-size:20px;text-align:left}
+.codecard .top p{margin:4px 0 10px;text-align:left;font-size:14px}
+.codecard .num{font-size:52px;font-weight:800;letter-spacing:.12em}
+.qr{width:170px;height:170px;background:#fff;border-radius:12px;margin:10px auto 0;padding:12px}
+.codecard .bot{padding:18px 20px}
+/* more */
+.list-row{display:grid;grid-template-columns:40px 1fr 14px;gap:14px;align-items:center;padding:20px 18px;border-bottom:1px solid var(--line);background:var(--canvas);width:100%;border-left:0;border-right:0;border-top:0;text-align:left;font:inherit;font-size:17px;color:var(--ink);cursor:pointer}
+.list-row svg{width:28px;height:28px}
+/* dock & tabs */
+.dock{flex:0 0 auto;background:var(--canvas);position:relative;z-index:30}
+.cta{padding:10px 18px;border-top:1px solid var(--line)}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);padding:6px 0 30px}
+@media (max-width:520px){.tabs{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}}
+.tab{background:none;border:0;font:inherit;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 0;position:relative}
+.tab svg{width:26px;height:26px}
+.tab[aria-current="page"]{color:var(--ink);font-weight:700}
+.tab[aria-current="page"] svg{color:var(--gold-app)}
+.badge{position:absolute;top:1px;left:50%;margin-left:5px;min-width:19px;height:19px;border-radius:10px;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px;background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.badge.on{background:var(--red);color:#fff;border-color:var(--red)}
+/* sheet / toast */
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);display:none;z-index:70}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--canvas);border-radius:22px 22px 0 0;z-index:71;transform:translateY(105%);transition:transform .26s ease;max-height:90%;overflow-y:auto;padding:10px 20px 34px}
+.sheet.open{transform:none}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.sheet .hero-ph{height:180px;display:flex;align-items:center;justify-content:center;margin:4px 0 8px}
+.meal-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 16px}
+.meal-opts button{border:1px solid #9a9a9a;border-radius:6px;background:var(--bg);padding:10px 6px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
+.meal-opts button[aria-pressed="true"]{border:3px solid var(--ink);font-weight:700;background:var(--canvas)}
+.qty{display:inline-flex;align-items:center;border:1px solid #9a9a9a;border-radius:var(--r-btn);height:48px}
+.qty button{width:42px;height:46px;background:none;border:0;font:inherit;font-size:20px;cursor:pointer;color:var(--ink)}
+.qty span{min-width:24px;text-align:center;font-weight:700;font-size:17px}
+.toast{position:absolute;left:18px;right:18px;bottom:120px;background:var(--ink);color:#fff;border-radius:var(--r-card);padding:12px 14px;font-size:14px;font-weight:600;z-index:80;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+.receipt .ln{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;font-variant-numeric:tabular-nums}
+.opt-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.note{font-size:12px;color:var(--muted);margin-top:18px;line-height:1.45}
+@media (prefers-reduced-motion:reduce){.sheet,.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="notes">
+<h1>Task A — find my bag, past orders and exact prices</h1>
+<p>A clickable version of our mobile redesign, built on the real app’s layout and colors.</p>
+<ul>
+<li><b>Orders</b>: every card shows the total paid, tax included.</li>
+<li><b>Bag</b>: always in the tab bar, shows restaurant, pickup time, tax and total.</li>
+<li><b>Points</b> (top right): My Rewards, Deals and your code to earn points.</li>
+<li><b>More</b>: profile, locations, nutrition and help.</li>
+</ul>
+<p class="small">Prices are illustrative. Nothing is ordered or paid. Student exercise, not affiliated with McDonald’s.</p>
+<button class="reset" id="reset">Reset demo</button>
+</div>
+<div class="iphone">
+<div class="phone" id="phone">
+<div class="island" aria-hidden="true"></div>
+<div class="status" aria-hidden="true"><span>9:41</span>
+<span class="icons">
+<svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#111"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#111"/><rect x="10" y="3" width="3" height="9" rx="1" fill="#111"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#111"/></svg>
+<svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 11.5l2.4-2.9a3.6 3.6 0 0 0-4.8 0z M8 2.2a9.8 9.8 0 0 1 7.2 3.1l-1.5 1.8A7.6 7.6 0 0 0 8 4.6 7.6 7.6 0 0 0 2.3 7.1L.8 5.3A9.8 9.8 0 0 1 8 2.2z" fill="#111"/></svg>
+<svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="#111" opacity=".4"/><rect x="2" y="2" width="17" height="9" rx="2" fill="#111"/><rect x="24.5" y="4.5" width="2" height="4" rx="1" fill="#111" opacity=".4"/></svg>
+</span></div>
+<header class="appbar" id="appbar"></header>
+<main class="screen" id="screen" tabindex="-1"></main>
+<div class="dock">
+<div id="cta"></div>
+<nav class="tabs" aria-label="Main">
+<button class="tab" data-tab="home"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 12l9-7 9 7v9.5a1 1 0 0 1-1 1h-5.5V16h-5v6.5H5a1 1 0 0 1-1-1z"/></svg>Home</button>
+<button class="tab" data-tab="order"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 11h14l-1.6 11.5H7.6z"/><path d="M8 11V4.5M11 11V3.5M14 11V3.5M17 11V4.5M20 11V6"/></svg>Order</button>
+<button class="tab" data-tab="bag"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 9h16l-1.2 13.5H6.2z"/><path d="M9.5 9V7a3.5 3.5 0 0 1 7 0v2"/></svg>Bag<span class="badge" id="badge">0</span></button>
+<button class="tab" data-tab="orders"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M7 3.5h12v19l-3-1.8-3 1.8-3-1.8-3 1.8z"/><path d="M10 9h6M10 13h6M10 17h3"/></svg>Orders</button>
+<button class="tab" data-tab="more"><svg viewBox="0 0 26 26" fill="currentColor"><circle cx="6" cy="13" r="2"/><circle cx="13" cy="13" r="2"/><circle cx="20" cy="13" r="2"/></svg>More</button>
+</nav>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="homebar" aria-hidden="true"></div>
+</div>
+</div>
+</div>
+<script>
+/* -------- Photos --------
+When this page sits in the GitHub repo (e.g. /mobile/), these paths load the
+product photos already in /website/img. Anywhere else the drawn
+illustration is shown instead. Add your own: id: "path/to/photo.png". */
+const PHOTOS = {
+eggmuffin: "../website/img/egg-mcmuffin.png",
+hashbrown: "../website/img/hash-browns.png",
+hotcakes: "../website/img/hotcakes.png",
+coffee: "../website/img/coffee.png",
+oj: "../website/img/oj.png",
+};
+/* -------- Drawn food illustrations (generic, unbranded) -------- */
+const ART = {
+burger: `<svg viewBox="0 0 100 80"><path d="M12 38c0-18 17-28 38-28s38 10 38 28z" fill="#E9A23B"/><g fill="#FFF3D6"><ellipse cx="34" cy="22" rx="2" ry="1.2"/><ellipse cx="50" cy="17" rx="2" ry="1.2"/><ellipse cx="64" cy="24" rx="2" ry="1.2"/><ellipse cx="44" cy="28" rx="2" ry="1.2"/></g><path d="M10 40h80l-6 8H16z" fill="#F7C531"/><rect x="11" y="46" width="78" height="10" rx="5" fill="#6B3A1E"/><path d="M12 54h76l-4 6H16z" fill="#F7C531"/><rect x="11" y="58" width="78" height="9" rx="4.5" fill="#6B3A1E"/><path d="M14 66h72c0 7-10 10-36 10S14 73 14 66z" fill="#D98A2F"/></svg>`,
+chicken: `<svg viewBox="0 0 100 80"><path d="M14 36c0-17 16-26 36-26s36 9 36 26z" fill="#E6A04A"/><path d="M10 40c6-6 14-2 20-6s14 2 20-2 14 4 20 0 14 2 20 8l-2 12c-6 4-14 0-20 3s-14-2-20 1-14-2-20 1-14 0-18-4z" fill="#C46A1E"/><g fill="#7BAE3A"><ellipse cx="30" cy="40" rx="8" ry="3"/><ellipse cx="62" cy="39" rx="8" ry="3"/></g><path d="M16 58h68c0 10-14 14-34 14S16 68 16 58z" fill="#E09A45"/></svg>`,
+fries: `<svg viewBox="0 0 100 100"><g fill="#F4C542" stroke="#E0A92A" stroke-width="1"><rect x="30" y="8" width="6" height="44" rx="2" transform="rotate(-8 33 30)"/><rect x="40" y="4" width="6" height="46" rx="2"/><rect x="50" y="6" width="6" height="46" rx="2" transform="rotate(6 53 29)"/><rect x="59" y="10" width="6" height="42" rx="2" transform="rotate(12 62 31)"/><rect x="35" y="12" width="6" height="40" rx="2" transform="rotate(4 38 32)"/><rect x="45" y="10" width="6" height="42" rx="2" transform="rotate(-4 48 31)"/></g><path d="M24 40h52l-7 54H31z" fill="#D3292F"/><path d="M24 40c8 8 18 10 26 10s18-2 26-10" fill="none" stroke="#A81E23" stroke-width="2"/></svg>`,
+cup: `<svg viewBox="0 0 100 100"><rect x="56" y="2" width="4" height="26" rx="2" fill="#D3292F" transform="rotate(10 58 15)"/><path d="M26 24h48l-6 72H32z" fill="#fff" stroke="#ccc" stroke-width="2"/><rect x="22" y="20" width="56" height="8" rx="3" fill="#e9e9e9"/><path d="M30 50h40l-2 22H32z" fill="#E7B53A" opacity=".9"/></svg>`,
+redcup: `<svg viewBox="0 0 100 100"><path d="M24 22c2-12 50-12 52 0z" fill="#fff"/><g fill="#E8475B"><circle cx="34" cy="17" r="1.6"/><circle cx="44" cy="13" r="1.6"/><circle cx="56" cy="15" r="1.6"/><circle cx="66" cy="18" r="1.6"/></g><path d="M24 24h52l-6 72H30z" fill="#C7243A"/><path d="M27 40h46l-1 10H28z" fill="#A81C30"/></svg>`,
+flurry: `<svg viewBox="0 0 100 100"><path d="M24 28c4-22 48-22 52 0z" fill="#F5EFE6"/><g fill="#C9302C"><circle cx="38" cy="18" r="2.4"/></g><g fill="#2E7DD7"><circle cx="50" cy="14" r="2.4"/></g><g fill="#F2B90F"><circle cx="61" cy="20" r="2.4"/></g><g fill="#3BA55C"><circle cx="45" cy="23" r="2.4"/></g><path d="M26 28h48l-6 66H32z" fill="#fff" stroke="#ddd" stroke-width="2"/><path d="M30 50h40" stroke="#ddd" stroke-width="2"/></svg>`,
+strips: `<svg viewBox="0 0 100 80"><g fill="#C9762C"><rect x="10" y="22" width="44" height="16" rx="8" transform="rotate(-12 32 30)"/><rect x="40" y="18" width="46" height="16" rx="8" transform="rotate(10 63 26)"/><rect x="20" y="44" width="48" height="16" rx="8" transform="rotate(4 44 52)"/></g><g fill="#E39A4E" opacity=".7"><circle cx="24" cy="28" r="2"/><circle cx="60" cy="24" r="2"/><circle cx="40" cy="52" r="2"/></g><ellipse cx="78" cy="60" rx="14" ry="9" fill="#fff" stroke="#ddd" stroke-width="2"/><ellipse cx="78" cy="58" rx="10" ry="5" fill="#E2533B"/></svg>`,
+coffee: `<svg viewBox="0 0 100 100"><rect x="26" y="20" width="48" height="10" rx="4" fill="#3B2A22"/><path d="M28 30h44l-5 64H33z" fill="#5A3B2C"/><rect x="31" y="50" width="38" height="16" fill="#E9DCC9"/></svg>`,
+muffin: `<svg viewBox="0 0 100 80"><ellipse cx="50" cy="28" rx="38" ry="16" fill="#E8C690"/><ellipse cx="50" cy="38" rx="36" ry="7" fill="#F6C33B"/><ellipse cx="50" cy="44" rx="37" ry="7" fill="#D06A6A"/><ellipse cx="50" cy="52" rx="38" ry="14" fill="#E2BC84"/></svg>`,
+hash: `<svg viewBox="0 0 100 80"><rect x="18" y="20" width="64" height="44" rx="20" fill="#D99A3A"/><g stroke="#B9782A" stroke-width="2"><path d="M30 34h40M28 44h44M32 54h36"/></g></svg>`,
+cakes: `<svg viewBox="0 0 100 80"><ellipse cx="50" cy="60" rx="40" ry="10" fill="#C98A3F"/><ellipse cx="50" cy="50" rx="38" ry="10" fill="#E0A55A"/><ellipse cx="50" cy="40" rx="36" ry="10" fill="#E9B46A"/><rect x="42" y="28" width="16" height="10" rx="2" fill="#FFF3C4"/></svg>`,
+oj: `<svg viewBox="0 0 100 100"><path d="M28 18h44l-6 78H34z" fill="#F7A21B"/><rect x="25" y="14" width="50" height="8" rx="3" fill="#eee"/><circle cx="50" cy="56" r="10" fill="#FFC857"/></svg>`,
+bag: `<svg viewBox="0 0 100 100"><path d="M24 30h52l-4 64H28z" fill="#C79A63"/><path d="M24 30l6-10h40l6 10" fill="#B5864F"/><path d="M28 80h44v14H28z" fill="#D3292F"/></svg>`,
+coins: `<svg viewBox="0 0 120 120"><g fill="#fff" stroke="#F4BC40" stroke-width="5"><ellipse cx="40" cy="30" rx="18" ry="12" transform="rotate(-20 40 30)"/><ellipse cx="88" cy="22" rx="16" ry="11" transform="rotate(25 88 22)"/><ellipse cx="72" cy="64" rx="14" ry="10" transform="rotate(-35 72 64)"/><ellipse cx="104" cy="70" rx="12" ry="9" transform="rotate(15 104 70)"/></g></svg>`,
+pin: `<svg class="pin" viewBox="0 0 26 30"><path d="M13 1C6.4 1 1 6.2 1 12.6 1 21 13 29 13 29s12-8 12-16.4C25 6.2 19.6 1 13 1z" fill="#DB0007"/><circle cx="13" cy="12.5" r="4.5" fill="#fff"/></svg>`,
+};
+function pic(id, kind) {
+const art = ART[kind] || ART.burger;
+const src = PHOTOS[id];
+return src ? `<img alt="" src="${src}" onerror="this.outerHTML=ART['${kind}']">` : art;
+}
+/* -------- Data -------- */
+const TAX = 0.06625;
+const STORES = [
+{ id: "jfk", name: "2873 John F Kennedy Blvd", hours: "Now serving Dinner until 4:30 AM", delta: 0 },
+{ id: "hud", name: "125 Hudson St", hours: "Now serving Dinner until 11:00 PM", delta: 0.20 },
+];
+const money = n => "$" + n.toFixed(2);
+const r2 = n => Math.round(n * 100) / 100;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const MENU = [
+{ id: "seasonal", cat: "Seasonal McCafé®", art: "redcup", items: [
+{ id: "redbull", name: "Red Bull® Frosted Cranberry Energizer", price: 4.99, art: "redcup", cal: "300 Cal" },
+{ id: "latte", name: "Holiday Latte (M)", price: 4.29, art: "coffee", cal: "330 Cal" } ]},
+{ id: "chicken", cat: "Chicken & Sandwiches", art: "chicken", items: [
+{ id: "spicy", name: "Spicy McCrispy™", price: 5.89, art: "chicken", cal: "530 Cal", meal: true },
+{ id: "mccrispy", name: "McCrispy™", price: 5.89, art: "chicken", cal: "470 Cal", meal: true },
+{ id: "strips", name: "4 pc McCrispy™ Strips", price: 7.79, art: "strips", cal: "480 Cal", meal: true },
+{ id: "mcchicken", name: "McChicken®", price: 2.79, art: "chicken", cal: "400 Cal", meal: true } ]},
+{ id: "burgers", cat: "Burgers", art: "burger", items: [
+{ id: "dbl", name: "Double Cheeseburger", price: 3.79, art: "burger", cal: "450 Cal", meal: true },
+{ id: "qpc", name: "Quarter Pounder® with Cheese", price: 6.49, art: "burger", cal: "520 Cal", meal: true } ]},
+{ id: "breakfast", cat: "Breakfast", art: "muffin", items: [
+{ id: "eggmuffin", name: "Egg McMuffin®", price: 4.79, art: "muffin", cal: "310 Cal", meal: true },
+{ id: "hashbrown", name: "Hash Browns", price: 2.19, art: "hash", cal: "140 Cal" },
+{ id: "hotcakes", name: "Hotcakes", price: 4.39, art: "cakes", cal: "580 Cal" } ]},
+{ id: "drinks", cat: "Drinks & Desserts", art: "cup", items: [
+{ id: "lemonade", name: "Medium Lemonade", price: 2.49, art: "cup", cal: "180 Cal" },
+{ id: "coffee", name: "Premium Roast Coffee (M)", price: 1.60, art: "coffee", cal: "0 Cal" },
+{ id: "oj", name: "Orange Juice (M)", price: 3.29, art: "oj", cal: "190 Cal" },
+{ id: "mm", name: "M&M® McFlurry®", price: 4.19, art: "flurry", cal: "640 Cal" } ]},
+];
+const ALL = MENU.flatMap(c => c.items);
+const byId = id => ALL.find(i => i.id === id);
+const MEAL = { none: { label: "Item only", add: 0 }, med: { label: "Medium", add: 3.70 }, lg: { label: "Large", add: 4.30 } };
+const DEALS = [
+{ id: "d1", name: "FREE Small Premium Roast Coffee", exp: "Expires 11/22/2026", art: "coffee", item: "coffee", price: 0 },
+{ id: "d2", name: "40% off a Double Cheeseburger", exp: "Expires 11/29/2026", art: "burger", item: "dbl", price: 2.27 },
+{ id: "d3", name: "50% off an M&M® McFlurry®", exp: "Expires 11/29/2026", art: "flurry", item: "mm", price: 2.10 },
+{ id: "d4", name: "$0 Delivery Fee with $20 minimum", exp: "Expires 11/29/2026", art: "bag", delivery: true },
+];
+const REWARDS = [
+{ id: "r1", name: "Medium French Fries", pts: 3500, art: "fries", price: 3.69 },
+{ id: "r2", name: "McChicken®", pts: 2000, art: "chicken", price: 2.79 },
+{ id: "r3", name: "Large French Fries", pts: 5000, art: "fries", price: 4.19 },
+{ id: "r4", name: "Quarter Pounder® with Cheese", pts: 6000, art: "burger", price: 6.49 },
+];
+function seedOrders() {
+return [
+{ id: "o1", when: "Nov 9 · 9:20 PM", store: "jfk", art: "chicken", lines: [{ name: "Spicy McCrispy™", opt: "Item only", price: 5.89, ref: "spicy", meal: "none" }] },
+{ id: "o2", when: "Oct 28 · 3:50 PM", store: "jfk", art: "fries", lines: [{ name: "McCrispy™ Meal", opt: "Medium · French Fries, Lemonade", price: 9.59, ref: "mccrispy", meal: "med" }] },
+{ id: "o3", when: "Oct 21 · 4:03 PM", store: "jfk", art: "strips", lines: [{ name: "4 pc McCrispy™ Strips Meal", opt: "Medium · French Fries, Sprite®", price: 11.49, ref: "strips", meal: "med" }] },
+{ id: "o4", when: "Oct 5 · 4:06 PM", store: "jfk", art: "flurry", lines: [
+{ name: "$6 McChicken® Meal Deal", opt: "Small · Fries, 4 pc McNuggets®, Coke®", price: 6.00 },
+{ name: "M&M® McFlurry®", opt: "", price: 4.19, ref: "mm", meal: "none" } ] },
+];
+}
+function seedBag() {
+return [
+{ key: "redbull|none", ref: "redbull", name: "Red Bull® Frosted Cranberry Energizer", opt: "300 Cal", unit: 4.99, qty: 1, art: "redcup" },
+{ key: "spicy|none", ref: "spicy", name: "Spicy McCrispy™", opt: "Item only", unit: 5.89, qty: 1, web: true, art: "chicken" },
+];
+}
+function fresh() { return { tab: "home", stack: [], mode: "pickup", store: "jfk", bag: seedBag(), orders: seedOrders(), done: null, points: 5357, faves: ["spicy"], deals: [], orderSub: "menu", rewardsSub: "rewards" }; }
+let S = fresh();
+const store = () => STORES.find(s => s.id === S.store);
+const unitAt = (base) => r2(base + store().delta);
+const sum = ls => r2(ls.reduce((a, l) => a + l.unit * l.qty, 0));
+const bagTotals = () => { const sub = sum(S.bag); const fee = S.mode === "delivery" && S.bag.length ? (S.deals.includes("d4") && sub >= 20 ? 0 : 3.99) : 0; const tax = r2(sub * TAX); return { sub, fee, tax, total: r2(sub + tax + fee) }; };
+const oTot = o => { const sub = r2(o.lines.reduce((a, l) => a + l.price, 0)); const tax = r2(sub * TAX); return { sub, tax, total: r2(sub + tax) }; };
+const oTitle = o => o.lines.map(l => l.name).join(", ");
+const count = () => S.bag.reduce((a, l) => a + l.qty, 0);
+const $ = id => document.getElementById(id);
+function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 1900); }
+function addItem(item, meal, qty, extra = {}) {
+const mk = meal && meal !== "none" ? meal : "none";
+const unit = extra.unit != null ? extra.unit : unitAt(item.price + MEAL[mk].add);
+const name = extra.name || (mk !== "none" ? item.name + " Meal" : item.name);
+const opt = extra.opt || (mk !== "none" ? MEAL[mk].label + " · French Fries, drink" : (item.cal || "Item only"));
+const key = (extra.key || item.id) + "|" + mk;
+const ex = S.bag.find(l => l.key === key);
+if (ex) ex.qty += qty; else S.bag.push({ key, ref: item.id, name, opt, unit, qty, art: item.art });
+}
+/* -------- Navigation -------- */
+const cur = () => S.stack[S.stack.length - 1];
+function go(tab) { S.tab = tab; S.stack = []; if (tab !== "bag") S.done = null; render(true); }
+function push(v) { S.stack.push(v); render(true); }
+function pop() { S.stack.pop(); render(true); }
+/* -------- App bar -------- */
+function appbar() {
+const v = cur();
+const pts = `<button class="pts" data-push="rewards" aria-label="${S.points} points, rewards and deals"><span class="coin"></span>${S.points.toLocaleString()} pts</button>`;
+const back = (label) => `<button class="iconbtn" data-back aria-label="Back"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M10 2L2 10l8 8"/></svg> ${label || ""}</button>`;
+if (v) {
+const titles = { rewards: "Rewards & Deals", order: "Order details", cat: "Menu", page: v.title || "" };
+return `${back()}<span class="ttl">${esc(titles[v.type] || "")}</span>${v.type === "rewards" ? `<span></span>` : pts}`;
+}
+const titles = { home: "", order: "Order", bag: "Your bag", orders: "Your orders", more: "More" };
+return `<span class="brand">My<b>McD</b></span>${titles[S.tab] ? `<span class="ttl">${titles[S.tab]}</span>` : ""}${pts}`;
+}
+/* -------- Screens -------- */
+function orderCard(o) {
+const t = oTot(o);
+return `<button class="order-card" data-open="${o.id}">
+<span class="ph">${ART[o.art] || ART.bag}</span>
+<span class="when">${esc(o.when)}</span>
+<span class="tot"><span class="price">${money(t.total)}</span><span class="tax">incl. ${money(t.tax)} tax</span></span>
+<span class="what">${esc(oTitle(o))}</span>
+<span class="where" style="grid-column:2">${esc(STORES.find(s => s.id === o.store).name)}</span>
+<span class="go">Details ›</span>
+</button>`;
+}
+function home() {
+const last = S.orders[0], t = oTot(last);
+return `<div class="pad">
+<button class="hero" data-item="redbull" aria-label="Frosted Cranberry, order now">
+<span class="flake" style="left:58%;top:16px">✻</span><span class="flake" style="left:80%;top:44px;font-size:12px">✻</span><span class="flake" style="left:46%;top:120px;font-size:14px">✻</span>
+<span class="k">All-new holiday drinks</span>
+<span class="h" style="display:block">Frosted Cranberry</span>
+<span class="s" style="display:block">Bright, fizzy and festive. For a limited time.</span>
+<span class="art">${ART.redcup}</span>
+<span class="ctas"><span class="go">Order Now</span><span>Learn More</span></span>
+</button>
+<p class="fine">At participating restaurants for a limited time.</p>
+<button class="promo" data-push="rewards"><span>${ART.coins}</span><span><b>More points, more free food</b><span>Unlock bonus offers and earn more on your next order</span></span><span>›</span></button>
+<div class="again">
+<span class="kicker">Order again</span>
+<span class="name">${esc(oTitle(last))}</span>
+<span class="ph">${ART[last.art]}</span>
+<p>Last ordered ${esc(last.when.split(" · ")[0])} · paid ${money(t.total)}</p>
+<button class="btn" data-addall="${last.id}">Add to bag</button>
+</div>
+<div class="sec"><div class="sec-h"><h3>Menu</h3><button class="more-link" data-tab-go="order">Full menu →</button></div>
+<div class="rail">${MENU.map(c => `<button class="tile" data-cat="${c.id}"><div class="ph">${pic(c.items[0].id, c.art)}</div><div class="nm">${esc(c.cat)}</div></button>`).join("")}</div></div>
+<div class="sec"><div class="sec-h"><h3>App Exclusive Deals</h3><button class="more-link" data-push-deals>View all →</button></div>
+<div class="rail">${DEALS.map(dealTile).join("")}</div></div>
+<div class="sec"><div class="sec-h"><h3>Recent orders</h3><button class="more-link" data-tab-go="orders">All →</button></div>
+${S.orders.slice(0, 2).map(orderCard).join("")}</div>
+<div class="sec"><div class="sec-h"><h3>Trending</h3></div>
+<button class="trend" data-push-deals style="background:linear-gradient(150deg,#2e5c9a,#2f8f7a)"><div class="h">Last call for prizes</div><div class="s">Bonus points on every app order this week.</div><span class="cta">See offers</span><span class="art">${ART.bag}</span></button>
+<button class="trend" data-item="qpc" style="background:linear-gradient(150deg,#4a2a1c,#7a3d22)"><div class="h">Cooked when you order</div><div class="s">Quarter Pounder® with Cheese, hot and fresh.</div><span class="cta">Order Now</span><span class="art">${ART.burger}</span></button>
+<button class="trend" data-cat="breakfast" style="background:linear-gradient(150deg,#b8771c,#d99b2b)"><div class="h">Breakfast, your way</div><div class="s">Egg McMuffin®, Hash Browns and more until 10:30 AM.</div><span class="cta">See breakfast</span><span class="art">${ART.muffin}</span></button>
+</div>
+<p class="note">Prices are illustrative.</p>
+</div>`;
+}
+function dealTile(d) {
+const on = S.deals.includes(d.id);
+return `<button class="tile deal${on ? " added" : ""}" data-deal="${d.id}"><div class="ph">${pic(d.item, d.art)}</div><div class="nm">${esc(d.name)}</div><div class="exp">${on ? "Added ✓" : d.exp}</div></button>`;
+}
+function order() {
+const st = store();
+const head = `<div class="toggle" role="group" aria-label="Order type"><button aria-pressed="${S.mode === "pickup"}" data-mode="pickup">Pickup</button><button aria-pressed="${S.mode === "delivery"}" data-mode="delivery">McDelivery</button></div>
+<div class="where-row">${ART.pin}<span><b>${S.mode === "pickup" ? esc(st.name) : "Deliver to 30 River Ct, Apt 4B"}</b><span class="small muted">${S.mode === "pickup" ? st.hours : "About 25–35 min · $3.99 delivery fee"}</span></span><button class="ulink" data-act="${S.mode === "pickup" ? "store" : "address"}">Change</button></div>
+<div class="subtabs">${["menu", "recent", "faves"].map(k => `<button aria-pressed="${S.orderSub === k}" data-osub="${k}">${{ menu: "Menu", recent: "Recent Orders", faves: "Faves" }[k]}</button>`).join("")}</div>`;
+let body = "";
+if (S.orderSub === "menu") body = `<h3 style="font-size:17px;margin:20px 0 4px">Explore our menu</h3>` + MENU.map(c => `<button class="cat-row" data-cat="${c.id}"><span class="ph">${pic(c.items[0].id, c.art)}</span><b>${esc(c.cat)}</b><span>›</span></button>`).join("");
+if (S.orderSub === "recent") body = `<p class="small muted" style="margin:16px 0 10px">Totals are what you paid, tax included.</p>` + S.orders.map(orderCard).join("");
+if (S.orderSub === "faves") body = S.faves.length ? `<div class="menu-grid">${S.faves.map(id => miCard(byId(id))).join("")}</div>` : `<div class="empty"><p><b>No faves yet</b></p><p class="muted small">Tap the star on any item to save it here.</p></div>`;
+return `<div class="pad">${head}${body}</div>`;
+}
+function miCard(i) { return `<button class="mi" data-item="${i.id}"><div class="ph">${pic(i.id, i.art)}</div><div class="nm">${esc(i.name)}</div><div class="pr">${money(unitAt(i.price))} · ${i.cal || ""}</div></button>`; }
+function catView(id) { const c = MENU.find(x => x.id === id); return `<div class="pad"><h2 class="title">${esc(c.cat)}</h2><p class="small muted" style="margin:0">Prices at ${esc(store().name)}</p><div class="menu-grid">${c.items.map(miCard).join("")}</div></div>`; }
+function bag() {
+if (S.done) {
+const o = S.done, t = oTot(o);
+return `<div class="pad"><div class="empty"><div class="ph">${ART.bag}</div>
+<h2 class="title">Order placed</h2><p class="muted">${S.mode === "pickup" ? "Pickup at " + esc(store().name) + ". Ready in about 6 min." : "On its way. About 25–35 min."}</p>
+<div class="summary" style="text-align:left"><div class="ln"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="ln"><span>Tax</span><span>${money(t.tax)}</span></div><div class="ln total"><span>Total paid</span><span>${money(t.total)}</span></div></div>
+<p class="small muted" style="margin:14px 0">You earned ${Math.round(t.sub * 100)} points. This order is now in Orders, with its total.</p>
+<button class="btn" data-tab-go="orders">Go to Orders</button>
+<p class="note">Demo only. Nothing was ordered or paid.</p></div></div>`;
+}
+const st = store();
+const head = `<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><span class="chip"><span class="dot"></span>Synced with website</span></div>
+<div class="place">${ART.pin}<span><b>${S.mode === "pickup" ? "Pickup · " + esc(st.name) : "McDelivery · 30 River Ct, Apt 4B"}</b><span class="small muted">${S.mode === "pickup" ? "Ready in about 6 min · " + st.hours.replace("Now serving ", "") : "About 25–35 min"}</span></span><button class="ulink" data-act="${S.mode === "pickup" ? "store" : "address"}">Change</button></div>`;
+if (!S.bag.length) return `<div class="pad">${head}<div class="empty"><div class="ph">${ART.bag}</div><p><b>Your bag is empty</b></p><p class="muted small">Add something from the menu or reorder a past order.</p><button class="btn primary" data-tab-go="order">Browse the menu</button><button class="btn" data-tab-go="orders">See past orders</button></div></div>`;
+const t = bagTotals();
+return `<div class="pad">${head}
+${S.bag.map((l, i) => `<div class="item"><span class="ph">${pic(l.ref, l.art)}</span>
+<span><span class="nm">${esc(l.name)}</span><br><span class="opt">${esc(l.opt)}</span>${l.web ? `<br><span class="chip web">Added on the website</span>` : ""}${l.deal ? `<br><span class="chip web">Deal applied</span>` : ""}</span>
+<span class="right"><span class="price">${money(r2(l.unit * l.qty))}</span><br><span class="stepper"><button aria-label="${l.qty === 1 ? "Remove" : "One less"} ${esc(l.name)}" data-dec="${i}">${l.qty === 1 ? `<svg width="14" height="16" viewBox="0 0 14 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 4h12M5 4V2h4v2M3 4l1 11h6l1-11"/></svg>` : "−"}</button><span>${l.qty}</span><button aria-label="One more ${esc(l.name)}" data-inc="${i}">+</button></span></span></div>`).join("")}
+<div class="summary"><div class="ln"><span>Subtotal</span><span>${money(t.sub)}</span></div>${S.mode === "delivery" ? `<div class="ln"><span>Delivery fee</span><span>${t.fee ? money(t.fee) : "Free"}</span></div>` : ""}<div class="ln"><span>Tax</span><span>${money(t.tax)}</span></div><div class="ln total"><span>Total</span><span>${money(t.total)}</span></div></div>
+<button class="btn" style="margin-top:14px" data-tab-go="order">Order more</button>
+</div>`;
+}
+function orders() {
+return `<div class="pad"><p class="small muted" style="margin:0 0 12px">Totals are what you paid, tax included.</p>${S.orders.map(orderCard).join("")}</div>`;
+}
+function detail(id) {
+const o = S.orders.find(x => x.id === id), t = oTot(o);
+const today = r2(o.lines.reduce((a, l) => { const it = l.ref && byId(l.ref); return a + (it ? unitAt(it.price + MEAL[l.meal || "none"].add) : l.price); }, 0));
+const tt = r2(today + r2(today * TAX)), same = Math.abs(tt - t.total) < 0.005;
+return `<div class="pad">
+<div class="small muted">${esc(o.when)}</div>
+<h2 class="title" style="font-size:24px">${esc(oTitle(o))}</h2>
+<div class="small muted">Pickup · ${esc(STORES.find(s => s.id === o.store).name)}</div>
+<div class="summary">${o.lines.map(l => `<div class="ln" style="color:var(--ink);padding:6px 0"><span><b>${esc(l.name)}</b>${l.opt ? `<br><span class="small muted">${esc(l.opt)}</span>` : ""}</span><span class="price">${money(l.price)}</span></div>`).join("")}
+<div class="ln" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="ln"><span>Tax</span><span>${money(t.tax)}</span></div><div class="ln total"><span>Total paid</span><span>${money(t.total)}</span></div></div>
+<p class="small muted" style="margin:18px 0 10px">${same ? `Same price today at ${esc(store().name)}.` : `Today’s price at ${esc(store().name)}: ${money(tt)} with tax.`}</p>
+<button class="btn primary" data-addall="${o.id}">Add all to bag · ${money(tt)}</button>
+<button class="btn" data-receipt="${o.id}">Get receipt</button>
+</div>`;
+}
+function rewards() {
+const sub = S.rewardsSub;
+const seg = `<div class="seg" role="group">${[["rewards", "My Rewards"], ["deals", "Deals"], ["code", "Earn Points"]].map(([k, l]) => `<button aria-pressed="${sub === k}" data-rsub="${k}">${l}</button>`).join("")}</div>`;
+let body = "";
+if (sub === "rewards") body = `
+<div class="rcard"><span class="coins">${ART.coins}</span><div class="k">Hi Aria, you have</div><div class="big">${S.points.toLocaleString()} pts!</div>
+<div class="row"><button class="ulink" data-act="how">How it works</button><button class="rv" data-rsub="code">Use my code</button></div></div>
+<div class="sec"><div class="sec-h"><h3>Aria’s Rewards</h3></div>
+<div class="rail">${REWARDS.map(r => `<button class="reward" data-reward="${r.id}" ${S.points < r.pts ? "disabled" : ""}><div class="ph"><span class="ring"><span>${ART[r.art]}</span></span></div><div class="body"><div class="nm">${esc(r.name)}</div><div class="cost"><span class="coin"></span>${r.pts.toLocaleString()} pts</div></div></button>`).join("")}</div></div>
+<div class="where-row" style="margin-top:22px">${ART.pin}<span class="small">Viewing what’s available for pickup at ${esc(store().name)}.</span><button class="ulink small" data-act="store">Change</button></div>`;
+if (sub === "deals") body = `<div class="menu-grid">${DEALS.map(d => { const on = S.deals.includes(d.id); return `<button class="mi" data-deal="${d.id}"><div class="ph">${pic(d.item, d.art)}</div><div class="nm">${esc(d.name)}</div><div class="pr">${on ? "Added ✓" : d.exp}</div></button>`; }).join("")}</div>`;
+if (sub === "code") body = `<div class="codecard"><div class="top"><h4>Use your code to earn and save</h4><p>Share or scan your code before ordering</p><div class="num">39 80</div><div class="qr">${qr()}</div></div>
+<div class="bot"><b style="font-size:18px">Want to pay with your code?</b><p class="small" style="margin:4px 0 12px">Link a card to your account and check out faster.</p><button class="btn sm" data-act="pay">Add Payment Method</button></div></div>
+<button class="btn" style="margin-top:16px" data-act="receiptpts">Add missing points from a receipt</button>`;
+return `<div class="pad">${seg}${body}</div>`;
+}
+function qr() {
+let s = 1; const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+let r = ""; const n = 25, c = 146 / n;
+for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+const f = (x < 7 && y < 7) || (x > 17 && y < 7) || (x < 7 && y > 17);
+let on = rnd() > .5;
+if (f) { const lx = x > 17 ? x - 18 : x, ly = y > 17 ? y - 18 : y; on = lx === 0 || ly === 0 || lx === 6 || ly === 6 || (lx > 1 && lx < 5 && ly > 1 && ly < 5); }
+if (on) r += `<rect x="${(x * c).toFixed(2)}" y="${(y * c).toFixed(2)}" width="${c.toFixed(2)}" height="${c.toFixed(2)}"/>`;
+}
+return `<svg viewBox="0 0 146 146" width="146" height="146" fill="#111" role="img" aria-label="Your code">${r}</svg>`;
+}
+const MORE = [
+["profile", "Profile", `<circle cx="14" cy="9" r="5"/><path d="M4 25c1-6 5-9 10-9s9 3 10 9z"/>`],
+["orders", "Your orders", `<path d="M8 3h12v22l-3-2-3 2-3-2-3 2z"/><path d="M11 9h6M11 13h6"/>`],
+["receiptpts", "Add Missing Points from Receipt", `<path d="M7 3h14v22l-2.3-1.5L16.3 25 14 23.5 11.7 25 9.3 23.5 7 25z"/><path d="M10 9h8M10 13h8M10 17h8"/>`],
+["store", "Locations", `<path d="M14 3c-5 0-9 3.8-9 8.6C5 18 14 25 14 25s9-7 9-13.4C23 6.8 19 3 14 3z"/><circle cx="14" cy="11.5" r="3"/>`],
+["nutrition", "Nutrition", `<path d="M4 12c0-5 4.5-8 10-8s10 3 10 8z"/><path d="M4 16h20M5 20h18c0 2-2 4-4 4H9c-2 0-4-2-4-4z"/>`],
+["help", "Help", `<circle cx="14" cy="14" r="10.5"/><path d="M11 11a3 3 0 1 1 4 2.8c-1 .4-1 1.2-1 2.2"/><circle cx="14" cy="20" r=".8" fill="currentColor"/>`],
+["legal", "Careers, Contact & Legal", `<circle cx="14" cy="14" r="10.5"/><path d="M14 12v7"/><circle cx="14" cy="8.5" r=".9" fill="currentColor"/>`],
+];
+function more() {
+return MORE.map(([k, l, p]) => `<button class="list-row" data-more="${k}"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">${p}</svg><span>${l}</span><span>›</span></button>`).join("") + `<p class="note" style="padding:0 18px">Orders used to live here as “Recents & Faves”. Now they have their own tab.</p>`;
+}
+function page(v) { return `<div class="pad">${v.html}</div>`; }
+/* -------- Sheets -------- */
+function openSheet(html) { $("sheet").innerHTML = `<div class="grab"></div>` + html; $("scrim").style.display = "block"; requestAnimationFrame(() => $("sheet").classList.add("open")); setTimeout(() => { const f = $("sheet").querySelector("button"); f && f.focus(); }, 280); }
+function closeSheet() { $("sheet").classList.remove("open"); $("scrim").style.display = "none"; }
+function info(title, body, btn = "Done") { openSheet(`<h2 class="title" id="sheetTitle" style="font-size:22px">${title}</h2><p class="muted">${body}</p><button class="btn" data-close>${btn}</button>`); }
+function itemSheet(id) {
+const it = byId(id); let meal = "none", qty = 1;
+const draw = () => {
+const unit = unitAt(it.price + MEAL[meal].add), fav = S.faves.includes(id);
+openSheet(`<h2 class="title" id="sheetTitle" style="font-size:26px">${esc(it.name)}</h2>
+<div style="font-size:15px">${money(unitAt(it.price))} &nbsp; ${it.cal || ""}</div>
+<button class="ulink" data-fav="${id}" style="margin-top:8px;display:inline-flex;gap:6px;align-items:center">${fav ? "★" : "☆"} ${fav ? "Saved to Faves" : "Favorite"}</button>
+<div class="hero-ph">${pic(id, it.art)}</div>
+<button class="btn" data-act="customize">Customize</button>
+${it.meal ? `<h3 style="margin:18px 0 0;font-size:18px">Make it a meal?</h3><div class="small">Add a side and a drink</div><div class="meal-opts">${Object.entries(MEAL).map(([k, m]) => `<button aria-pressed="${k === meal}" data-meal="${k}"><b>${m.label === "Item only" ? "Item only" : m.label}</b><br><span class="muted">${m.add ? "+" + money(m.add) : ""}</span></button>`).join("")}</div>` : `<div style="height:16px"></div>`}
+<div style="display:flex;gap:12px;align-items:center">
+<span class="qty"><button aria-label="One less" data-q="-1">−</button><span>${qty}</span><button aria-label="One more" data-q="1">+</button></span>
+<button class="btn primary" data-confirm style="flex:1"><b>Add to Bag</b>&nbsp;| ${money(r2(unit * qty))}</button>
+</div>
+<p class="note">Price before tax at ${esc(store().name)}. Your bag shows tax and the total before checkout.</p>`);
+const sh = $("sheet");
+sh.querySelectorAll("[data-meal]").forEach(b => b.onclick = () => { meal = b.dataset.meal; draw(); });
+sh.querySelectorAll("[data-q]").forEach(b => b.onclick = () => { qty = Math.max(1, qty + +b.dataset.q); draw(); });
+sh.querySelector("[data-fav]").onclick = () => { S.faves = fav ? S.faves.filter(x => x !== id) : [...S.faves, id]; draw(); render(); };
+sh.querySelector("[data-confirm]").onclick = () => { addItem(it, it.meal ? meal : null, qty); S.done = null; closeSheet(); render(); toast(`Added to your bag · ${count()} item${count() === 1 ? "" : "s"}`); };
+};
+draw();
+}
+function storeSheet() {
+openSheet(`<h2 class="title" id="sheetTitle" style="font-size:22px">Choose a restaurant</h2><p class="small muted">Your bag stays the same. Prices update to the restaurant you pick.</p>
+${STORES.map(s => `<button class="opt-row" data-store="${s.id}"><span><b>${esc(s.name)}</b><br><span class="small muted">${s.hours}${s.delta ? " · items +" + money(s.delta) : ""}</span></span><span>${S.store === s.id ? "✓" : ""}</span></button>`).join("")}`);
+}
+function receiptSheet(id) {
+const o = S.orders.find(x => x.id === id), t = oTot(o);
+openSheet(`<h2 class="title" id="sheetTitle" style="font-size:22px">Receipt</h2><div class="small muted">${esc(o.when)} · Pickup · ${esc(STORES.find(s => s.id === o.store).name)}</div>
+<div class="receipt" style="margin-top:14px">${o.lines.map(l => `<div class="ln"><span>${esc(l.name)}</span><span>${money(l.price)}</span></div>`).join("")}
+<div class="ln muted" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="ln muted"><span>Tax (6.625%)</span><span>${money(t.tax)}</span></div>
+<div class="ln" style="font-weight:800;font-size:17px"><span>Total paid</span><span>${money(t.total)}</span></div></div>
+<button class="btn" data-close style="margin-top:16px">Done</button>`);
+}
+function checkoutSheet() {
+const t = bagTotals();
+openSheet(`<h2 class="title" id="sheetTitle" style="font-size:22px">Review & pay</h2>
+<div class="summary" style="margin-top:8px"><div class="ln"><span>${S.mode === "pickup" ? "Pickup · " + esc(store().name) : "McDelivery"}</span><span></span></div><div class="ln"><span>${count()} item${count() === 1 ? "" : "s"}</span><span>${money(t.sub)}</span></div>${S.mode === "delivery" ? `<div class="ln"><span>Delivery fee</span><span>${t.fee ? money(t.fee) : "Free"}</span></div>` : ""}<div class="ln"><span>Tax</span><span>${money(t.tax)}</span></div><div class="ln total"><span>Total</span><span>${money(t.total)}</span></div></div>
+<button class="opt-row" data-act="pay"><span><b>Payment</b><br><span class="small muted">Apple Pay (demo)</span></span><span>›</span></button>
+<button class="btn primary" data-place style="margin-top:16px">Place order · ${money(t.total)}</button>
+<p class="note">Demo only. Nothing is ordered or paid.</p>`);
+}
+/* -------- Render -------- */
+function render(scrollTop) {
+const v = cur();
+$("appbar").innerHTML = appbar();
+let html;
+if (v) html = v.type === "order" ? detail(v.id) : v.type === "rewards" ? rewards() : v.type === "cat" ? catView(v.id) : page(v);
+else html = ({ home, order, bag, orders, more })[S.tab]();
+$("screen").innerHTML = html;
+if (scrollTop) $("screen").scrollTop = 0;
+document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-current", S.tab === b.dataset.tab ? "page" : "false"));
+const n = count(); $("badge").textContent = n; $("badge").classList.toggle("on", n > 0);
+$("cta").innerHTML = (S.tab === "bag" && !v && !S.done && S.bag.length) ? `<div class="cta"><button class="btn primary" data-checkout><b>Checkout</b>&nbsp;· ${money(bagTotals().total)}</button></div>` : "";
+}
+/* -------- Events -------- */
+document.addEventListener("click", e => {
+const el = e.target.closest("button"); if (!el || !$("phone").contains(el)) return;
+const d = el.dataset;
+if ("close" in d) return closeSheet();
+if (d.tab) return go(d.tab);
+if (d.tabGo) { closeSheet(); return go(d.tabGo); }
+if ("back" in d) return pop();
+if (d.push === "rewards") { S.rewardsSub = "rewards"; return push({ type: "rewards" }); }
+if ("pushDeals" in d) { S.rewardsSub = "deals"; return push({ type: "rewards" }); }
+if (d.rsub) { S.rewardsSub = d.rsub; return render(true); }
+if (d.open) return push({ type: "order", id: d.open });
+if (d.cat) return push({ type: "cat", id: d.cat });
+if (d.item) return itemSheet(d.item);
+if (d.mode) { S.mode = d.mode; return render(); }
+if (d.osub) { S.orderSub = d.osub; return render(); }
+if (d.inc) { S.bag[+d.inc].qty++; return render(); }
+if (d.dec) { const l = S.bag[+d.dec]; l.qty--; if (l.qty <= 0) { S.bag.splice(+d.dec, 1); toast("Removed from your bag"); } return render(); }
+if (d.store) { const old = S.store; S.store = d.store; const delta = store().delta - STORES.find(s => s.id === old).delta;
+S.bag.forEach(l => { if (!l.deal && !l.reward) l.unit = r2(l.unit + delta); }); closeSheet(); render(); return toast(delta ? `Prices updated for ${store().name}` : `Now ordering from ${store().name}`); }
+if (d.addall) { const o = S.orders.find(x => x.id === d.addall);
+o.lines.forEach(l => { const it = l.ref && byId(l.ref); if (it) addItem(it, l.meal, 1); else addItem({ id: "x" + l.name, name: l.name, art: o.art }, null, 1, { unit: l.price, opt: l.opt, name: l.name }); });
+S.done = null; render(); return toast(`Added to your bag · ${count()} items now`); }
+if (d.receipt) return receiptSheet(d.receipt);
+if (d.deal) { const dl = DEALS.find(x => x.id === d.deal);
+if (S.deals.includes(dl.id)) return info(dl.name, "This deal is already in your bag.", "OK");
+S.deals.push(dl.id);
+if (dl.delivery) { S.mode = "delivery"; render(); return toast("Deal added · switched to McDelivery"); }
+const it = byId(dl.item); addItem(it, null, 1, { unit: dl.price, opt: "Deal · " + dl.name, key: "deal-" + dl.id }); S.bag[S.bag.length - 1].deal = true;
+render(); return toast("Deal added to your bag"); }
+if (d.reward) { const r = REWARDS.find(x => x.id === d.reward); S.points -= r.pts;
+addItem({ id: "rw" + r.id, name: r.name, art: r.art }, null, 1, { unit: 0, opt: `Reward · ${r.pts.toLocaleString()} pts`, key: "rw-" + r.id }); S.bag[S.bag.length - 1].reward = true;
+render(); return toast(`${r.name} added · ${r.pts.toLocaleString()} pts used`); }
+if (d.more) { const k = d.more;
+if (k === "orders") return go("orders");
+if (k === "store") return storeSheet();
+if (k === "receiptpts") return info("Add missing points", "Scan the code on a paper receipt from the last 7 days and we’ll add the points to your account.", "Scan receipt (demo)");
+const pages = {
+profile: { title: "Profile", html: `<h2 class="title">Aria</h2><p class="muted">Member since 2024</p>${["Personal information", "Payment methods", "Notifications", "Sign out"].map(x => `<button class="opt-row" data-act="pay"><span>${x}</span><span>›</span></button>`).join("")}` },
+nutrition: { title: "Nutrition", html: `<p class="muted">Calories shown do not reflect customization.</p>${ALL.slice(0, 8).map(i => `<div class="opt-row" style="cursor:default"><span>${esc(i.name)}</span><span class="muted">${i.cal || "—"}</span></div>`).join("")}` },
+help: { title: "Help", html: ["Where is my order?", "I was charged the wrong amount", "Missing points", "Contact us"].map(x => `<button class="opt-row" data-act="helpq"><span>${x}</span><span>›</span></button>`).join("") },
+legal: { title: "Careers, Contact & Legal", html: ["Careers", "Contact us", "Terms & conditions", "Privacy statement"].map(x => `<button class="opt-row" data-act="helpq"><span>${x}</span><span>›</span></button>`).join("") },
+};
+return push({ type: "page", ...pages[k] }); }
+if ("checkout" in d) return checkoutSheet();
+if ("place" in d) { const t = bagTotals();
+const lines = S.bag.map(l => ({ name: (l.qty > 1 ? l.qty + "× " : "") + l.name, opt: l.opt, price: r2(l.unit * l.qty) }));
+if (t.fee) lines.push({ name: "Delivery fee", opt: "", price: t.fee });
+const o = { id: "o" + Date.now(), when: "Today · just now", store: S.store, art: S.bag[0].art || "bag", lines };
+S.points += Math.round(t.sub * 100); S.orders.unshift(o); S.done = o; S.bag = []; closeSheet(); return render(true); }
+if (d.act) { const a = d.act;
+if (a === "store") return storeSheet();
+if (a === "address") return info("Delivery address", "30 River Ct, Apt 4B. Address editing isn’t part of this prototype.");
+if (a === "how") return info("How it works", "Earn 100 points for every $1 you spend in the app or with your code. Use points for free food.");
+if (a === "pay") return info("Payment", "Payment details aren’t part of this prototype.");
+if (a === "customize") return info("Customize", "Ingredient options aren’t part of this prototype.");
+if (a === "helpq") return info("Help", "This page isn’t part of this prototype.");
+if (a === "receiptpts") return info("Add missing points", "Scan the code on a paper receipt from the last 7 days.", "Scan receipt (demo)");
+}
+});
+$("scrim").onclick = closeSheet;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+$("reset").onclick = () => { S = fresh(); closeSheet(); render(true); };
+render(true);
+</script>
+</body>
+</html>
