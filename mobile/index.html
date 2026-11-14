@@ -8,9 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* McDonald's Speedee for headlines when it is installed on this computer.
-The font file is not included here; Inter is used otherwise. */
+/* McDonald's Speedee (Bold for headlines, Regular for text) when it is installed
+on this computer. The font files are not included here; Inter is used otherwise. */
 @font-face{font-family:"Speedee Head";src:local("Speedee Bold"),local("Speedee-Bold"),local("Speedee");font-weight:700 800}
+@font-face{font-family:"Speedee Body";src:local("Speedee Regular"),local("Speedee-Regular");font-weight:400 500}
 :root{
 --page:#e9e9e6; --page-ink:#292929; --page-muted:#666;
 /* App tokens: 01 Design Spec + values read from the real app screenshots */
@@ -55,8 +56,8 @@ box-shadow:inset 0 0 0 2px #3a3a3c, 0 0 0 1px #0d0d0d}
 /* ---------- app shell ---------- */
 .appbar{flex:0 0 auto;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--canvas);border-bottom:1px solid var(--line);position:relative;z-index:30}
 .appbar .ttl{font-size:17px;font-weight:800;position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
-.title,.sec-h h3,.hero .h,.hero .k,.trend .h,.rcard .big,.again .name,.cat-row b,.brand,.appbar .ttl,.codecard .num,.codecard h4,.promo b,.mi .nm,.reward .nm,.order-card .what,.item .nm,.summary .ln.total,.btn,.tab,.more-link,.price,.pts,.seg button,.toggle button,.subtabs button,.chip,.tile .nm,.deal .nm,.trend .cta,.hero .ctas span,.list-row,.opt-row b,.rv{font-family:"Speedee Head",Inter,"Helvetica Neue",Arial,sans-serif}
-.phone{font-weight:500}
+.phone :is(.title,.sec-h h3,.hero .h,.hero .k,.trend .h,.rcard .big,.again .name,.cat-row b,.brand,.appbar .ttl,.codecard .num,.codecard h4,.promo b,.mi .nm,.reward .nm,.order-card .what,.item .nm,.summary .ln.total,.btn,.tab,.more-link,.price,.pts,.seg button,.toggle button,.subtabs button,.chip,.tile .nm,.deal .nm,.trend .cta,.hero .ctas span,.list-row,.opt-row b,.rv){font-family:"Speedee Head",Inter,"Helvetica Neue",Arial,sans-serif}
+.phone{font-family:"Speedee Body",Inter,"Helvetica Neue",Arial,sans-serif;font-weight:500}
 .brand{font-weight:800;font-size:18px;letter-spacing:-.01em}
 .brand b{color:var(--wine)}
 .pts{display:inline-flex;align-items:center;gap:6px;border:1px solid #9a9a9a;border-radius:8px;padding:5px 10px;font-size:14px;font-weight:700;background:var(--canvas);color:var(--ink);cursor:pointer}
