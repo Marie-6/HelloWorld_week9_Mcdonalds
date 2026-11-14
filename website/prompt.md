@@ -149,3 +149,6 @@ Every prompt Marie gave Claude (Claude Code) for this project, in order and word
 
 **44.** "delete this one" (+ the Design Spec button)
 - Removed the Design Spec button from the top of the demo page. Only "Project README" is left there; the spec is still in "The design" section at the bottom. ✅
+
+**45.** "maybe make it more obvious? and fancy and core if you can" (+ the demo link in the README)
+- The README now opens with a big clickable picture of the demo (laptop and phone sharing one bag), a centered "▶ Try the live demo" heading, and two short lines on what it shows. ✅

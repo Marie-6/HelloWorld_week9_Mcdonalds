@@ -1,6 +1,12 @@
 # McDonald's — One System, Two Experiences
 
-**Demo: both prototypes on one page → [marie-6.github.io/Mcdonalds/demo/](https://marie-6.github.io/Mcdonalds/demo/)** (the website on a laptop, the app on a phone, both clickable)
+<p align="center">
+  <a href="https://marie-6.github.io/Mcdonalds/demo/"><img src="assets/demo-preview.jpg" alt="The website on a laptop and the app on a phone, sharing one bag" width="100%"></a>
+</p>
+
+<h2 align="center"><a href="https://marie-6.github.io/Mcdonalds/demo/">▶ Try the live demo</a></h2>
+
+<p align="center">The website on a laptop and the app on a phone, side by side.<br>Add something on one, and it's in the bag on the other.</p>
 
 
 **SVA MFA IxD · Assignment 2 · Context and evidence study**
